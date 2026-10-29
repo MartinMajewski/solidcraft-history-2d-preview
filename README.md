@@ -25,49 +25,53 @@ The **2D History Browser** provides a multi-track timeline inspired by video-edi
 - **Step**: A discrete point in time along the timeline (represented by columns).
 - **Action**: A modeling function executed at a step (e.g., Sketch, Extrude, Revolve, Fillet, Combine).
 - **Chip**: The visual representation of an Action on the timeline at a specific component row and column.
-- **Marker**: The vertical rollback line and handle indicating the boundary between active and deactivated (rolled-back) modeling steps.
+- **Marker**: The vertical rollback line and head pin indicating the boundary between active and deactivated (rolled-back) modeling steps.
 
 ---
 
 ## 🚀 Key Features Demonstrated
 
-### 1. Timeline Rollback Marker & Scrubbing
-- A full-height vertical line with a circular top handle (`ui_kit::history_marker`) indicating the boundary between active and rolled-back features (`doc.marker`).
-- **Horizontal Scrubbing**: Drag the blue marker handle across all component tracks to scrub forward and backward.
+### 1. Dedicated Header Scrubber Row & Timeline Rollback Marker
+- A dedicated **$28\,\text{px}$ header track** positioned directly above the component tracks holds the scrubber head pin (`ui_kit::history_marker`) with generous vertical clearance, preventing it from overlapping the first component row.
+- **Full-Height Vertical Line**: Spans from the header track down across all component rows to clearly delineate active and deactivated steps.
+- **Horizontal Scrubbing**: Drag the blue head pin across the header track to scrub forward and backward. Click any step column header to jump the marker immediately.
 - **Deactivated State**: Steps positioned past the marker are automatically rendered inactive (dimmed to $0.35$ opacity, dashed borders, desaturated icons, and skipped from viewport solid evaluation).
-- **History Transport Controls**: Full set of playback controls (First `⏮`, Back `◀`, Play / Pause `▶`/`⏸`, Forward `▶`, Last `⏭`) for single-step stepping or animated history playback.
 
-### 2. Multi-Track Component Layout
-- Each component (Root Design, Housing, Shaft, Bearing, Fastener) occupies its own dedicated horizontal row.
+### 2. Leading Header Transport Controls
+- The leading ($160\,\text{px}$ pinned left) side of the timeline header row houses the transport controls (First `⏮`, Back `◀`, Play / Pause `▶`/`⏸`, Forward `▶`, Last `⏭`).
+- Sits on the exact same layer as the component list, remaining fixed and stationary during horizontal timeline scrolling.
+
+### 3. Full Timeline Length Population (Zero Empty Columns)
+- All 24 timeline steps are fully populated with realistic parametric CAD operations across 5 component tracks (Root Design, Housing, Shaft, Bearing, Fastener).
+- The timeline length matches active feature steps without artificial empty trailing placeholder columns, reflecting real CAD design expansion.
+
+### 4. Multi-Track Component Layout & Viewport Sizing
+- Each component occupies its own dedicated horizontal row ($38\,\text{px}$ pitch).
 - Component headers are pinned on the left ($160\,\text{px}$) with color-coded identifiers.
-- The timeline grid and action chips scroll horizontally *behind* the pinned component list.
+- Viewport height accommodates the $28\,\text{px}$ header $+ 3.5$ component rows ($170\,\text{px}$ total height with scrollbar), leaving the 4th row half-visible as an immediate visual affordance that more tracks exist below.
+- Continuous vertical scrolling with rubberband spring elasticity when overscrolling.
 
-### 2. Dock Height & Visual Affordance
-- Viewport height auto-expands to display **3.5 component rows** ($143\,\text{px}$ total height).
-- The 4th row is intentionally partially cut off, giving users an immediate visual cue that additional component tracks exist below.
-- Includes continuous vertical scrolling with rubberband spring elasticity when overscrolling.
-
-### 3. Synchronized 1:1 CAD Grid
+### 5. Synchronized 1:1 CAD Grid
 - The CAD grid background is driven by individual DOM cells with explicit border lines.
 - The background moves in 1:1 physical synchronization with the chips across both horizontal and vertical scrolling, preventing visual lag or detachment.
 
-### 4. Parametric Dependency Visualization
+### 6. Parametric Dependency Visualization
 Clicking or hovering over any Action Chip instantly highlights:
 - 🟧 **Prerequisites (Orange)**: All upstream features that the selected action depends on.
 - 🟦 **Downstream (Blue)**: All downstream features that depend on the selected action.
 - 🟩 **Movable Corridor (Green Brackets `[ ... ]`)**: Visual brackets enclosing the exact chronological window $[p_{\max} + 1, d_{\min} - 1]$ where the selected action can be reordered without invalidating dependencies.
 
-### 5. Ripple Push Reordering (Splice Semantics)
+### 7. Ripple Push Reordering (Splice Semantics)
 - Dragging an action chip horizontally highlights valid drop slots in green.
 - Moving an action pushes/ripples intermediate jumped actions in the opposite direction (e.g., moving an action 2 steps to the right shifts intermediate actions 2 steps to the left).
 - Releasing outside the valid green corridor triggers an animated spring snap-back.
 
-### 6. Multi-Component Step Synchronization
+### 8. Multi-Component Step Synchronization
 - Complex operations affecting multiple components (such as *Boolean Combine* or *Assembly Constraints*) display chips across all involved component rows.
 - Connected by a dead-centered vertical dotted line passing cleanly behind intermediate unaffected components without visual noise or textual badges.
 - Interacting with any chip in a multi-component group synchronizes selection and highlighting across all its visual instances.
 
-### 7. Official SolidCraft Icon Masters
+### 9. Official SolidCraft Icon Masters
 - Features pure vector SVG artwork matching SolidCraft's official UI design system (`assets/icons/ui/design/svg/model/`):
   - Sketch, Extrude, Revolve, Fillet, Chamfer, Shell, Combine, Thread, Hole, and Mirror.
 
@@ -100,8 +104,9 @@ When integrated into the SolidCraft Rust codebase:
 | Demonstration Feature | SolidCraft Implementation Target |
 |---|---|
 | **2D Timeline Layout** | `crates/ui-egui/src/timeline_2d.rs` (custom egui widget) |
+| **Header Scrubber Track** | Dedicated top row in `timeline_2d.rs` holding `ui_kit::history_marker` |
+| **Leading Transport Controls** | `ui_kit::HistoryTransport` embedded in pinned left header (`cmd.timeline_roll`, `cmd.timeline_play`) |
 | **Rollback Marker & Scrubbing** | `app.session.doc.marker: Option<usize>` and `ui_kit::history_marker` |
-| **History Transport Controls** | `ui_kit::HistoryTransport` (`cmd.timeline_roll`, `cmd.timeline_play`) |
 | **Component Rows** | Extracted from `doc.tree.components()` and `f.component` |
 | **Dependency Graph** | Direct DAG traversal via `f.kind.walk_refs()` and `f.kind.input_sketches()` |
 | **Reorder Engine Command** | Dispatches heavy command `timeline.reorder` in `crates/engine/src/cmd/edit.rs` |
@@ -113,4 +118,3 @@ When integrated into the SolidCraft Rust codebase:
 ## 📄 License
 
 Original work created for the [SolidCraft](https://github.com/solidcraft/solidcraft) project under the project's open-source licensing guidelines.
-

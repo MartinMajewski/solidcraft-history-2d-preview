@@ -21,6 +21,7 @@
       --green-bg: rgba(34, 197, 94, 0.12);
       --col-w: 52px;
       --row-h: 38px;
+      --header-h: 28px;
       --text: #e2e8f0;
       --text-muted: #94a3b8;
       --text-dim: #64748b;
@@ -135,9 +136,9 @@
     .timeline-marker {
       position: absolute;
       top: 0;
-      height: 190px;
-      width: 18px;
-      margin-left: -9px;
+      height: calc(var(--header-h) + var(--row-h) * 5);
+      width: 20px;
+      margin-left: -10px;
       z-index: 50;
       cursor: col-resize;
       display: flex;
@@ -152,23 +153,41 @@
       cursor: grabbing !important;
     }
 
+    /* Scrubber Head Pin in dedicated Header Row */
     .marker-handle-top {
-      width: 14px;
-      height: 14px;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
       background: #14161a;
       border: 2.5px solid var(--blue);
       box-shadow: 0 0 8px rgba(56, 189, 248, 0.7);
       flex-shrink: 0;
       cursor: col-resize;
-      margin-top: 1px;
+      margin-top: 6px;
       transition: transform 0.15s, background-color 0.15s;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .marker-pin-inner {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--blue);
+      transition: background-color 0.15s;
     }
 
     .timeline-marker:hover .marker-handle-top,
     .timeline-marker.scrubbing .marker-handle-top {
-      transform: scale(1.3);
+      transform: scale(1.25);
       background: #38bdf8;
+    }
+
+    .timeline-marker:hover .marker-pin-inner,
+    .timeline-marker.scrubbing .marker-pin-inner {
+      background: #000;
     }
 
     .marker-line {
@@ -219,6 +238,19 @@
       margin-left: 6px;
     }
 
+    .transport-bar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      height: 22px;
+      background: #101217;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      overflow: hidden;
+      padding: 0 2px;
+    }
+
     .btn-transport {
       background: transparent;
       border: none;
@@ -230,6 +262,14 @@
       align-items: center;
       justify-content: center;
       transition: background 0.12s, color 0.12s;
+    }
+
+    .transport-bar-header .btn-transport {
+      flex: 1;
+      height: 20px;
+      padding: 0 4px;
+      font-size: 11px;
+      border-radius: 3px;
     }
 
     .btn-transport:hover:not(:disabled) {
@@ -293,11 +333,11 @@
       white-space: nowrap;
     }
 
-    /* Main Viewport Container: Exactly 3.5 rows visible */
-    /* 3.5 rows * 38px = 133px + horizontal scrollbar (10px) = 143px total track view */
+    /* Main Viewport Container: Exactly Header + 3.5 rows visible */
+    /* 28px header + 3.5 rows * 38px (133px) + horizontal scrollbar (9px) = 170px total view */
     .viewport-container {
       position: relative;
-      height: 143px;
+      height: 170px;
       border: 1px solid var(--border);
       border-radius: 8px;
       overflow: hidden;
@@ -305,7 +345,7 @@
       background: var(--bg);
     }
 
-    /* Pinned Left Component Headers */
+    /* Pinned Left Component Column (160px) */
     .pinned-headers {
       width: 160px;
       flex-shrink: 0;
@@ -316,6 +356,25 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
+    }
+
+    /* Leading Side (Left) of the Timeline Header Row */
+    .pinned-header-top {
+      height: var(--header-h);
+      background: #151820;
+      border-bottom: 1px solid #2a303d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 6px;
+      flex-shrink: 0;
+      z-index: 35;
+    }
+
+    .pinned-headers-viewport {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
     }
 
     .pinned-headers-content {
@@ -368,13 +427,62 @@
       min-width: 100%;
     }
 
-    /* SVG Overlay for Connections and Movable Brackets */
+    /* Dedicated Timeline Header Row (Scrubber Pin Track) */
+    .timeline-header-track {
+      display: flex;
+      height: var(--header-h);
+      background: #14171d;
+      border-bottom: 1px solid #2a303d;
+      position: relative;
+      user-select: none;
+    }
+
+    .header-step-cell {
+      width: var(--col-w);
+      height: var(--header-h);
+      flex-shrink: 0;
+      border-right: 1px solid var(--grid-line);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: 3px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 10px;
+      font-weight: 600;
+      color: #64748b;
+      cursor: pointer;
+      position: relative;
+      transition: background-color 0.12s, color 0.12s;
+    }
+
+    .header-step-cell:hover {
+      background: rgba(56, 189, 248, 0.08);
+      color: #38bdf8;
+    }
+
+    .header-step-cell.active-step {
+      color: #94a3b8;
+    }
+
+    .header-step-cell.rolled-back-step {
+      color: #334155;
+    }
+
+    .header-step-tick {
+      width: 1px;
+      height: 4px;
+      background: #3e4758;
+      margin-bottom: 2px;
+    }
+
+    /* SVG Overlay for Connections and Movable Brackets (Placed right below header row) */
     .svg-overlay {
       position: absolute;
-      top: 0;
+      top: var(--header-h);
       left: 0;
       width: 100%;
-      height: 100%;
+      height: calc(var(--row-h) * 5);
       pointer-events: none;
       z-index: 10;
     }
@@ -537,7 +645,7 @@
           <div class="marker-swatch"></div>
           <span style="color: var(--blue); font-weight: 500;">Rollback Marker</span>
         </div>
-        <!-- SolidCraft History Transport Controls -->
+        <!-- SolidCraft History Transport Controls (Overview Mirror) -->
         <div class="transport-bar" title="SolidCraft History Transport (Scrub Timeline)">
           <button id="btnFirst" class="btn-transport" title="Roll to First (Step 0)">⏮</button>
           <button id="btnBack" class="btn-transport" title="Step Back">◀</button>
@@ -556,44 +664,61 @@
         <span id="statusDetails" style="color: var(--text-muted); margin-left: 4px;">Loading...</span>
       </div>
       <div class="status-meta">
-        <span id="activeMarkerBadge" class="badge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">Active: 16 / 16 Steps</span> ·
-        <span>3.5 Rows Visible</span> ·
+        <span id="activeMarkerBadge" class="badge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">Active: 24 / 24 Steps</span> ·
+        <span>Header + 3.5 Rows Visible</span> ·
         <span style="color: var(--green);">1:1 Synchronized Grid</span>
       </div>
     </div>
 
     <!-- Main Viewport -->
     <div class="viewport-container" id="viewportContainer">
-      <!-- Pinned Left Component Headers -->
+      <!-- Pinned Left Component Headers (160px wide, stays stationary horizontally) -->
       <div class="pinned-headers">
-        <div class="pinned-headers-content" id="pinnedHeadersContent">
-          <div class="header-row">
-            <span class="comp-dot" style="background: #94a3b8;"></span>
-            <span class="truncate">Root (Design)</span>
+        <!-- Leading Side (Left) of Timeline Header Row: Transport Controls -->
+        <div class="pinned-header-top">
+          <div class="transport-bar-header" title="Timeline Transport Controls (Scrub Active Steps)">
+            <button id="hdrBtnFirst" class="btn-transport" title="Roll to First (Step 0)">⏮</button>
+            <button id="hdrBtnBack" class="btn-transport" title="Step Back">◀</button>
+            <button id="hdrBtnPlay" class="btn-transport" title="Play / Pause History Timeline">▶</button>
+            <button id="hdrBtnForward" class="btn-transport" title="Step Forward">▶</button>
+            <button id="hdrBtnLast" class="btn-transport" title="Roll to Last (End)">⏭</button>
           </div>
-          <div class="header-row">
-            <span class="comp-dot" style="background: #38bdf8;"></span>
-            <span class="truncate">Housing</span>
-          </div>
-          <div class="header-row">
-            <span class="comp-dot" style="background: #22c55e;"></span>
-            <span class="truncate">Shaft</span>
-          </div>
-          <div class="header-row">
-            <span class="comp-dot" style="background: #f59e0b;"></span>
-            <span class="truncate">Bearing</span>
-          </div>
-          <div class="header-row">
-            <span class="comp-dot" style="background: #c084fc;"></span>
-            <span class="truncate">Fastener</span>
+        </div>
+
+        <!-- Pinned Component List (Scrolls vertically in sync with timeline tracks) -->
+        <div class="pinned-headers-viewport">
+          <div class="pinned-headers-content" id="pinnedHeadersContent">
+            <div class="header-row">
+              <span class="comp-dot" style="background: #94a3b8;"></span>
+              <span class="truncate">Root (Design)</span>
+            </div>
+            <div class="header-row">
+              <span class="comp-dot" style="background: #38bdf8;"></span>
+              <span class="truncate">Housing</span>
+            </div>
+            <div class="header-row">
+              <span class="comp-dot" style="background: #22c55e;"></span>
+              <span class="truncate">Shaft</span>
+            </div>
+            <div class="header-row">
+              <span class="comp-dot" style="background: #f59e0b;"></span>
+              <span class="truncate">Bearing</span>
+            </div>
+            <div class="header-row">
+              <span class="comp-dot" style="background: #c084fc;"></span>
+              <span class="truncate">Fastener</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Timeline Scroll Area -->
+      <!-- Timeline Scroll Area (Dual-Axis Scrolling) -->
       <div class="timeline-scroll-area" id="timelineScrollArea">
         <div class="tracks-content" id="tracksContent">
-          <!-- Dynamic SVG Overlay for Movable Brackets & Connectors -->
+          <!-- Dedicated Header Scrubber Track (Holds Timeline Marker Head Pin) -->
+          <div class="timeline-header-track" id="timelineHeaderTrack"></div>
+
+          <!-- Dynamic SVG Overlay for Movable Brackets & Multi-Component Connectors -->
           <svg class="svg-overlay" id="svgOverlay">
             <g id="bracketGroup" style="display: none;">
               <rect id="bracketCorridor" x="0" y="0" width="0" height="190" fill="rgba(34, 197, 94, 0.08)"></rect>
@@ -603,14 +728,16 @@
             <g id="connectorsGroup"></g>
           </svg>
 
-          <!-- History Rollback Marker (Draggable Scrubber across all component tracks) -->
-          <div id="timelineMarker" class="timeline-marker" style="left: 832px;" title="History Rollback Marker: Drag handle to scrub active steps">
-            <div class="marker-handle-top" title="Drag to scrub timeline"></div>
+          <!-- History Rollback Marker (Draggable Scrubber Pin & Vertical Boundary Line) -->
+          <div id="timelineMarker" class="timeline-marker" style="left: 1248px;" title="History Rollback Marker: Drag head pin to scrub active steps">
+            <div class="marker-handle-top" title="Drag head pin to scrub timeline">
+              <div class="marker-pin-inner"></div>
+            </div>
             <div class="marker-line"></div>
             <div class="marker-handle-bottom"></div>
           </div>
 
-          <!-- DOM Grid Cells -->
+          <!-- DOM Grid Cells (Component Tracks 0 to 4) -->
           <div id="trackRowsContainer"></div>
         </div>
       </div>
@@ -619,7 +746,7 @@
     <!-- Live Interaction Log & Instructions -->
     <div class="footer-bar">
       <div id="dragFeedback">
-        💡 <strong>Try this:</strong> Click any action chip to view its prerequisites (orange) and downstream dependents (blue). Drag <strong>Fillet</strong> within the green brackets `[ ... ]` to watch intermediate steps ripple!
+        💡 <strong>Try this:</strong> Drag the blue <strong>head pin</strong> in the header row to scrub active steps! Click any chip to view prerequisites (orange) and downstream dependents (blue), or drag <strong>Fillet</strong> within the green brackets `[ ... ]` to watch intermediate steps ripple!
       </div>
       <div style="font-family: monospace; font-size: 11px; color: var(--text-dim);">
         ↔ Scroll horizontally &nbsp;|&nbsp; ↕ Scroll vertically
@@ -645,37 +772,46 @@
 
     const COL_W = 52;
     const ROW_H = 38;
+    const HEADER_H = 28;
     const NUM_ROWS = 5;
-    const TOTAL_COLUMNS = 24; // Generous horizontal space for CAD timeline
 
-    // 16 Sequential Steps in an Ordered Array
-    // Components: 0: Root, 1: Housing, 2: Shaft, 3: Bearing, 4: Fastener
+    // 24 Sequential Steps Populating the Entire Timeline Length (Zero Empty Columns)
+    // Components: 0: Root (Design), 1: Housing, 2: Shaft, 3: Bearing, 4: Fastener
     let actions = [
-      { id: 1, name: "Base Sketch", type: "sketch", rows: [0], prereqs: [], downstream: [2,3,4,5,6,7,9,11,13] },
-      { id: 2, name: "Extrude Base", type: "extrude", rows: [0], prereqs: [1], downstream: [3,4,5,6,7,9,11,13] },
-      { id: 3, name: "Housing Revolve", type: "revolve", rows: [1], prereqs: [2], downstream: [5,6,9] },
-      { id: 4, name: "Shaft Revolve", type: "revolve", rows: [2], prereqs: [2], downstream: [8,11] },
-      { id: 5, name: "Fillet Edge", type: "fillet", rows: [1], prereqs: [3], downstream: [9] }, // MOVABLE: Between Step 4 and 8
-      { id: 6, name: "Pocket Hole", type: "hole", rows: [1], prereqs: [3], downstream: [9] },
-      { id: 7, name: "Bearing Inner Ring", type: "revolve", rows: [3], prereqs: [2], downstream: [10,13] },
-      { id: 8, name: "Keyway Chamfer", type: "chamfer", rows: [2], prereqs: [4], downstream: [11] },
-      { id: 9, name: "Combine (Housing+Shaft)", type: "combine", rows: [1, 2], prereqs: [5,6], downstream: [14] }, // Multi-component adjacent
-      { id: 10, name: "Bearing Outer Ring", type: "revolve", rows: [3], prereqs: [7], downstream: [13] },
-      { id: 11, name: "Shaft Thread", type: "thread", rows: [2], prereqs: [4,8], downstream: [14] },
-      { id: 12, name: "Cap Screw Extrude", type: "extrude", rows: [4], prereqs: [2], downstream: [14] },
-      { id: 13, name: "Press-Fit Assembly (Root+Bearing)", type: "combine", rows: [0, 3], prereqs: [7,10], downstream: [15,16] }, // Multi-component non-adjacent (0 & 3)
-      { id: 14, name: "Fastener Combine (Housing+Fastener)", type: "combine", rows: [1, 4], prereqs: [9,11,12], downstream: [16] }, // Multi-component non-adjacent (1 & 4)
-      { id: 15, name: "Bearing Shell", type: "shell", rows: [3], prereqs: [13], downstream: [16] },
-      { id: 16, name: "Assembly Mirror", type: "mirror", rows: [0], prereqs: [13,14,15], downstream: [] }
+      { id: 1, name: "Base Sketch", type: "sketch", rows: [0], prereqs: [], downstream: [2,3,4,5,6,7,9,11,13,24] },
+      { id: 2, name: "Extrude Base", type: "extrude", rows: [0], prereqs: [1], downstream: [3,4,5,6,7,9,11,13,24] },
+      { id: 3, name: "Housing Revolve", type: "revolve", rows: [1], prereqs: [2], downstream: [5,6,9,14,17,21] },
+      { id: 4, name: "Shaft Revolve", type: "revolve", rows: [2], prereqs: [2], downstream: [8,9,11,18,19,22] },
+      { id: 5, name: "Fillet Edge", type: "fillet", rows: [1], prereqs: [3], downstream: [9,14] }, // MOVABLE: Between Step 4 and 8
+      { id: 6, name: "Pocket Hole", type: "hole", rows: [1], prereqs: [3], downstream: [9,14] },
+      { id: 7, name: "Bearing Inner Ring", type: "revolve", rows: [3], prereqs: [2], downstream: [10,13,15,20,22] },
+      { id: 8, name: "Keyway Chamfer", type: "chamfer", rows: [2], prereqs: [4], downstream: [11,18,19] },
+      { id: 9, name: "Combine (Housing+Shaft)", type: "combine", rows: [1, 2], prereqs: [5,6], downstream: [14,17,21] }, // Multi-component (1 & 2)
+      { id: 10, name: "Bearing Outer Ring", type: "revolve", rows: [3], prereqs: [7], downstream: [13,15,20] },
+      { id: 11, name: "Shaft Thread", type: "thread", rows: [2], prereqs: [4,8], downstream: [14,18,19] },
+      { id: 12, name: "Cap Screw Extrude", type: "extrude", rows: [4], prereqs: [2], downstream: [14,23] },
+      { id: 13, name: "Press-Fit Assembly (Root+Bearing)", type: "combine", rows: [0, 3], prereqs: [7,10], downstream: [15,16,20] }, // Multi-component (0 & 3)
+      { id: 14, name: "Fastener Combine (Housing+Fastener)", type: "combine", rows: [1, 4], prereqs: [9,11,12], downstream: [16,17,21,23] }, // Multi-component (1 & 4)
+      { id: 15, name: "Bearing Shell", type: "shell", rows: [3], prereqs: [13], downstream: [16,20,22] },
+      { id: 16, name: "Assembly Mirror", type: "mirror", rows: [0], prereqs: [13,14,15], downstream: [24] },
+      { id: 17, name: "Flange Mounting Holes", type: "hole", rows: [1], prereqs: [14], downstream: [21,24] },
+      { id: 18, name: "Shaft Keyway Sketch", type: "sketch", rows: [2], prereqs: [11], downstream: [19,22] },
+      { id: 19, name: "Shaft Coupling Extrude", type: "extrude", rows: [2], prereqs: [18], downstream: [22,24] },
+      { id: 20, name: "Retaining Ring Groove", type: "chamfer", rows: [3], prereqs: [15], downstream: [22,24] },
+      { id: 21, name: "Housing Fillet Blend", type: "fillet", rows: [1], prereqs: [17], downstream: [23,24] },
+      { id: 22, name: "Sub-Assembly Pin (Shaft+Bearing)", type: "combine", rows: [2, 3], prereqs: [19,20], downstream: [24] }, // Multi-component (2 & 3)
+      { id: 23, name: "Locknut Thread", type: "thread", rows: [4], prereqs: [14,21], downstream: [24] },
+      { id: 24, name: "Final Inspection Shell", type: "shell", rows: [0], prereqs: [16,22,23], downstream: [] }
     ];
 
     const initialActions = JSON.parse(JSON.stringify(actions));
-    let selectedActionId = 5; // Default: Fillet Edge
-    let markerStep = 16;      // All 16 steps active by default (SolidCraft doc.marker = None)
+    let selectedActionId = 5;       // Default: Fillet Edge
+    let markerStep = actions.length; // All 24 steps active by default (SolidCraft doc.marker = None)
     let isPlaying = false;
     let playbackTimer = null;
 
     const trackContainer = document.getElementById('trackRowsContainer');
+    const headerTrack = document.getElementById('timelineHeaderTrack');
     const svgOverlay = document.getElementById('svgOverlay');
     const bracketGroup = document.getElementById('bracketGroup');
     const bracketCorridor = document.getElementById('bracketCorridor');
@@ -687,11 +823,19 @@
     const timelineMarker = document.getElementById('timelineMarker');
     const activeMarkerBadge = document.getElementById('activeMarkerBadge');
 
+    // Overview Transport Buttons (in legend)
     const btnFirst = document.getElementById('btnFirst');
     const btnBack = document.getElementById('btnBack');
     const btnPlay = document.getElementById('btnPlay');
     const btnForward = document.getElementById('btnForward');
     const btnLast = document.getElementById('btnLast');
+
+    // Header Transport Buttons (leading side of timeline header row)
+    const hdrBtnFirst = document.getElementById('hdrBtnFirst');
+    const hdrBtnBack = document.getElementById('hdrBtnBack');
+    const hdrBtnPlay = document.getElementById('hdrBtnPlay');
+    const hdrBtnForward = document.getElementById('hdrBtnForward');
+    const hdrBtnLast = document.getElementById('hdrBtnLast');
 
     function getActionCol(actionId) {
       return actions.findIndex(a => a.id === actionId) + 1;
@@ -727,11 +871,19 @@
         timelineMarker.style.left = `${markerStep * COL_W}px`;
       }
 
-      // Update Transport Buttons
-      if (btnFirst) btnFirst.disabled = markerStep === 0;
-      if (btnBack) btnBack.disabled = markerStep === 0;
-      if (btnForward) btnForward.disabled = markerStep === actions.length;
-      if (btnLast) btnLast.disabled = markerStep === actions.length;
+      // Update Both Transport Button Sets
+      const isFirst = markerStep === 0;
+      const isLast = markerStep === actions.length;
+
+      if (btnFirst) btnFirst.disabled = isFirst;
+      if (btnBack) btnBack.disabled = isFirst;
+      if (btnForward) btnForward.disabled = isLast;
+      if (btnLast) btnLast.disabled = isLast;
+
+      if (hdrBtnFirst) hdrBtnFirst.disabled = isFirst;
+      if (hdrBtnBack) hdrBtnBack.disabled = isFirst;
+      if (hdrBtnForward) hdrBtnForward.disabled = isLast;
+      if (hdrBtnLast) hdrBtnLast.disabled = isLast;
 
       // Update Active Badge
       if (activeMarkerBadge) {
@@ -747,6 +899,16 @@
         }
       }
 
+      // Update header step cell highlight
+      document.querySelectorAll('.header-step-cell').forEach(cell => {
+        const c = parseInt(cell.dataset.col);
+        if (c > markerStep) {
+          cell.className = 'header-step-cell rolled-back-step';
+        } else {
+          cell.className = 'header-step-cell active-step';
+        }
+      });
+
       // Re-apply Highlight to reflect rolled back chips and lines
       applyHighlight(selectedActionId);
 
@@ -756,7 +918,7 @@
           const rolledCount = actions.length - markerStep;
           dragFeedback.innerHTML = `⏪ <strong>Timeline Rolled Back:</strong> Steps 1 to ${markerStep} are active. ${rolledCount} downstream feature(s) after the marker are deactivated (rolled back).`;
         } else {
-          dragFeedback.innerHTML = `✨ <strong>All Steps Active:</strong> The timeline marker is at the end. Drag the blue marker handle left to scrub backward!`;
+          dragFeedback.innerHTML = `✨ <strong>All Steps Active:</strong> The timeline marker is at the end. Drag the blue head pin left to scrub backward!`;
         }
       }
     }
@@ -775,8 +937,14 @@
         setMarkerStep(0, false);
       }
       isPlaying = true;
-      btnPlay.innerHTML = '⏸';
-      btnPlay.title = 'Pause timeline playback';
+      if (btnPlay) {
+        btnPlay.innerHTML = '⏸';
+        btnPlay.title = 'Pause timeline playback';
+      }
+      if (hdrBtnPlay) {
+        hdrBtnPlay.innerHTML = '⏸';
+        hdrBtnPlay.title = 'Pause timeline playback';
+      }
       dragFeedback.innerHTML = `▶️ <strong>Playing History Sequence:</strong> Re-evaluating features step by step...`;
 
       playbackTimer = setInterval(() => {
@@ -786,7 +954,7 @@
           stopPlayback();
           dragFeedback.innerHTML = `🏁 <strong>Playback Complete:</strong> All ${actions.length} features evaluated.`;
         }
-      }, 420);
+      }, 380);
     }
 
     function stopPlayback() {
@@ -795,15 +963,41 @@
         clearInterval(playbackTimer);
         playbackTimer = null;
       }
-      btnPlay.innerHTML = '▶';
-      btnPlay.title = 'Play timeline sequence';
+      if (btnPlay) {
+        btnPlay.innerHTML = '▶';
+        btnPlay.title = 'Play timeline sequence';
+      }
+      if (hdrBtnPlay) {
+        hdrBtnPlay.innerHTML = '▶';
+        hdrBtnPlay.title = 'Play timeline sequence';
+      }
     }
 
-    // Render Timeline Tracks & Chips (Grid of actual DOM cells)
+    // Render Timeline: Header Track & Component Tracks (Zero Empty Columns)
     function renderTimeline() {
-      trackContainer.innerHTML = '';
-      const totalCols = Math.max(TOTAL_COLUMNS, actions.length + 3);
+      const totalCols = actions.length;
 
+      // 1. Render Header Scrubber Track Cells
+      headerTrack.innerHTML = '';
+      for (let colIdx = 0; colIdx < totalCols; colIdx++) {
+        const c = colIdx + 1;
+        const hCell = document.createElement('div');
+        hCell.className = `header-step-cell ${c > markerStep ? 'rolled-back-step' : 'active-step'}`;
+        hCell.dataset.col = c;
+        hCell.title = `Step ${c}: ${actions[colIdx].name} (Click to roll marker here)`;
+        hCell.innerHTML = `
+          <div class="header-step-tick"></div>
+          <span>${c < 10 ? '0' + c : c}</span>
+        `;
+        hCell.addEventListener('click', () => {
+          stopPlayback();
+          setMarkerStep(c);
+        });
+        headerTrack.appendChild(hCell);
+      }
+
+      // 2. Render Component Track Rows
+      trackContainer.innerHTML = '';
       for (let r = 0; r < NUM_ROWS; r++) {
         const rowDiv = document.createElement('div');
         rowDiv.className = 'track-row';
@@ -816,22 +1010,18 @@
           cell.dataset.col = c;
           cell.dataset.row = r;
 
-          if (colIdx < actions.length) {
-            const act = actions[colIdx];
-            if (act.rows.includes(r)) {
-              const chip = document.createElement('div');
-              chip.className = 'chip';
-              chip.dataset.id = act.id;
-              chip.dataset.col = c;
-              chip.dataset.row = r;
-              chip.innerHTML = ICONS[act.type] || ICONS.extrude;
-              chip.title = `${act.name} (Step ${c})`;
+          const act = actions[colIdx];
+          if (act.rows.includes(r)) {
+            const chip = document.createElement('div');
+            chip.className = 'chip';
+            chip.dataset.id = act.id;
+            chip.dataset.col = c;
+            chip.dataset.row = r;
+            chip.innerHTML = ICONS[act.type] || ICONS.extrude;
+            chip.title = `${act.name} (Step ${c})`;
 
-              attachDragHandlers(chip, act);
-              cell.appendChild(chip);
-            } else {
-              cell.innerHTML = '<span class="empty-hint">·</span>';
-            }
+            attachDragHandlers(chip, act);
+            cell.appendChild(chip);
           } else {
             cell.innerHTML = '<span class="empty-hint">·</span>';
           }
@@ -964,7 +1154,7 @@
 
       if (!isPlaying) {
         if (isSelectedRolledBack) {
-          dragFeedback.innerHTML = `⏸️ <strong>Rolled Back:</strong> <em>${act.name}</em> is inactive. Drag the blue marker handle past Step ${currentCol} or click 'Step Forward' to activate it.`;
+          dragFeedback.innerHTML = `⏸️ <strong>Rolled Back:</strong> <em>${act.name}</em> is inactive. Drag the blue head pin past Step ${currentCol} or click 'Step Forward' to activate it.`;
         } else {
           dragFeedback.innerHTML = isMovable
             ? `✅ <strong>Movable Corridor:</strong> Drag <em>${act.name}</em> anywhere between Step ${minCol} and ${maxCol}. All jumped actions ripple automatically!`
@@ -983,7 +1173,7 @@
         const col = parseInt(chip.dataset.col);
         if (col > markerStep) {
           applyHighlight(act.id);
-          dragFeedback.innerHTML = `⚠️ <strong>Cannot reorder rolled-back step:</strong> <em>${act.name}</em> is deactivated. Drag the rollback marker past Step ${col} to activate it first.`;
+          dragFeedback.innerHTML = `⚠️ <strong>Cannot reorder rolled-back step:</strong> <em>${act.name}</em> is deactivated. Drag the rollback head pin past Step ${col} to activate it first.`;
           return;
         }
 
@@ -1055,7 +1245,7 @@
       });
     }
 
-    // Attach Marker Scrubbing Logic
+    // Attach Marker Scrubbing Logic via Head Pin & Scrubber Track
     function attachMarkerScrubbing() {
       if (!timelineMarker) return;
       let isScrubbing = false;
@@ -1070,7 +1260,6 @@
 
         function onMouseMove(e) {
           if (!isScrubbing) return;
-          const scrollArea = document.getElementById('timelineScrollArea');
           const tracksRect = tracksContent.getBoundingClientRect();
           const relX = e.clientX - tracksRect.left;
           const targetStep = Math.max(0, Math.min(actions.length, Math.round(relX / COL_W)));
@@ -1091,12 +1280,28 @@
       });
     }
 
-    // Transport Button Listeners
-    if (btnFirst) btnFirst.addEventListener('click', () => { stopPlayback(); setMarkerStep(0); });
-    if (btnBack) btnBack.addEventListener('click', () => { stopPlayback(); setMarkerStep(markerStep - 1); });
-    if (btnPlay) btnPlay.addEventListener('click', togglePlayback);
-    if (btnForward) btnForward.addEventListener('click', () => { stopPlayback(); setMarkerStep(markerStep + 1); });
-    if (btnLast) btnLast.addEventListener('click', () => { stopPlayback(); setMarkerStep(actions.length); });
+    // Wire Up Transport Button Listeners (Both Header & Legend sets)
+    function attachTransportHandlers() {
+      const handleFirst = () => { stopPlayback(); setMarkerStep(0); };
+      const handleBack = () => { stopPlayback(); setMarkerStep(markerStep - 1); };
+      const handlePlay = () => { togglePlayback(); };
+      const handleForward = () => { stopPlayback(); setMarkerStep(markerStep + 1); };
+      const handleLast = () => { stopPlayback(); setMarkerStep(actions.length); };
+
+      // Legend transport buttons
+      if (btnFirst) btnFirst.addEventListener('click', handleFirst);
+      if (btnBack) btnBack.addEventListener('click', handleBack);
+      if (btnPlay) btnPlay.addEventListener('click', handlePlay);
+      if (btnForward) btnForward.addEventListener('click', handleForward);
+      if (btnLast) btnLast.addEventListener('click', handleLast);
+
+      // Header transport buttons (pinned leading side)
+      if (hdrBtnFirst) hdrBtnFirst.addEventListener('click', handleFirst);
+      if (hdrBtnBack) hdrBtnBack.addEventListener('click', handleBack);
+      if (hdrBtnPlay) hdrBtnPlay.addEventListener('click', handlePlay);
+      if (hdrBtnForward) hdrBtnForward.addEventListener('click', handleForward);
+      if (hdrBtnLast) hdrBtnLast.addEventListener('click', handleLast);
+    }
 
     // -------------------------------------------------------------
     // Rubber Band Physics for Vertical Overscroll & Scroll Syncing
@@ -1148,7 +1353,8 @@
       renderTimeline();
     });
 
-    // Initialize marker scrubbing and render
+    // Initialize transport handlers, marker scrubbing, and render
+    attachTransportHandlers();
     attachMarkerScrubbing();
     renderTimeline();
   </script>
