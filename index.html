@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SolidCraft - 2D History Browser Interactive Demonstration</title>
+  <style>
+    :root {
+      --bg: #14161a;
+      --card-bg: #1b1e24;
+      --panel-header: #1e222a;
+      --border: #2d3340;
+      --grid-line: #222733;
+      --chip-bg: #282c35;
+      --chip-border: #3e4552;
+      --orange: #f59e0b;
+      --orange-bg: rgba(245, 158, 11, 0.18);
+      --blue: #38bdf8;
+      --blue-bg: rgba(56, 189, 248, 0.18);
+      --green: #22c55e;
+      --green-bg: rgba(34, 197, 94, 0.12);
+      --col-w: 52px;
+      --row-h: 38px;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #0c0e12;
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding: 24px 16px;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Header Bar */
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .header-title-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .header-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .header-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Legend */
+    .legend {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 12px;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+    }
+
+    .swatch-orange {
+      background: var(--orange-bg);
+      border: 1px solid var(--orange);
+    }
+
+    .swatch-blue {
+      background: var(--blue-bg);
+      border: 1px solid var(--blue);
+    }
+
+    .swatch-green {
+      color: var(--green);
+      font-family: monospace;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .btn-reset {
+      background: #2a303c;
+      border: 1px solid #3e4657;
+      color: #cbd5e1;
+      padding: 5px 12px;
+      font-size: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+
+    .btn-reset:hover {
+      background: #373f50;
+      color: #fff;
+      border-color: #556075;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      background: #13161c;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      gap: 12px;
+    }
+
+    .status-content {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .status-meta {
+      font-family: monospace;
+      font-size: 11px;
+      color: var(--text-dim);
+      white-space: nowrap;
+    }
+
+    /* Main Viewport Container: Exactly 3.5 rows visible */
+    /* 3.5 rows * 38px = 133px + horizontal scrollbar (10px) = 143px total track view */
+    .viewport-container {
+      position: relative;
+      height: 143px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      background: var(--bg);
+    }
+
+    /* Pinned Left Component Headers */
+    .pinned-headers {
+      width: 160px;
+      flex-shrink: 0;
+      background: #181b22;
+      border-right: 1px solid #2a303d;
+      z-index: 30;
+      box-shadow: 4px 0 12px rgba(0, 0, 0, 0.45);
+      overflow: hidden;
+      display: flex;
+      flex-col: column;
+    }
+
+    .pinned-headers-content {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header-row {
+      height: var(--row-h);
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--grid-line);
+      font-size: 12px;
+      font-weight: 500;
+      color: #cbd5e1;
+      background: #181b22;
+    }
+
+    .comp-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Timeline Scroll Area: Dual Axis Scroll */
+    .timeline-scroll-area {
+      flex: 1;
+      overflow-x: scroll;
+      overflow-y: scroll;
+      position: relative;
+      background: var(--bg);
+    }
+
+    /* Tracks Content: Fully DOM-driven grid moving 1:1 with scroll */
+    .tracks-content {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: max-content;
+      min-width: 100%;
+    }
+
+    /* SVG Overlay for Connections and Movable Brackets */
+    .svg-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .connector-dots {
+      stroke: #64748b;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-dasharray: 2 4;
+      transition: stroke 0.15s, stroke-width 0.15s;
+    }
+
+    .connector-dots.active {
+      stroke: #38bdf8;
+      stroke-width: 2.5;
+    }
+
+    /* Rows and Grid Cells */
+    .track-row {
+      display: flex;
+      height: var(--row-h);
+      position: relative;
+    }
+
+    .track-cell {
+      width: var(--col-w);
+      height: var(--row-h);
+      flex-shrink: 0;
+      border-right: 1px solid var(--grid-line);
+      border-bottom: 1px solid var(--grid-line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background-color: var(--bg);
+    }
+
+    .track-cell.empty-hint {
+      color: #242933;
+      font-size: 10px;
+    }
+
+    /* Action Chip */
+    .chip {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--chip-bg);
+      border: 1px solid var(--chip-border);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+      cursor: grab;
+      position: relative;
+      z-index: 20;
+      transition: border-color 0.15s, background-color 0.15s, transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+    }
+
+    .chip:hover {
+      border-color: #cbd5e1;
+    }
+
+    .chip.dragging {
+      opacity: 0.95;
+      z-index: 100 !important;
+      cursor: grabbing !important;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.75), 0 0 0 2px #ffffff;
+      transform: scale(1.08);
+    }
+
+    .chip.selected {
+      border: 2px solid #ffffff;
+      background: #334155;
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
+      z-index: 30;
+      transform: scale(1.04);
+    }
+
+    .chip.prereq {
+      border: 2px solid var(--orange);
+      background: var(--orange-bg);
+    }
+
+    .chip.downstream {
+      border: 2px solid var(--blue);
+      background: var(--blue-bg);
+    }
+
+    .chip.dimmed {
+      opacity: 0.35;
+      border-color: #2c3340;
+      background: #1c2028;
+    }
+
+    /* Footer / Interaction Hint */
+    .footer-bar {
+      margin-top: 14px;
+      background: #13161c;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .spring-return {
+      transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #101216;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #313846;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475164;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header-bar">
+      <div>
+        <div class="header-title-area">
+          <span class="badge">Official SolidCraft UI</span>
+          <h1 class="header-title">SolidCraft 2D History Browser</h1>
+        </div>
+        <p class="header-desc">
+          Two-dimensional multi-track parametric CAD timeline with dependency visualization &amp; ripple push reordering.
+        </p>
+      </div>
+
+      <!-- Highlighting Legend -->
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-swatch swatch-orange"></div>
+          <span style="color: var(--orange); font-weight: 500;">Prerequisite (Orange)</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-swatch swatch-blue"></div>
+          <span style="color: var(--blue); font-weight: 500;">Downstream (Blue)</span>
+        </div>
+        <div class="legend-item">
+          <span class="swatch-green">[ &nbsp; ]</span>
+          <span style="color: var(--green); font-weight: 500;">Movable Corridor (Green)</span>
+        </div>
+        <button id="btnReset" class="btn-reset">Reset Timeline</button>
+      </div>
+    </div>
+
+    <!-- Status Banner -->
+    <div class="status-bar">
+      <div id="statusContent" class="status-content">
+        <span style="font-weight: 600; color: #fff;">Selected Action:</span>
+        <span id="statusDetails" style="color: var(--text-muted); margin-left: 4px;">Loading...</span>
+      </div>
+      <div class="status-meta">
+        <span>3.5 Rows Visible</span> ·
+        <span style="color: var(--green);">1:1 Synchronized Scrolling Grid</span>
+      </div>
+    </div>
+
+    <!-- Main Viewport -->
+    <div class="viewport-container" id="viewportContainer">
+      <!-- Pinned Left Component Headers -->
+      <div class="pinned-headers">
+        <div class="pinned-headers-content" id="pinnedHeadersContent">
+          <div class="header-row">
+            <span class="comp-dot" style="background: #94a3b8;"></span>
+            <span style="truncate">Root (Design)</span>
+          </div>
+          <div class="header-row">
+            <span class="comp-dot" style="background: #38bdf8;"></span>
+            <span style="truncate">Housing</span>
+          </div>
+          <div class="header-row">
+            <span class="comp-dot" style="background: #22c55e;"></span>
+            <span style="truncate">Shaft</span>
+          </div>
+          <div class="header-row">
+            <span class="comp-dot" style="background: #f59e0b;"></span>
+            <span style="truncate">Bearing</span>
+          </div>
+          <div class="header-row">
+            <span class="comp-dot" style="background: #c084fc;"></span>
+            <span style="truncate">Fastener</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timeline Scroll Area -->
+      <div class="timeline-scroll-area" id="timelineScrollArea">
+        <div class="tracks-content" id="tracksContent">
+          <!-- Dynamic SVG Overlay for Movable Brackets & Connectors -->
+          <svg class="svg-overlay" id="svgOverlay">
+            <g id="bracketGroup" style="display: none;">
+              <rect id="bracketCorridor" x="0" y="0" width="0" height="190" fill="rgba(34, 197, 94, 0.08)"></rect>
+              <path id="pathBracketLeft" d="" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path id="pathBracketRight" d="" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+            </g>
+            <g id="connectorsGroup"></g>
+          </svg>
+
+          <!-- DOM Grid Cells -->
+          <div id="trackRowsContainer"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Interaction Log & Instructions -->
+    <div class="footer-bar">
+      <div id="dragFeedback">
+        💡 <strong>Try this:</strong> Click any action chip to view its prerequisites (orange) and downstream dependents (blue). Drag <strong>Fillet</strong> within the green brackets `[ ... ]` to watch intermediate steps ripple!
+      </div>
+      <div style="font-family: monospace; font-size: 11px; color: var(--text-dim);">
+        ↔ Scroll horizontally &nbsp;|&nbsp; ↕ Scroll vertically
+      </div>
+    </div>
+  </div>
+
+  <!-- Script Logic & Vector Icons -->
+  <script>
+    // Official SolidCraft Model Icons (pure SVG masters from assets/icons/ui/design/svg/model/)
+    const ICONS = {
+      sketch: `<svg viewBox="0 0 64 64" width="20" height="20"><path d="M8 8L56 8L56 56L8 56Z" fill="none" stroke="#6f879c" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="0.1 5.9"/><path d="M18 27L35 17L46 44L19 43Z" fill="#b9ddf8" stroke="#236ead" stroke-width="2.89" stroke-linejoin="round" stroke-linecap="round"/><circle cx="18" cy="27" r="3.3" fill="#236ead"/><circle cx="35" cy="17" r="3.3" fill="#236ead"/><circle cx="46" cy="44" r="3.3" fill="#236ead"/><circle cx="19" cy="43" r="3.3" fill="#236ead"/></svg>`,
+      extrude: `<svg viewBox="0 0 64 64" width="20" height="20"><path d="M9.36 38.84L32 52.04L32 59.58L9.36 46.38Z" fill="#b8c3cf"/><path d="M32 52.04L54.63 38.84L54.63 46.38L32 59.58Z" fill="#8e9faf"/><path d="M9.36 30.35L32 43.55L32 52.04L9.36 38.84Z" fill="#328bd3"/><path d="M32 43.55L54.63 30.35L54.63 38.84L32 52.04Z" fill="#236ead"/><path d="M9.36 30.35L32 17.15L54.63 30.35L32 43.55Z" fill="#b9ddf8"/><path d="M9.36 30.35L32 17.15L54.63 30.35L54.63 46.38L32 59.58L9.36 46.38Z" fill="none" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/><path d="M9.36 30.35L32 43.55L54.63 30.35" fill="none" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/><path d="M9.36 38.84L32 52.04L54.63 38.84" fill="none" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/><path d="M32 43.55L32 59.58" fill="none" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/><path d="M32 3L39.54 10.55L34.82 10.55L34.82 13.38L29.17 13.38L29.17 10.55L24.45 10.55Z" fill="#236ead"/></svg>`,
+      revolve: `<svg viewBox="0 0 64 64" width="20" height="20"><path d="M23.87 28L39.87 28L39.87 44L23.87 44Z" fill="#236ead"/><path d="M48.84 33.94L55.87 28L31.87 19.6L7.87 28L14.9 33.94L31.87 25.2Z" fill="#b9ddf8" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/><path d="M7.87 44L14.9 49.94L14.9 33.94L7.87 28Z" fill="#328bd3" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/><path d="M48.84 49.94L55.87 44L55.87 28L48.84 33.94Z" fill="#236ead" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/><path d="M6.34 19.41L31.73 13.3L52.68 16.79" fill="none" stroke="#236ead" stroke-width="3.23" stroke-linejoin="round" stroke-linecap="round"/><path d="M59.31 21.12L51.2 19.05L54.16 14.53Z" fill="#236ead"/></svg>`,
+      fillet: `<svg viewBox="0 0 64 64" width="20" height="20"><path d="M7.75 19L18.14 25L42.39 11L32 5Z" fill="#e2e8ef"/><path d="M32 59L56.25 45L56.25 35L32 49Z" fill="#8e9faf"/><path d="M32 49L18.14 25L42.39 11L56.25 35Z" fill="#328bd3"/><path d="M7.75 45L32 59L56.25 45L56.25 35L42.39 11L32 5L7.75 19Z" fill="none" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/><path d="M32 49L18.14 25" fill="none" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/><path d="M32 59L32 49" fill="none" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/><path d="M32 49L56.25 35" fill="none" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/></svg>`,
+      chamfer: `<svg viewBox="0 0 64 64" width="20" height="20"><path d="M7.75 19L18.14 25L42.39 11L32 5Z" fill="#e2e8ef"/><path d="M32 59L56.25 45L56.25 35L32 49Z" fill="#8e9faf"/><path d="M32 49L18.14 25L42.39 11L56.25 35Z" fill="#328bd3"/><path d="M7.75 45L32 59L56.25 45L56.25 35L42.39 11L32 5L7.75 19Z" fill="none" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/></svg>`,
+      shell: `<svg viewBox="0 0 64 64" width="20" height="20"><path d="M5.56 18.26L32 33.53L32 61L5.56 45.74Z" fill="#b8c3cf"/><path d="M58.44 18.26L32 33.53L32 61L58.44 45.74Z" fill="#8e9faf"/><path d="M32 3L58.44 18.26L32 33.53L5.56 18.26Z" fill="#e2e8ef"/><path d="M32 3L58.44 18.26L58.44 45.74L32 61L5.56 45.74L5.56 18.26Z" fill="none" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/><path d="M32 26.66L32 9.87L46.54 18.26L46.54 18.26Z" fill="#328bd3"/><path d="M32 26.66L32 26.66L32 9.87L17.46 18.26L17.46 18.26Z" fill="#236ead"/></svg>`,
+      combine: `<svg viewBox="0 0 64 64" width="20" height="20"><path d="M5 19.6L19.72 28.1L19.72 48.5L5 40Z" fill="#328bd3" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/><path d="M19.72 28.1L28.56 23L28.56 43.4L19.72 48.5Z" fill="#236ead" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/><path d="M28.56 23L43.28 31.5L43.28 51.9L28.56 43.4Z" fill="#328bd3" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/><path d="M43.28 31.5L58 23L58 43.4L43.28 51.9Z" fill="#236ead" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/><path d="M5 19.6L19.72 28.1L28.56 23L43.28 31.5L58 23L43.28 14.5L34.44 19.6L19.72 11.1Z" fill="#b9ddf8" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/></svg>`,
+      thread: `<svg viewBox="0 0 64 64" width="20" height="20"><path d="M18 12L18 54A14 8.08 0 0 0 46 54L46 12Z" fill="#b8c3cf" stroke="#34465b" stroke-width="2.55"/><path d="M18 12A14 8.08 0 1 0 46 12A14 8.08 0 1 0 18 12Z" fill="#e2e8ef" stroke="#34465b" stroke-width="2.55"/><path d="M48.4 22L15.6 27.75" stroke="#328bd3" stroke-width="3.2" stroke-linecap="round"/><path d="M48.4 33.5L15.6 39.25" stroke="#328bd3" stroke-width="3.2" stroke-linecap="round"/><path d="M48.4 45L15.6 50.75" stroke="#328bd3" stroke-width="3.2" stroke-linecap="round"/></svg>`,
+      hole: `<svg viewBox="0 0 64 64" width="20" height="20"><path d="M3 20.35L32 37.1L32 48.74L3 32Z" fill="#b8c3cf"/><path d="M61 20.35L32 37.1L32 48.74L61 32Z" fill="#8e9faf"/><path d="M32 3.61L61 20.35L32 37.1L3 20.35Z" fill="#e2e8ef" stroke="#34465b" stroke-width="2.55"/><path d="M22.19 20.35A9.81 5.66 0 1 0 41.81 20.35A9.81 5.66 0 1 0 22.19 20.35Z" fill="#236ead" stroke="#34465b" stroke-width="2.55"/></svg>`,
+      mirror: `<svg viewBox="0 0 64 64" width="20" height="20"><path d="M32 6L32 54" fill="none" stroke="#6f879c" stroke-width="2" stroke-dasharray="4 4"/><path d="M8 50L28 50L28 16Z" fill="#b8c3cf" stroke="#34465b" stroke-width="2.55"/><path d="M56 50L36 50L36 16Z" fill="#328bd3" stroke="#34465b" stroke-width="2.55"/></svg>`
+    };
+
+    const COL_W = 52;
+    const ROW_H = 38;
+    const NUM_ROWS = 5;
+    const TOTAL_COLUMNS = 24; // Generous horizontal space for CAD timeline
+
+    // 16 Sequential Steps in an Ordered Array
+    // Components: 0: Root, 1: Housing, 2: Shaft, 3: Bearing, 4: Fastener
+    let actions = [
+      { id: 1, name: "Base Sketch", type: "sketch", rows: [0], prereqs: [], downstream: [2,3,4,5,6,7,9,11,13] },
+      { id: 2, name: "Extrude Base", type: "extrude", rows: [0], prereqs: [1], downstream: [3,4,5,6,7,9,11,13] },
+      { id: 3, name: "Housing Revolve", type: "revolve", rows: [1], prereqs: [2], downstream: [5,6,9] },
+      { id: 4, name: "Shaft Revolve", type: "revolve", rows: [2], prereqs: [2], downstream: [8,11] },
+      { id: 5, name: "Fillet Edge", type: "fillet", rows: [1], prereqs: [3], downstream: [9] }, // MOVABLE: Between Step 4 and 8
+      { id: 6, name: "Pocket Hole", type: "hole", rows: [1], prereqs: [3], downstream: [9] },
+      { id: 7, name: "Bearing Inner Ring", type: "revolve", rows: [3], prereqs: [2], downstream: [10,13] },
+      { id: 8, name: "Keyway Chamfer", type: "chamfer", rows: [2], prereqs: [4], downstream: [11] },
+      { id: 9, name: "Combine (Housing+Shaft)", type: "combine", rows: [1, 2], prereqs: [5,6], downstream: [14] }, // Multi-component adjacent
+      { id: 10, name: "Bearing Outer Ring", type: "revolve", rows: [3], prereqs: [7], downstream: [13] },
+      { id: 11, name: "Shaft Thread", type: "thread", rows: [2], prereqs: [4,8], downstream: [14] },
+      { id: 12, name: "Cap Screw Extrude", type: "extrude", rows: [4], prereqs: [2], downstream: [14] },
+      { id: 13, name: "Press-Fit Assembly (Root+Bearing)", type: "combine", rows: [0, 3], prereqs: [7,10], downstream: [15,16] }, // Multi-component non-adjacent (0 & 3)
+      { id: 14, name: "Fastener Combine (Housing+Fastener)", type: "combine", rows: [1, 4], prereqs: [9,11,12], downstream: [16] }, // Multi-component non-adjacent (1 & 4)
+      { id: 15, name: "Bearing Shell", type: "shell", rows: [3], prereqs: [13], downstream: [16] },
+      { id: 16, name: "Assembly Mirror", type: "mirror", rows: [0], prereqs: [13,14,15], downstream: [] }
+    ];
+
+    const initialActions = JSON.parse(JSON.stringify(actions));
+    let selectedActionId = 5; // Default: Fillet Edge
+
+    const trackContainer = document.getElementById('trackRowsContainer');
+    const svgOverlay = document.getElementById('svgOverlay');
+    const bracketGroup = document.getElementById('bracketGroup');
+    const bracketCorridor = document.getElementById('bracketCorridor');
+    const pathBracketLeft = document.getElementById('pathBracketLeft');
+    const pathBracketRight = document.getElementById('pathBracketRight');
+    const connectorsGroup = document.getElementById('connectorsGroup');
+    const statusDetails = document.getElementById('statusDetails');
+    const dragFeedback = document.getElementById('dragFeedback');
+
+    function getActionCol(actionId) {
+      return actions.findIndex(a => a.id === actionId) + 1;
+    }
+
+    function computeMovableRange(action) {
+      const currentCol = getActionCol(action.id);
+      
+      let maxPrereqCol = 0;
+      action.prereqs.forEach(pid => {
+        const c = getActionCol(pid);
+        if (c > maxPrereqCol) maxPrereqCol = c;
+      });
+
+      let minDownstreamCol = actions.length + 1;
+      action.downstream.forEach(did => {
+        const c = getActionCol(did);
+        if (c < minDownstreamCol) minDownstreamCol = c;
+      });
+
+      return {
+        minCol: maxPrereqCol + 1,
+        maxCol: minDownstreamCol - 1,
+        currentCol: currentCol
+      };
+    }
+
+    // Render Timeline Tracks & Chips (Grid of actual DOM cells)
+    function renderTimeline() {
+      trackContainer.innerHTML = '';
+      const totalCols = Math.max(TOTAL_COLUMNS, actions.length + 3);
+
+      for (let r = 0; r < NUM_ROWS; r++) {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'track-row';
+        rowDiv.dataset.row = r;
+
+        for (let colIdx = 0; colIdx < totalCols; colIdx++) {
+          const c = colIdx + 1;
+          const cell = document.createElement('div');
+          cell.className = 'track-cell';
+          cell.dataset.col = c;
+          cell.dataset.row = r;
+
+          if (colIdx < actions.length) {
+            const act = actions[colIdx];
+            if (act.rows.includes(r)) {
+              const chip = document.createElement('div');
+              chip.className = 'chip';
+              chip.dataset.id = act.id;
+              chip.dataset.col = c;
+              chip.dataset.row = r;
+              chip.innerHTML = ICONS[act.type] || ICONS.extrude;
+              chip.title = `${act.name} (Step ${c})`;
+
+              attachDragHandlers(chip, act);
+              cell.appendChild(chip);
+            } else {
+              cell.innerHTML = '<span class="empty-hint">·</span>';
+            }
+          } else {
+            cell.innerHTML = '<span class="empty-hint">·</span>';
+          }
+          rowDiv.appendChild(cell);
+        }
+        trackContainer.appendChild(rowDiv);
+      }
+
+      renderConnectors();
+      applyHighlight(selectedActionId);
+    }
+
+    // Render Dead-Centered Dotted Connectors
+    function renderConnectors() {
+      connectorsGroup.innerHTML = '';
+
+      actions.forEach((act, colIdx) => {
+        if (act.rows.length > 1) {
+          const c = colIdx + 1;
+          const minRow = Math.min(...act.rows);
+          const maxRow = Math.max(...act.rows);
+
+          // Perfectly dead-centered in the column:
+          const cx = (c - 1) * COL_W + (COL_W / 2);
+          const y1 = minRow * ROW_H + (ROW_H / 2);
+          const y2 = maxRow * ROW_H + (ROW_H / 2);
+
+          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          line.setAttribute('x1', cx);
+          line.setAttribute('y1', y1);
+          line.setAttribute('x2', cx);
+          line.setAttribute('y2', y2);
+          line.setAttribute('class', `connector-dots ${act.id === selectedActionId ? 'active' : ''}`);
+          line.dataset.actionId = act.id;
+
+          connectorsGroup.appendChild(line);
+        }
+      });
+    }
+
+    // Apply Highlighting and Green Brackets
+    function applyHighlight(actionId) {
+      selectedActionId = actionId;
+      const act = actions.find(a => a.id === actionId);
+      if (!act) {
+        bracketGroup.style.display = 'none';
+        return;
+      }
+
+      const { minCol, maxCol, currentCol } = computeMovableRange(act);
+
+      // 1. Highlight Chips
+      document.querySelectorAll('.chip').forEach(chip => {
+        const id = parseInt(chip.dataset.id);
+        chip.style.transform = '';
+
+        if (id === actionId) {
+          chip.className = 'chip selected';
+        } else if (act.prereqs.includes(id)) {
+          chip.className = 'chip prereq';
+        } else if (act.downstream.includes(id)) {
+          chip.className = 'chip downstream';
+        } else {
+          chip.className = 'chip dimmed';
+        }
+      });
+
+      // 2. Connectors
+      document.querySelectorAll('.connector-dots').forEach(line => {
+        if (parseInt(line.dataset.actionId) === actionId) {
+          line.classList.add('active');
+        } else {
+          line.classList.remove('active');
+        }
+      });
+
+      // 3. Green Brackets [ ... ]
+      if (minCol <= maxCol) {
+        bracketGroup.style.display = 'block';
+        const xLeft = (minCol - 1) * COL_W;
+        const xRight = maxCol * COL_W;
+        const totalHeight = NUM_ROWS * ROW_H;
+
+        bracketCorridor.setAttribute('x', xLeft);
+        bracketCorridor.setAttribute('width', Math.max(0, xRight - xLeft));
+        bracketCorridor.setAttribute('height', totalHeight);
+
+        // Opening [
+        pathBracketLeft.setAttribute('d', `M ${xLeft + 7} 4 L ${xLeft} 4 L ${xLeft} ${totalHeight - 4} L ${xLeft + 7} ${totalHeight - 4}`);
+        // Closing ]
+        pathBracketRight.setAttribute('d', `M ${xRight - 7} 4 L ${xRight} 4 L ${xRight} ${totalHeight - 4} L ${xRight - 7} ${totalHeight - 4}`);
+      } else {
+        bracketGroup.style.display = 'none';
+      }
+
+      // 4. Status Update
+      const isMovable = minCol < maxCol;
+      statusDetails.innerHTML = `
+        <strong style="color: #fff;">${act.name}</strong> (Step ${currentCol}):
+        <span style="color: var(--orange); font-weight: 600; margin-left: 8px;">Prerequisites: [${act.prereqs.map(p => '#' + p).join(', ') || 'None'}]</span> ·
+        <span style="color: var(--blue); font-weight: 600; margin-left: 8px;">Downstream: [${act.downstream.map(d => '#' + d).join(', ') || 'None'}]</span> ·
+        <span style="color: var(--green); font-weight: bold; margin-left: 8px;">[ Movable Corridor: Steps ${minCol} to ${maxCol} ]</span>
+      `;
+
+      dragFeedback.innerHTML = isMovable
+        ? `✅ <strong>Movable Corridor:</strong> Drag <em>${act.name}</em> anywhere between Step ${minCol} and ${maxCol}. All jumped actions ripple automatically!`
+        : `🔒 <strong>Constraint Locked:</strong> <em>${act.name}</em> is bounded directly by its immediate dependencies.`;
+    }
+
+    // Attach Interactive Drag & Ripple Reorder Handlers
+    function attachDragHandlers(chip, act) {
+      let isDragging = false;
+      let startX = 0;
+      let currentDeltaX = 0;
+
+      chip.addEventListener('mousedown', (e) => {
+        applyHighlight(act.id);
+        isDragging = true;
+        startX = e.clientX;
+        currentDeltaX = 0;
+        chip.classList.add('dragging');
+        document.body.style.cursor = 'grabbing';
+
+        const { minCol, maxCol, currentCol } = computeMovableRange(act);
+        const fromIndex = currentCol - 1;
+
+        function onMouseMove(e) {
+          if (!isDragging) return;
+          const deltaX = e.clientX - startX;
+          currentDeltaX = deltaX;
+          chip.style.transform = `translate3d(${deltaX}px, 0, 0) scale(1.08)`;
+
+          const colShift = Math.round(deltaX / COL_W);
+          const targetCol = currentCol + colShift;
+
+          if (targetCol >= minCol && targetCol <= maxCol) {
+            chip.style.borderColor = '#22c55e';
+            const jumped = Math.abs(colShift);
+            const direction = colShift > 0 ? "left" : "right";
+            dragFeedback.innerHTML = colShift === 0 
+              ? `↔️ Holding at Step ${currentCol}.`
+              : `🟢 <strong>Valid Step ${targetCol}:</strong> ${jumped} action(s) will ripple ${direction}! Release to apply.`;
+          } else {
+            chip.style.borderColor = '#ef4444';
+            dragFeedback.innerHTML = `🚫 <strong>Step ${targetCol} Invalid:</strong> Violates dependency constraints. Will snap back!`;
+          }
+        }
+
+        function onMouseUp() {
+          if (!isDragging) return;
+          isDragging = false;
+          chip.classList.remove('dragging');
+          document.body.style.cursor = 'default';
+          window.removeEventListener('mousemove', onMouseMove);
+          window.removeEventListener('mouseup', onMouseUp);
+
+          const colShift = Math.round(currentDeltaX / COL_W);
+          const targetCol = currentCol + colShift;
+
+          if (targetCol >= minCol && targetCol <= maxCol && targetCol !== currentCol) {
+            // Ripple array push (splice semantics)
+            const toIndex = targetCol - 1;
+            const [movedAction] = actions.splice(fromIndex, 1);
+            actions.splice(toIndex, 0, movedAction);
+
+            renderTimeline();
+            const shiftCount = Math.abs(colShift);
+            const pushDir = colShift > 0 ? "left" : "right";
+            dragFeedback.innerHTML = `🎉 <strong>Reordered:</strong> <em>${act.name}</em> moved to Step ${targetCol}! The ${shiftCount} action(s) jumped over rippled ${shiftCount} step(s) to the ${pushDir}.`;
+          } else {
+            chip.style.transition = 'transform 0.2s ease-out';
+            chip.style.transform = 'translate3d(0, 0, 0)';
+            setTimeout(() => {
+              chip.style.transition = '';
+              renderTimeline();
+            }, 200);
+          }
+        }
+
+        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('mouseup', onMouseUp);
+      });
+    }
+
+    // -------------------------------------------------------------
+    // Rubber Band Physics for Vertical Overscroll & Scroll Syncing
+    // -------------------------------------------------------------
+    const scrollArea = document.getElementById('timelineScrollArea');
+    const pinnedContent = document.getElementById('pinnedHeadersContent');
+    const tracksContent = document.getElementById('tracksContent');
+
+    let overscrollY = 0;
+    let isRubberbanding = false;
+
+    scrollArea.addEventListener('scroll', () => {
+      // Pinned component list moves vertically in lockstep with the timeline content
+      pinnedContent.style.transform = `translate3d(0, -${scrollArea.scrollTop}px, 0)`;
+    });
+
+    scrollArea.addEventListener('wheel', (e) => {
+      const atTop = scrollArea.scrollTop <= 0 && e.deltaY < 0;
+      const atBottom = (scrollArea.scrollTop + scrollArea.clientHeight >= scrollArea.scrollHeight - 1) && e.deltaY > 0;
+
+      if (atTop || atBottom) {
+        e.preventDefault();
+        overscrollY -= e.deltaY * 0.35; // Damping
+        overscrollY = Math.max(-40, Math.min(40, overscrollY)); // Clamp to 40px stretch
+
+        pinnedContent.classList.remove('spring-return');
+        tracksContent.classList.remove('spring-return');
+
+        pinnedContent.style.transform = `translate3d(0, -${scrollArea.scrollTop - overscrollY}px, 0)`;
+        tracksContent.style.transform = `translate3d(0, ${overscrollY}px, 0)`;
+
+        clearTimeout(isRubberbanding);
+        isRubberbanding = setTimeout(() => {
+          pinnedContent.classList.add('spring-return');
+          tracksContent.classList.add('spring-return');
+          overscrollY = 0;
+          pinnedContent.style.transform = `translate3d(0, -${scrollArea.scrollTop}px, 0)`;
+          tracksContent.style.transform = 'translate3d(0, 0, 0)';
+        }, 90);
+      }
+    }, { passive: false });
+
+    // Reset button
+    document.getElementById('btnReset').addEventListener('click', () => {
+      actions = JSON.parse(JSON.stringify(initialActions));
+      selectedActionId = 5;
+      renderTimeline();
+    });
+
+    // Initial Render
+    renderTimeline();
+  </script>
+</body>
+</html>
