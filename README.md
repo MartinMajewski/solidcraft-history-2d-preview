@@ -25,12 +25,19 @@ The **2D History Browser** provides a multi-track timeline inspired by video-edi
 - **Step**: A discrete point in time along the timeline (represented by columns).
 - **Action**: A modeling function executed at a step (e.g., Sketch, Extrude, Revolve, Fillet, Combine).
 - **Chip**: The visual representation of an Action on the timeline at a specific component row and column.
+- **Marker**: The vertical rollback line and handle indicating the boundary between active and deactivated (rolled-back) modeling steps.
 
 ---
 
 ## 🚀 Key Features Demonstrated
 
-### 1. Multi-Track Component Layout
+### 1. Timeline Rollback Marker & Scrubbing
+- A full-height vertical line with a circular top handle (`ui_kit::history_marker`) indicating the boundary between active and rolled-back features (`doc.marker`).
+- **Horizontal Scrubbing**: Drag the blue marker handle across all component tracks to scrub forward and backward.
+- **Deactivated State**: Steps positioned past the marker are automatically rendered inactive (dimmed to $0.35$ opacity, dashed borders, desaturated icons, and skipped from viewport solid evaluation).
+- **History Transport Controls**: Full set of playback controls (First `⏮`, Back `◀`, Play / Pause `▶`/`⏸`, Forward `▶`, Last `⏭`) for single-step stepping or animated history playback.
+
+### 2. Multi-Track Component Layout
 - Each component (Root Design, Housing, Shaft, Bearing, Fastener) occupies its own dedicated horizontal row.
 - Component headers are pinned on the left ($160\,\text{px}$) with color-coded identifiers.
 - The timeline grid and action chips scroll horizontally *behind* the pinned component list.
@@ -93,6 +100,8 @@ When integrated into the SolidCraft Rust codebase:
 | Demonstration Feature | SolidCraft Implementation Target |
 |---|---|
 | **2D Timeline Layout** | `crates/ui-egui/src/timeline_2d.rs` (custom egui widget) |
+| **Rollback Marker & Scrubbing** | `app.session.doc.marker: Option<usize>` and `ui_kit::history_marker` |
+| **History Transport Controls** | `ui_kit::HistoryTransport` (`cmd.timeline_roll`, `cmd.timeline_play`) |
 | **Component Rows** | Extracted from `doc.tree.components()` and `f.component` |
 | **Dependency Graph** | Direct DAG traversal via `f.kind.walk_refs()` and `f.kind.input_sketches()` |
 | **Reorder Engine Command** | Dispatches heavy command `timeline.reorder` in `crates/engine/src/cmd/edit.rs` |
