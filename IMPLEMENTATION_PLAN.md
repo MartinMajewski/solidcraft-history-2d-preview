@@ -39,13 +39,13 @@ This document outlines the architecture, data structures, UI design, and impleme
 - **Timeline Feature Grouping & Folding (Virtual Column Chips)**:
   - Multi-selection via **Shift+Click** (continuous range) and **Cmd/Ctrl+Click** (additive non-adjacent toggle).
   - Contiguous selection sets provide a `"Group Selection"` option in the context menu.
-  - Closed groups collapse into a single-column **virtual group chip** spanning all component tracks (height $182\text{px}$, rows 0 to 4) with folder icon, count badge, rotated title, and component indicator dots.
+  - Closed groups collapse into a single-column **virtual group chip** starting on the second header row (step number hidden in the topmost row) and spanning all component tracks (height $204\text{px}$, $38\text{px}$ width) with integrated header cap (folder icon + chevron `▶`), count badge, vertical title, and component track occupancy indicator dots.
   - Dedicated group context menu: `Open Group` / `Close Group`, `Delete Group but expand content`, `Delete Group and content`, `Deactivate Group` (disabled if all deactivated), `Activate Group` (disabled if all activated).
-  - Open groups expand into individual columns and tracks with an open group header pill (`📁 Group Name (N) Close ▴`) and corridor background tint, with standard feature context menus on individual chips.
+  - Open groups expand into individual columns and tracks with an open group header pill (`📁 Group Name (N) Close ▴`) in the second header row and corridor background tint, with standard feature context menus on individual chips.
 - **Two-Tier Header (Topmost Step Numbers + Lower Folders & Features Row)**:
-  - **Tier 1 (Top Tier, $24\text{px}$ — Topmost Step Numbers Row)**: Sequential step numbers (`01`, `02`, ... `24`), ticks, and the Scrubber Head Pin (`ui_kit::history_marker`). Dragging the pin in the top row scrubs the timeline.
-  - **Tier 2 (Lower Tier, $20\text{px}$ — Folders & Features Row)**: Sits directly beneath the step numbers row and directly above the component tracks. Populated with folder headers (`📁 Group 1 (3) Close ▴` or compact `[📁 ▾]` pills), with empty grid cells reserved for future timeline features (e.g., milestone markers, timeline notes, revisions).
-  - **Timeline Marker Scrubber Extension**: The rollback marker begins at `top: 0` in the topmost step numbers row, where the circular head pin resides, and extends down through the folder row across all component tracks to the bottom handle ($234\text{px}$ total height). Zero overlap between head pin and folder titles.
+  - **Tier 1 (Top Tier, $24\text{px}$ — Topmost Step Numbers Row)**: Sequential step numbers (`01`, `02`, ... `24`), ticks, and the Scrubber Head Pin (`ui_kit::history_marker`). Step number is hidden in folded group columns so the pin slides cleanly with zero overlap.
+  - **Tier 2 (Lower Tier, $20\text{px}$ — Folders & Features Row)**: Sits directly beneath the step numbers row and directly above the component tracks. Serves as the starting row for folded virtual group chips, and houses open group header banners (`📁 Group 1 (3) Close ▴`), with empty grid cells reserved for future timeline features.
+  - **Timeline Marker Scrubber Extension**: The rollback marker begins at `top: 0` in the topmost step numbers row, where the circular head pin resides, and extends down through the folder row across all component tracks to the bottom handle ($234\text{px}$ total height). Zero overlap between head pin and group cards.
 - **Anchored Bottom Dock**: Strictly docked at the bottom of the viewport; not dockable to side panels.
 
 ---
@@ -129,9 +129,13 @@ To support organizing complex feature trees into manageable sub-assemblies or lo
 
 2. **Virtual Group Chip (Folded / Closed Mode)**:
    - When grouped, the sequence of adjacent features collapses into a single column.
-   - Across that column, all component track rows are unified into a single **Virtual Group Chip**:
-     - **Dimensions**: Full grid height spanning rows 0 to 4 ($182\text{px}$ height, $38\text{px}$ width, $4\text{px}$ margin).
-     - **Visual Assets**: Expansion chevron `▶`, item count badge (`<N>`), vertical 90°-rotated title, and mini row-occupancy indicator dots matching active/inactive tracks. The folder icon lives exclusively in the upper header row (Tier 1), eliminating redundant icon repetition.
+   - Across that column, the group starts on the second header row and spans through all component track rows as a unified **Virtual Group Chip**:
+     - **Dimensions**: Full height from the second header row through row 4 ($204\text{px}$ height, $38\text{px}$ width, $7\text{px}$ horizontal margin).
+     - **Visual Assets**:
+       - **Header Cap**: Integrated into the second header row ($y = 26\dots 44\text{px}$) with folder icon `${FOLDER_ICON_SVG_SMALL}` and expansion chevron `▶`.
+       - **Body & Badge**: Feature count badge (`<N>`) and vertical 90°-rotated title (`Group 1`).
+       - **Component Track Occupancy Dots**: 5 vertical indicator dots at the bottom of the card corresponding to the 5 component tracks (Root, Housing, Shaft, Bearing, Fastener). A lit dot (blue or silver-grey) indicates that the group contains features on that specific component track; dim dots indicate untouched tracks.
+     - **Topmost Step Numbers Row**: The step number is hidden in this column, leaving the cell clean with only the tick mark. The group card never extends into the step numbers row, giving the timeline marker complete clearance.
      - **Interaction**: Single-click selects the group; double-click opens/unfolds it; right-click opens the dedicated **Group Context Menu**.
 
 3. **Group Context Menu Options**:

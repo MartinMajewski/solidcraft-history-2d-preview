@@ -101,8 +101,8 @@ When an inactive feature is selected (or when an active feature references inact
   - **Contiguous Check**: If the selection consists of adjacent features ($\ge 2$ features without sequence gaps), right-clicking any selected chip reveals the context menu option `"Group Selection (<N> Actions)"`.
 - **Virtual Group Chip (Folded State)**:
   - When grouped, member features collapse into a single column.
-  - Across that column, all component track rows are unified into a single **Virtual Group Chip** ($182\,\text{px}$ height, rows 0 to 4) featuring an expansion chevron `▶`, vertical 90°-rotated title, feature count badge, and component indicator dots.
-  - The folder icon lives exclusively in the upper header tier (`FOLDER_ICON_SVG_SMALL` in Tier 1), cleanly avoiding visual doubling on the virtual chip.
+  - Across that column, the group starts on the second header row (with the step number hidden in the topmost row) and spans through all component track rows as a unified **Virtual Group Chip** ($204\,\text{px}$ height, rows 0 to 4) featuring an integrated header cap (folder icon + expansion chevron `▶`), vertical 90°-rotated title, feature count badge, and component track occupancy dots.
+  - The step number in the topmost row is hidden, preventing any visual overlap with the timeline marker head pin.
   - Single-click selects the group; double-click opens/unfolds it.
 - **Dedicated Group Context Menu**:
   - **Open Group / Close Group**: Toggles folding.
@@ -112,14 +112,14 @@ When an inactive feature is selected (or when an active feature references inact
   - **Activate Group**: Unsuppresses all member actions (disabled/not clickable if all are already activated).
 - **Open Group Experience & Two-Tier Header Separation**:
   - Unfolded groups display individual feature chips across their natural columns and component tracks.
-  - **Tier 1 ($18\,\text{px}$)**: Clean group banners (`📁 Group Name (N) Close ▴`) span member columns in solid `#182234` cards, isolated from step numbers. Double-click on the open banner or clicking `Close ▴` folds the group.
-  - **Tier 2 ($26\,\text{px}$)**: Step numbers (`01`, `02`, ... `24`), ticks, and the Scrubber Pin Track. All step numbers remain 100% visible and readable underneath open groups.
-  - **Rollback Marker Vertical Separation**: Rollback head pin is located in Tier 2 ($y = 23\dots 39\,\text{px}$), never intersecting Tier 1. Zero overlap with group titles or `Close ▴`.
+  - **Top Tier ($24\,\text{px}$)**: Step numbers (`01`, `02`, ... `24`), ticks, and the Scrubber Pin Track. All step numbers remain 100% visible and readable above open groups.
+  - **Lower Tier ($20\,\text{px}$)**: Clean group banners (`📁 Group Name (N) Close ▴`) span member columns in solid `#182234` cards. Double-click on the open banner or clicking `Close ▴` folds the group.
+  - **Rollback Marker Clearance**: Rollback head pin resides in the top tier ($y = 4\dots 20\,\text{px}$), never intersecting open group banners.
   - An **Open Group Corridor** subtly tints member columns with a dashed border.
   - Right-clicking any chip inside an open group displays the standard feature context menu as usual.
 - **Greyscale Inactive Group Handling**:
   - Whenever the timeline marker is to the left of a group (`markerStep < col`), the **entire group** renders dynamically in 100% opacity greyscale.
-  - Closed pills, virtual group chips, chevrons, count badges, and component dots transition immediately between full color and neutral greyscale as the marker is scrubbed.
+  - Virtual group chips, chevrons, count badges, and component dots transition immediately between full color and neutral greyscale as the marker is scrubbed.
 
 ### 12. Built-in Feature Manual & Interaction Legend
 Directly below the viewport and live interaction feedback bar, the page embeds a comprehensive **Feature Manual & Interaction Reference**:

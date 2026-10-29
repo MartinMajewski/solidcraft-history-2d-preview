@@ -787,11 +787,11 @@
       margin: 4px 0;
     }
 
-    /* Virtual Group Chip (Closed Folder spanning entire column) */
+    /* Virtual Group Chip (Closed Folder starting on second header row and spanning component tracks) */
     .virtual-group-chip {
       position: absolute;
-      top: 4px;
-      height: 182px;
+      top: calc(var(--header-step-h) + 2px);
+      height: calc(var(--header-group-h) + var(--row-h) * 5 - 6px);
       width: 38px;
       border-radius: 8px;
       background: linear-gradient(180deg, #1f2533 0%, #141822 100%);
@@ -803,10 +803,11 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      padding: 8px 2px;
+      padding: 2px 2px 6px 2px;
       user-select: none;
       -webkit-user-select: none;
       transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+      box-sizing: border-box;
     }
 
     .virtual-group-chip:hover {
@@ -824,6 +825,10 @@
       background: linear-gradient(180deg, #20232b 0%, #14161c 100%);
       border-color: #4b5260;
       filter: grayscale(100%);
+    }
+
+    .virtual-group-chip.inactive .virtual-group-folder-icon {
+      color: #94a3b8;
     }
 
     .virtual-group-chip.inactive .virtual-group-chevron {
@@ -855,15 +860,47 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
-      margin-top: 3px;
+      gap: 3px;
+      width: 100%;
+    }
+
+    /* Integrated Group Header Cap in Second Header Row */
+    .virtual-group-header-cap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      height: 16px;
+      width: 100%;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 1px;
+      box-sizing: border-box;
+    }
+
+    .virtual-group-folder-icon {
+      display: inline-flex;
+      align-items: center;
+      color: #38bdf8;
     }
 
     .virtual-group-chevron {
-      font-size: 11px;
+      font-size: 8px;
       color: #38bdf8;
       line-height: 1;
+      opacity: 0.85;
       transition: color 0.15s, transform 0.15s;
+    }
+
+    .virtual-group-badge {
+      font-size: 9px;
+      font-weight: 700;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 4px;
+      padding: 1px 4px;
+      white-space: nowrap;
+      margin-top: 2px;
     }
 
     .virtual-group-body {
@@ -889,22 +926,12 @@
       white-space: nowrap;
     }
 
-    .virtual-group-badge {
-      font-size: 9px;
-      font-weight: 700;
-      color: #38bdf8;
-      background: rgba(56, 189, 248, 0.15);
-      border: 1px solid rgba(56, 189, 248, 0.35);
-      border-radius: 4px;
-      padding: 1px 4px;
-      white-space: nowrap;
-    }
-
     .virtual-group-bottom {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 2px;
+      padding-bottom: 2px;
     }
 
     .virtual-group-dots {
@@ -1030,65 +1057,7 @@
       box-shadow: 0 2px 8px rgba(148, 163, 184, 0.2);
     }
 
-    /* Closed Group Header Pill (in Lower Tier directly above virtual group chip) */
-    .closed-group-header-pill {
-      position: absolute;
-      top: 2px;
-      height: 16px;
-      border-radius: 4px;
-      background: #1a2334;
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 3px;
-      font-size: 9px;
-      font-weight: 700;
-      color: #38bdf8;
-      cursor: pointer;
-      z-index: 35;
-      user-select: none;
-      box-sizing: border-box;
-      transition: background 0.15s, border-color 0.15s;
-    }
-
-    .closed-group-header-pill:hover {
-      background: #233048;
-      border-color: #38bdf8;
-    }
-
-    .closed-group-header-pill.selected {
-      border-color: #ffffff;
-      box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
-    }
-
-    .closed-group-header-pill.inactive.selected {
-      border-color: #e4e4e7;
-      box-shadow: 0 0 8px rgba(228, 228, 231, 0.35);
-    }
-
-    .closed-group-header-pill.inactive {
-      background: #181b22;
-      border-color: #4b5260;
-      color: #94a3b8;
-      filter: grayscale(100%);
-    }
-
-    .closed-group-header-pill.inactive .closed-group-chevron {
-      color: #94a3b8;
-    }
-
-    .closed-group-header-pill.inactive:hover {
-      background: #20242e;
-      border-color: #94a3b8;
-    }
-
-    .closed-group-chevron {
-      font-size: 8px;
-      color: #38bdf8;
-      opacity: 0.8;
-    }
-
+    /* Open Group Corridor */
     .open-group-corridor {
       position: absolute;
       top: 0;
@@ -1420,8 +1389,8 @@
           </div>
           <ul class="manual-card-list">
             <li><strong>Group Selection</strong>: When 2 or more contiguous adjacent features are selected, right-click to choose <em>"Group Selection"</em>.</li>
-            <li><strong>Virtual Group Chip</strong>: Folds member features into a unified column chip spanning all component tracks with item count badge, vertical title, and component row dots.</li>
-            <li><strong>Open / Close Fold</strong>: <strong>Double-click</strong> the upper header pill, the virtual group chip, or click <em>"Close ▴"</em> to toggle between folded and expanded states.</li>
+            <li><strong>Virtual Group Chip</strong>: Folds member features into a unified column chip starting on the second header row (step number hidden in topmost row) and spanning all component tracks with integrated header cap (folder icon + <code>▶</code>), count badge, vertical title, and component track occupancy dots.</li>
+            <li><strong>Open / Close Fold</strong>: <strong>Double-click</strong> the virtual group chip, its header cap, or click <em>"Close ▴"</em> to toggle between folded and expanded states.</li>
             <li><strong>Group Menu (Right-Click)</strong>: Dedicated options: <em>Open/Close Group</em>, <em>Delete Group but expand content</em>, <em>Delete Group and content</em>, <em>Deactivate Group</em>, <em>Activate Group</em>.</li>
           </ul>
         </div>
@@ -1433,7 +1402,7 @@
             <span>3. Rollback &amp; Greyscale Inactive</span>
           </div>
           <ul class="manual-card-list">
-            <li><strong>Scrubber Head Pin</strong>: Drag the blue circular pin in Tier 2 of the header track to scrub the timeline boundary forward or backward.</li>
+            <li><strong>Scrubber Head Pin</strong>: Drag the blue circular pin in the topmost step numbers row to scrub the timeline boundary forward or backward.</li>
             <li><strong>Click Step Number</strong>: Click any step column (<code>01</code> to <code>24</code>) to immediately jump the rollback marker.</li>
             <li><strong>Active Steps (Left)</strong>: Steps up to the marker are evaluated in the 3D solid model, displayed in full color (Orange prereqs, Blue downstream, Green corridor).</li>
             <li><strong>Inactive Steps (Right)</strong>: Steps after the marker remain unbuilt in solid geometry. Rendered in <strong>100% opacity greyscale</strong> with matched luminance. The whole group and its features turn greyscale.</li>
@@ -1938,10 +1907,10 @@
         hCell.dataset.col = c;
 
         if (item.isGroup) {
-          hCell.title = `Step ${c} — Group: ${item.group.name} (${item.actions.length} features)\nClick to roll marker here\nDouble-click to Open Group\nRight-click for Group menu`;
+          // Closed group: hide step number in this column, group starts on second header row
+          hCell.title = `Group: ${item.group.name} (${item.actions.length} features)\nClick to roll marker here\nDouble-click to Open Group\nRight-click for Group menu`;
           hCell.innerHTML = `
             <div class="header-step-tick"></div>
-            <span>${c < 10 ? '0' + c : c}</span>
           `;
           // Double-click on group step cell opens/unfolds group
           hCell.addEventListener('dblclick', (e) => {
@@ -2036,54 +2005,6 @@
         }
       });
 
-      // Closed groups: Render a compact group pill in Tier 1 at the column index
-      displayItems.forEach((item, colIdx) => {
-        if (!item.isGroup) return;
-        const grp = item.group;
-        const c = colIdx + 1;
-        const isInactive = c > markerStep;
-        const pill = document.createElement('div');
-        pill.className = `closed-group-header-pill${isInactive ? ' inactive' : ''}`;
-        pill.dataset.col = c;
-        pill.dataset.groupId = grp.id;
-        pill.style.left = `${colIdx * COL_W + 6}px`;
-        pill.style.width = `${COL_W - 12}px`;
-        pill.title = `${grp.name} (${grp.actionIds.length} features)\nDouble-click to Open Group, Right-click for Group menu`;
-        pill.innerHTML = `
-          <span style="font-size: 10px; display: inline-flex; align-items: center;">${FOLDER_ICON_SVG_SMALL}</span>
-          <span class="closed-group-chevron">▾</span>
-        `;
-
-        // Double-click on closed group header pill opens/unfolds it
-        pill.addEventListener('dblclick', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          closeContextMenu();
-          grp.isOpen = true;
-          renderTimeline();
-          dragFeedback.innerHTML = `📂 <strong>Group Opened:</strong> Expanded <em>${grp.name}</em>. Right-click individual chips for feature menu.`;
-        });
-
-        // Single click selects the group
-        pill.addEventListener('click', (e) => {
-          e.stopPropagation();
-          closeContextMenu();
-          selectedGroupId = grp.id;
-          selectedActionIds = [...grp.actionIds];
-          anchorActionId = grp.actionIds[0];
-          applyHighlight();
-          dragFeedback.innerHTML = `📁 <strong>Group Selected:</strong> <em>${grp.name}</em>. Double-click to Open or Right-click for Group options.`;
-        });
-
-        pill.addEventListener('contextmenu', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          openGroupContextMenu(e.clientX, e.clientY, grp);
-        });
-
-        tierGroups.appendChild(pill);
-      });
-
       // Topmost row: Step numbers
       headerTrack.appendChild(tierSteps);
       // Below step numbers: Folders & future timeline features row
@@ -2172,23 +2093,28 @@
         vChip.title = `${grp.name} (${grpActions.length} features)\nClick to Select, Double-click to Open Group, Right-click for Group Menu`;
 
         // Dots representing component rows touched by this group
+        const compNames = ['Root (Design)', 'Housing', 'Shaft', 'Bearing', 'Fastener'];
         const usedRows = new Set();
         grpActions.forEach(a => a.rows.forEach(r => usedRows.add(r)));
+        const touchedComponents = [...usedRows].map(r => compNames[r]).join(', ');
         const dotsHtml = [0, 1, 2, 3, 4].map(r => {
           const isUsed = usedRows.has(r);
-          return `<div class="v-dot" style="background: ${isUsed ? (isInactive ? '#94a3b8' : '#38bdf8') : '#262c37'}; opacity: ${isUsed ? 1 : 0.35};"></div>`;
+          return `<div class="v-dot" title="${compNames[r]}: ${isUsed ? 'Contains actions' : 'No actions'}" style="background: ${isUsed ? (isInactive ? '#94a3b8' : '#38bdf8') : '#262c37'}; opacity: ${isUsed ? 1 : 0.35};"></div>`;
         }).join('');
 
         vChip.innerHTML = `
           <div class="virtual-group-top">
-            <div class="virtual-group-chevron">▶</div>
-            <div class="virtual-group-badge">${grpActions.length}</div>
+            <div class="virtual-group-header-cap" title="${grp.name} — Click to Select, Double-click to Open Group, Right-click for Group Menu">
+              <span class="virtual-group-folder-icon">${FOLDER_ICON_SVG_SMALL}</span>
+              <span class="virtual-group-chevron">▶</span>
+            </div>
+            <div class="virtual-group-badge" title="${grpActions.length} actions in this group">${grpActions.length}</div>
           </div>
           <div class="virtual-group-body">
             <div class="virtual-group-title">${grp.name}</div>
           </div>
           <div class="virtual-group-bottom">
-            <div class="virtual-group-dots">${dotsHtml}</div>
+            <div class="virtual-group-dots" title="Component track occupancy (dots indicate rows with actions in this group):\n${touchedComponents}">${dotsHtml}</div>
           </div>
         `;
 
@@ -2305,22 +2231,7 @@
         });
       });
 
-      // 1b. Update Closed and Open Group Header Pills & Corridors
-      document.querySelectorAll('.closed-group-header-pill').forEach(pill => {
-        const col = parseInt(pill.dataset.col);
-        const gid = parseInt(pill.dataset.groupId);
-        if (col > markerStep) {
-          pill.classList.add('inactive');
-        } else {
-          pill.classList.remove('inactive');
-        }
-        if (selectedGroupId === gid) {
-          pill.classList.add('selected');
-        } else {
-          pill.classList.remove('selected');
-        }
-      });
-
+      // 1b. Update Open Group Header Pills & Corridors
       document.querySelectorAll('.open-group-header-pill').forEach(pill => {
         const minCol = parseInt(pill.dataset.minCol);
         if (minCol > markerStep) {
