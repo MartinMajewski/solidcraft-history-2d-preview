@@ -922,9 +922,10 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
-      flex: 1;
       justify-content: center;
+      flex: 1;
+      padding-bottom: 8px;
+      overflow: hidden;
     }
 
     .virtual-group-title {
@@ -935,31 +936,10 @@
       font-weight: 600;
       color: #cbd5e1;
       letter-spacing: 0.5px;
-      max-height: 85px;
+      max-height: 140px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-    }
-
-    .virtual-group-bottom {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-      padding-bottom: 2px;
-    }
-
-    .virtual-group-dots {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-
-    .v-dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: #64748b;
     }
 
     /* Open Group Header Pill (in Lower Tier of Timeline Header Track) */
@@ -1404,7 +1384,7 @@
           </div>
           <ul class="manual-card-list">
             <li><strong>Group Selection</strong>: When 2 or more contiguous adjacent features are selected, right-click to choose <em>"Group Selection"</em>.</li>
-            <li><strong>Virtual Group Chip</strong>: Folds member features into a unified column chip starting on the second header row (step number hidden in topmost row) and spanning all component tracks with integrated header cap (folder icon + <code>▶</code>), count badge, vertical title, and component track occupancy dots.</li>
+            <li><strong>Virtual Group Chip</strong>: Folds member features into a unified column chip starting on the second header row (step numbers show <code>-</code> in topmost row) and spanning all component tracks with integrated header cap (folder icon + <code>▶</code>), count badge, and vertical title. Rich hover tooltips detail all included features, their steps, and component tracks.</li>
             <li><strong>Open / Close Fold</strong>: <strong>Double-click</strong> the virtual group chip, its header cap, or click <em>"Close ▴"</em> to toggle between folded and expanded states.</li>
             <li><strong>Group Menu (Right-Click)</strong>: Dedicated options: <em>Open/Close Group</em>, <em>Delete Group but expand content</em>, <em>Delete Group and content</em>, <em>Deactivate Group</em>, <em>Activate Group</em>.</li>
           </ul>
@@ -1939,7 +1919,15 @@
           const maxStep = Math.max(...item.actions.map(a => actions.findIndex(act => act.id === a.id) + 1));
           const minStepStr = minStep < 10 ? '0' + minStep : minStep;
           const maxStepStr = maxStep < 10 ? '0' + maxStep : maxStep;
-          hCell.title = `Group: ${item.group.name} (Steps ${minStepStr}–${maxStepStr})\nClick to roll marker here\nDouble-click to Open Group\nRight-click for Group menu`;
+          const compNames = ['Root (Design)', 'Housing', 'Shaft', 'Bearing', 'Fastener'];
+          const featureListText = item.actions.map(a => {
+            const aStep = actions.findIndex(act => act.id === a.id) + 1;
+            const aStepStr = aStep < 10 ? '0' + aStep : aStep;
+            const cNames = a.rows.map(r => compNames[r] || `Row ${r}`).join(', ');
+            return `  • Step ${aStepStr}: ${a.name} (${cNames})${a.suppressed ? ' [Suppressed]' : ''}`;
+          }).join('\n');
+
+          hCell.title = `📁 Group: ${item.group.name} (${item.actions.length} features · Steps ${minStepStr}–${maxStepStr})\nStatus: ${c > markerStep ? 'Inactive in 3D solid model (rolled back)' : 'Active / Evaluated in 3D solid model'}\n\nIncluded Features:\n${featureListText}\n\nClick to roll marker here · Double-click to Open Group · Right-click for Group menu`;
           hCell.innerHTML = `
             <div class="header-step-tick"></div>
             <span class="group-step-dash">-</span>
@@ -1997,7 +1985,15 @@
           pill.dataset.groupId = grp.id;
           pill.style.left = `${minIdx * COL_W + 3}px`;
           pill.style.width = `${(maxIdx - minIdx + 1) * COL_W - 6}px`;
-          pill.title = `${grp.name} (${grp.actionIds.length} features)\nDouble-click to fold group, Right-click for Group menu`;
+          const grpActions = actions.filter(a => grp.actionIds.includes(a.id));
+          const compNames = ['Root (Design)', 'Housing', 'Shaft', 'Bearing', 'Fastener'];
+          const featureListText = grpActions.map(a => {
+            const aStep = actions.findIndex(act => act.id === a.id) + 1;
+            const aStepStr = aStep < 10 ? '0' + aStep : aStep;
+            const cNames = a.rows.map(r => compNames[r] || `Row ${r}`).join(', ');
+            return `  • Step ${aStepStr}: ${a.name} (${cNames})${a.suppressed ? ' [Suppressed]' : ''}`;
+          }).join('\n');
+          pill.title = `📂 ${grp.name} (${grp.actionIds.length} features) [Open Group]\nStatus: ${isInactive ? 'Inactive in 3D solid model' : 'Active / Evaluated in 3D solid model'}\n\nIncluded Features:\n${featureListText}\n\nClick "Close ▴" or Double-click to Fold Group · Right-click for Group Menu`;
           pill.innerHTML = `
             <div class="open-group-title">
               <span class="open-group-icon">${FOLDER_ICON_SVG_SMALL}</span>
@@ -2126,31 +2122,40 @@
         vChip.style.left = `${(colIdx * COL_W) + 7}px`;
         vChip.dataset.groupId = grp.id;
         vChip.dataset.col = c;
-        vChip.title = `${grp.name} (${grpActions.length} features)\nClick to Select, Double-click to Open Group, Right-click for Group Menu`;
-
-        // Dots representing component rows touched by this group
         const compNames = ['Root (Design)', 'Housing', 'Shaft', 'Bearing', 'Fastener'];
-        const usedRows = new Set();
-        grpActions.forEach(a => a.rows.forEach(r => usedRows.add(r)));
-        const touchedComponents = [...usedRows].map(r => compNames[r]).join(', ');
-        const dotsHtml = [0, 1, 2, 3, 4].map(r => {
-          const isUsed = usedRows.has(r);
-          return `<div class="v-dot" title="${compNames[r]}: ${isUsed ? 'Contains actions' : 'No actions'}" style="background: ${isUsed ? (isInactive ? '#94a3b8' : '#38bdf8') : '#262c37'}; opacity: ${isUsed ? 1 : 0.35};"></div>`;
-        }).join('');
+        const minStep = Math.min(...grpActions.map(a => actions.findIndex(act => act.id === a.id) + 1));
+        const maxStep = Math.max(...grpActions.map(a => actions.findIndex(act => act.id === a.id) + 1));
+        const minStepStr = minStep < 10 ? '0' + minStep : minStep;
+        const maxStepStr = maxStep < 10 ? '0' + maxStep : maxStep;
+
+        const featureListText = grpActions.map(a => {
+          const aStep = actions.findIndex(act => act.id === a.id) + 1;
+          const aStepStr = aStep < 10 ? '0' + aStep : aStep;
+          const cNames = a.rows.map(r => compNames[r] || `Row ${r}`).join(', ');
+          return `  • Step ${aStepStr}: ${a.name} (${cNames})${a.suppressed ? ' [Suppressed]' : ''}`;
+        }).join('\n');
+
+        const groupTooltip = 
+`📁 ${grp.name} (${grpActions.length} features · Steps ${minStepStr}–${maxStepStr})
+Status: ${isInactive ? 'Inactive in 3D solid model (rolled back)' : 'Active / Evaluated in 3D solid model'}
+
+Included Features:
+${featureListText}
+
+Click to Select · Double-click to Open Group · Right-click for Group Menu`;
+
+        vChip.title = groupTooltip;
 
         vChip.innerHTML = `
           <div class="virtual-group-top">
-            <div class="virtual-group-header-cap" title="${grp.name} — Click to Select, Double-click to Open Group, Right-click for Group Menu">
+            <div class="virtual-group-header-cap">
               <span class="virtual-group-folder-icon">${FOLDER_ICON_SVG_SMALL}</span>
               <span class="virtual-group-chevron">▶</span>
             </div>
             <div class="virtual-group-badge" title="${grpActions.length} actions in this group">${grpActions.length}</div>
           </div>
           <div class="virtual-group-body">
-            <div class="virtual-group-title">${grp.name}</div>
-          </div>
-          <div class="virtual-group-bottom">
-            <div class="virtual-group-dots" title="Component track occupancy (dots indicate rows with actions in this group):\n${touchedComponents}">${dotsHtml}</div>
+            <div class="virtual-group-title" title="${grp.name}">${grp.name}</div>
           </div>
         `;
 
@@ -2255,16 +2260,27 @@
           vChip.classList.remove('selected');
         }
 
-        // Dynamically update dot colors based on active / inactive
-        const usedRows = new Set();
-        grpActions.forEach(a => a.rows.forEach(r => usedRows.add(r)));
-        const dotEls = vChip.querySelectorAll('.v-dot');
-        [0, 1, 2, 3, 4].forEach((r, idx) => {
-          if (dotEls[idx]) {
-            const isUsed = usedRows.has(r);
-            dotEls[idx].style.background = isUsed ? (isInactive ? '#94a3b8' : '#38bdf8') : '#262c37';
-          }
-        });
+        // Dynamically update tooltip to reflect active / inactive state
+        const compNames = ['Root (Design)', 'Housing', 'Shaft', 'Bearing', 'Fastener'];
+        const minStep = Math.min(...grpActions.map(a => actions.findIndex(act => act.id === a.id) + 1));
+        const maxStep = Math.max(...grpActions.map(a => actions.findIndex(act => act.id === a.id) + 1));
+        const minStepStr = minStep < 10 ? '0' + minStep : minStep;
+        const maxStepStr = maxStep < 10 ? '0' + maxStep : maxStep;
+        const featureListText = grpActions.map(a => {
+          const aStep = actions.findIndex(act => act.id === a.id) + 1;
+          const aStepStr = aStep < 10 ? '0' + aStep : aStep;
+          const cNames = a.rows.map(r => compNames[r] || `Row ${r}`).join(', ');
+          return `  • Step ${aStepStr}: ${a.name} (${cNames})${a.suppressed ? ' [Suppressed]' : ''}`;
+        }).join('\n');
+
+        vChip.title = 
+`📁 ${grp ? grp.name : 'Group'} (${grpActions.length} features · Steps ${minStepStr}–${maxStepStr})
+Status: ${isInactive ? 'Inactive in 3D solid model (rolled back)' : 'Active / Evaluated in 3D solid model'}
+
+Included Features:
+${featureListText}
+
+Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       });
 
       // 1b. Update Open Group Header Pills & Corridors

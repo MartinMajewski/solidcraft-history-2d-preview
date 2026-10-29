@@ -39,7 +39,7 @@ This document outlines the architecture, data structures, UI design, and impleme
 - **Timeline Feature Grouping & Folding (Virtual Column Chips)**:
   - Multi-selection via **Shift+Click** (continuous range) and **Cmd/Ctrl+Click** (additive non-adjacent toggle).
   - Contiguous selection sets provide a `"Group Selection"` option in the context menu.
-  - Closed groups collapse into a single-column **virtual group chip** starting on the second header row (step number hidden in the topmost row) and spanning all component tracks (height $204\text{px}$, $38\text{px}$ width) with integrated header cap (folder icon + chevron `▶`), count badge, vertical title, and component track occupancy indicator dots.
+  - Closed groups collapse into a single-column **virtual group chip** starting on the second header row (step numbers show `-` in the topmost row) and spanning all component tracks (height $204\text{px}$, $38\text{px}$ width) with integrated header cap (folder icon + chevron `▶`), count badge, and vertical title with expanded vertical room (up to $140\text{px}$). Included features, steps, and component tracks are detailed in rich hover tooltips.
   - Dedicated group context menu: `Open Group` / `Close Group`, `Delete Group but expand content`, `Delete Group and content`, `Deactivate Group` (disabled if all deactivated), `Activate Group` (disabled if all activated).
   - Open groups expand into individual columns and tracks with an open group header pill (`📁 Group Name (N) Close ▴`) in the second header row and corridor background tint, with standard feature context menus on individual chips.
 - **Two-Tier Header (Topmost Step Numbers + Lower Folders & Features Row)**:
@@ -133,8 +133,8 @@ To support organizing complex feature trees into manageable sub-assemblies or lo
      - **Dimensions**: Full height from the second header row through row 4 ($204\text{px}$ height, $38\text{px}$ width, $7\text{px}$ horizontal margin).
      - **Visual Assets**:
        - **Header Cap**: Integrated into the second header row ($y = 26\dots 44\text{px}$) with folder icon `${FOLDER_ICON_SVG_SMALL}` and expansion chevron `▶`.
-       - **Body & Badge**: Feature count badge (`<N>`) and vertical 90°-rotated title (`Group 1`).
-       - **Component Track Occupancy Dots**: 5 vertical indicator dots at the bottom of the card corresponding to the 5 component tracks (Root, Housing, Shaft, Bearing, Fastener). A lit dot (blue or silver-grey) indicates that the group contains features on that specific component track; dim dots indicate untouched tracks.
+       - **Body & Badge**: Feature count badge (`<N>`) and vertical 90°-rotated title with expanded vertical room (up to $140\text{px}$), avoiding premature truncation on long group names.
+       - **Detailed Hover Tooltips**: Replaces arbitrary bottom dots with an informative multi-line tooltip detailing all included features, their steps, component tracks, active/inactive evaluation status, and keyboard shortcuts.
      - **Topmost Step Numbers Row & Continuous Step Indexing**: When folding/closing a group, feature numbers after the group continue correctly based on their true timeline sequence index. In the folded group's column, a clean dash `-` is displayed, representing the condensed range of steps (e.g., folding steps 4, 5, and 6 produces `01, 02, 03, -, 07, 08...`). The group card never extends into the step numbers row, providing total clearance for the timeline marker.
      - **Interaction**: Single-click selects the group; double-click opens/unfolds it; right-click opens the dedicated **Group Context Menu**.
 
