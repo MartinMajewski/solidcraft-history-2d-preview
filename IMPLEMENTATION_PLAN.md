@@ -42,10 +42,10 @@ This document outlines the architecture, data structures, UI design, and impleme
   - Closed groups collapse into a single-column **virtual group chip** spanning all component tracks (height $182\text{px}$, rows 0 to 4) with folder icon, count badge, rotated title, and component indicator dots.
   - Dedicated group context menu: `Open Group` / `Close Group`, `Delete Group but expand content`, `Delete Group and content`, `Deactivate Group` (disabled if all deactivated), `Activate Group` (disabled if all activated).
   - Open groups expand into individual columns and tracks with an open group header pill (`📁 Group Name (N) Close ▴`) and corridor background tint, with standard feature context menus on individual chips.
-- **Two-Tier Header Separation & Zero Overlap**:
-  - **Tier 1 (Top Tier, $18\text{px}$)**: Folder management bar. Solid `#182234` group banner spanning member columns when open, or compact group pill when closed. Zero bleed-through of step numbers. Double-click on open banner folds group; double-click on closed pill unfolds group.
-  - **Tier 2 (Bottom Tier, $26\text{px}$)**: Step numbers (`01`, `02`, ... `24`, `G1`), ticks, and Scrubber Track. Step numbers remain 100% visible and readable under open groups. Double-click on group step cell unfolds group.
-  - **Scrubber Pin Separation**: Draggable rollback head pin starts at Tier 2 (`top: 18px`), centered vertically in Tier 2 ($y = 23\dots 39\text{px}$). It never crosses into Tier 1, ensuring zero visual overlap with group titles or `Close ▴` buttons.
+- **Two-Tier Header (Topmost Step Numbers + Lower Folders & Features Row)**:
+  - **Tier 1 (Top Tier, $24\text{px}$ — Topmost Step Numbers Row)**: Sequential step numbers (`01`, `02`, ... `24`), ticks, and the Scrubber Head Pin (`ui_kit::history_marker`). Dragging the pin in the top row scrubs the timeline.
+  - **Tier 2 (Lower Tier, $20\text{px}$ — Folders & Features Row)**: Sits directly beneath the step numbers row and directly above the component tracks. Populated with folder headers (`📁 Group 1 (3) Close ▴` or compact `[📁 ▾]` pills), with empty grid cells reserved for future timeline features (e.g., milestone markers, timeline notes, revisions).
+  - **Timeline Marker Scrubber Extension**: The rollback marker begins at `top: 0` in the topmost step numbers row, where the circular head pin resides, and extends down through the folder row across all component tracks to the bottom handle ($234\text{px}$ total height). Zero overlap between head pin and folder titles.
 - **Anchored Bottom Dock**: Strictly docked at the bottom of the viewport; not dockable to side panels.
 
 ---
@@ -141,11 +141,11 @@ To support organizing complex feature trees into manageable sub-assemblies or lo
    - `Deactivate Group`: Deactivates/suppresses all actions within the group from CAD solid-body evaluation (disabled/not clickable if all actions are already deactivated).
    - `Activate Group`: Activates/unsuppresses all actions within the group (disabled/not clickable if all actions are already activated).
 
-4. **Open Group Behavior & Two-Tier Header Separation**:
+4. **Open Group Behavior & Swapped Two-Tier Header Layout**:
    - Expanding a group reveals its individual feature chips in their natural columns and component rows.
-   - **Tier 1 ($18\text{px}$)**: Group banners (`📁 Group Name (N) Close ▴`) span member columns with solid `#182234` styling and shadow, completely isolated from step numbers. Double-click on open banner folds the group; clicking `Close ▴` folds the group.
-   - **Tier 2 ($26\text{px}$)**: Step numbers (`01`, `02`, ... `24`, `G1`), ticks, and the Scrubber Pin Track. All step numbers remain 100% visible and readable underneath open groups.
-   - **Scrubber Pin Vertical Separation**: The draggable rollback marker head pin is positioned in Tier 2 (`top: 18px`), centered vertically at $y = 23\dots 39\text{px}$. It never enters Tier 1, eliminating any overlap with group titles or the `Close ▴` button when scrubbing near open groups.
+   - **Top Tier ($24\text{px}$ — Topmost Step Numbers Row)**: Step numbers (`01`, `02`, ... `24`), ticks, and the Scrubber Head Pin (`ui_kit::history_marker`). Dragging the pin in the top row scrubs the timeline.
+   - **Lower Tier ($20\text{px}$ — Folders & Features Row)**: Sits directly beneath the step numbers row and directly above the component tracks. Populated with folder headers (`📁 Group Name (N) Close ▴` or compact `[📁 ▾]` pills), with empty grid cells reserved for future timeline features. Double-click on open banner folds the group; clicking `Close ▴` folds the group.
+   - **Timeline Marker Scrubber Extension**: The draggable rollback marker begins at `top: 0` in the topmost step numbers row, with the circular head pin centered at $y = 4\dots 20\text{px}$, and extends down through the folder row and across all component tracks to the bottom handle.
    - An **Open Group Corridor** subtly tints the member columns with a dashed border.
    - Right-clicking any chip inside an open group displays the standard feature context menu as usual.
 
@@ -174,7 +174,8 @@ To support organizing complex feature trees into manageable sub-assemblies or lo
 
 1. **Pinned Left Headers ($160\text{px}$)**:
    - Component titles, color badges, and icons remain locked on the left.
-   - Top label `TIMELINE TRANSPORT` ($18\text{px}$) sits cleanly above header transport controls ($26\text{px}$) at the top-left corner.
+   - Top row ($24\text{px}$) houses transport toolbar (`⏮ ◀ ▶/⏸ ▶ ⏭`), aligned with the step numbers and scrubber pin.
+   - Lower row ($20\text{px}$) displays the `FOLDERS & MODULES` label, aligned with the folder header row.
    - Timeline grid and chips scroll horizontally underneath.
 2. **Synchronized Vertical Scrolling with Rubberband**:
    - Shared vertical scroll offset $y$ for headers and tracks.
@@ -190,7 +191,7 @@ To support organizing complex feature trees into manageable sub-assemblies or lo
 
 - **Phase 1**: Dependency Graph Engine & Ripple Reorder Mapping (`crates/ui-egui/src/timeline_2d/deps.rs`).
 - **Phase 2**: Preference setting in `prefs.rs` and `prefs/interface.rs` + Pending locale strings.
-- **Phase 3**: Uniform 2D Grid Canvas, Two-Tier header scrubber track ($44\text{px}$: Tier 1 groups $18\text{px}$ + Tier 2 steps $26\text{px}$), leading transport controls, 3.5-row auto-expansion, pinned left headers, rollback marker vertical separation, 100% opacity greyscale inactive rendering, and rubberband vertical scrolling.
+- **Phase 3**: Uniform 2D Grid Canvas, Two-Tier header scrubber track ($44\text{px}$: Topmost step numbers $24\text{px}$ + Lower folders/features $20\text{px}$), leading transport controls, 3.5-row auto-expansion, pinned left headers, rollback marker extension to topmost numbers row, 100% opacity greyscale inactive rendering, and rubberband vertical scrolling.
 - **Phase 4**: Dependency visualization (Active: Orange prereqs, Blue downstream, Green movable brackets; Inactive: Light Grey prereqs, Mid Grey downstream, Greyish movable brackets).
 - **Phase 5**: Multi-component dead-centered dotted connectors, marker drag scrubbing (`cmd.timeline_roll`), `HistoryTransport` controls, chip double-click editing, `Menu::context` menu integration (`crates/ui-egui/src/timeline.rs#L790-L835`), and drag-and-drop ripple push reordering across active and inactive zones.
 - **Phase 6**: Multi-selection (Shift+Click, Cmd/Ctrl+Click), adjacent grouping logic, virtual group chips spanning tracks, open group header pills, and group context menu (`timeline_2d/group.rs`).

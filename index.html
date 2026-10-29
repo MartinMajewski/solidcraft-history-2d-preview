@@ -28,8 +28,8 @@
       --col-w: 52px;
       --row-h: 38px;
       --header-h: 44px;
-      --header-group-h: 18px;
-      --header-step-h: 26px;
+      --header-step-h: 24px;
+      --header-group-h: 20px;
       --text: #e2e8f0;
       --text-muted: #94a3b8;
       --text-dim: #64748b;
@@ -150,11 +150,11 @@
       font-size: 14px;
     }
 
-    /* Rollback Timeline Marker (Starts at Tier 2 boundary, never enters Tier 1) */
+    /* Rollback Timeline Marker (Extends from topmost step numbers row through the entire timeline) */
     .timeline-marker {
       position: absolute;
-      top: var(--header-group-h);
-      height: calc(var(--header-step-h) + var(--row-h) * 5);
+      top: 0;
+      height: calc(var(--header-h) + var(--row-h) * 5);
       width: 20px;
       margin-left: -10px;
       z-index: 50;
@@ -171,7 +171,7 @@
       cursor: grabbing !important;
     }
 
-    /* Scrubber Head Pin centered vertically in Step Tier (Tier 2) */
+    /* Scrubber Head Pin centered vertically in Topmost Step Numbers Row */
     .marker-handle-top {
       width: 16px;
       height: 16px;
@@ -181,7 +181,7 @@
       box-shadow: 0 0 8px rgba(56, 189, 248, 0.7);
       flex-shrink: 0;
       cursor: col-resize;
-      margin-top: 5px;
+      margin-top: 4px;
       transition: transform 0.15s, background-color 0.15s;
       position: relative;
       display: flex;
@@ -368,23 +368,25 @@
       border-bottom: 1px solid #2a303d;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      padding: 3px 8px;
+      justify-content: space-between;
+      padding: 2px 8px 1px 8px;
       flex-shrink: 0;
       z-index: 35;
       box-sizing: border-box;
     }
 
-    .pinned-header-title {
-      font-size: 8.5px;
+    .pinned-header-sub {
+      font-size: 8px;
       font-weight: 700;
       letter-spacing: 0.6px;
       color: #64748b;
       text-transform: uppercase;
-      margin-bottom: 3px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      height: 18px;
+      display: flex;
+      align-items: center;
     }
 
     .pinned-headers-viewport {
@@ -443,7 +445,7 @@
       min-width: 100%;
     }
 
-    /* Dedicated Timeline Header Row (Two-Tier Layout: Groups Tier + Steps Tier) */
+    /* Dedicated Timeline Header Row (Two-Tier Layout: Step Numbers Topmost + Folders/Features Below) */
     .timeline-header-track {
       display: flex;
       flex-direction: column;
@@ -455,29 +457,13 @@
       -webkit-user-select: none;
     }
 
-    /* Tier 1: Group / Folder Banner Bar */
-    .header-tier-groups {
-      height: var(--header-group-h);
-      position: relative;
-      display: flex;
-      background: #0f1218;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      overflow: visible;
-    }
-
-    .header-group-cell {
-      width: var(--col-w);
-      height: 100%;
-      flex-shrink: 0;
-      border-right: 1px solid var(--grid-line);
-      box-sizing: border-box;
-    }
-
-    /* Tier 2: Step Numbers & Scrubber Track */
+    /* Top Tier: Step Numbers & Scrubber Track (Topmost Row) */
     .header-tier-steps {
       height: var(--header-step-h);
       position: relative;
       display: flex;
+      background: #10131a;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .header-step-cell {
@@ -488,8 +474,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-end;
-      padding-bottom: 4px;
+      justify-content: center;
+      gap: 1px;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       font-size: 10px;
       font-weight: 600;
@@ -517,7 +503,25 @@
       width: 1px;
       height: 4px;
       background: #3e4758;
-      margin-bottom: 2px;
+      margin-bottom: 1px;
+    }
+
+    /* Lower Tier: Folders & Timeline Features Row (Directly above component tracks) */
+    .header-tier-groups {
+      height: var(--header-group-h);
+      position: relative;
+      display: flex;
+      background: #0d1016;
+      border-bottom: 1px solid #2a303d;
+      overflow: visible;
+    }
+
+    .header-group-cell {
+      width: var(--col-w);
+      height: 100%;
+      flex-shrink: 0;
+      border-right: 1px solid var(--grid-line);
+      box-sizing: border-box;
     }
 
     /* SVG Overlay for Connections and Movable Brackets */
@@ -916,10 +920,10 @@
       background: #64748b;
     }
 
-    /* Open Group Header Pill (in Tier 1 of Timeline Header Track) */
+    /* Open Group Header Pill (in Lower Tier of Timeline Header Track) */
     .open-group-header-pill {
       position: absolute;
-      top: 1px;
+      top: 2px;
       height: 16px;
       border-radius: 4px;
       background: #182234;
@@ -1026,10 +1030,10 @@
       box-shadow: 0 2px 8px rgba(148, 163, 184, 0.2);
     }
 
-    /* Closed Group Header Pill (in Tier 1 above virtual group chip) */
+    /* Closed Group Header Pill (in Lower Tier directly above virtual group chip) */
     .closed-group-header-pill {
       position: absolute;
-      top: 1px;
+      top: 2px;
       height: 16px;
       border-radius: 4px;
       background: #1a2334;
@@ -1302,9 +1306,8 @@
     <div class="viewport-container" id="viewportContainer">
       <!-- Pinned Left Component Headers (160px wide, stays stationary horizontally) -->
       <div class="pinned-headers">
-        <!-- Leading Side (Left) of Timeline Header Row: Transport Controls -->
+        <!-- Leading Side (Left) of Timeline Header Row: Transport Controls (Top) & Features Sub (Bottom) -->
         <div class="pinned-header-top">
-          <div class="pinned-header-title">TIMELINE TRANSPORT</div>
           <div class="transport-bar-header" title="Timeline Transport Controls (Scrub Active Steps)">
             <button id="hdrBtnFirst" class="btn-transport" title="Roll to First (Step 0)">⏮</button>
             <button id="hdrBtnBack" class="btn-transport" title="Step Back">◀</button>
@@ -1312,6 +1315,7 @@
             <button id="hdrBtnForward" class="btn-transport" title="Step Forward">▶</button>
             <button id="hdrBtnLast" class="btn-transport" title="Roll to Last (End)">⏭</button>
           </div>
+          <div class="pinned-header-sub">FOLDERS &amp; MODULES</div>
         </div>
 
         <!-- Pinned Component List (Scrolls vertically in sync with timeline tracks) -->
@@ -1543,8 +1547,8 @@
     const COL_W = 52;
     const ROW_H = 38;
     const HEADER_H = 44;
-    const HEADER_GROUP_H = 18;
-    const HEADER_STEP_H = 26;
+    const HEADER_STEP_H = 24;
+    const HEADER_GROUP_H = 20;
     const NUM_ROWS = 5;
 
     // 24 Sequential Steps Populating the Entire Timeline Length (Zero Empty Columns)
@@ -1907,25 +1911,25 @@
       const displayItems = getDisplayItems();
       const totalCols = displayItems.length;
 
-      // 1. Render Two-Tier Header: Tier 1 (Group Banners) & Tier 2 (Step Numbers & Scrubber Track)
+      // 1. Render Two-Tier Header: Topmost Step Numbers Row & Lower Folders / Features Row
       headerTrack.innerHTML = '';
 
-      // Tier 1: Group / Folder Banner Bar
-      const tierGroups = document.createElement('div');
-      tierGroups.className = 'header-tier-groups';
-
-      // Tier 2: Step Numbers & Scrubber Pin Track
+      // Top Tier: Step Numbers & Scrubber Pin Track (Topmost)
       const tierSteps = document.createElement('div');
       tierSteps.className = 'header-tier-steps';
 
-      // Background cells for Tier 1 (columns)
+      // Lower Tier: Group / Folder Banner Bar (Directly above component grid)
+      const tierGroups = document.createElement('div');
+      tierGroups.className = 'header-tier-groups';
+
+      // Background cells for Lower Tier (columns)
       for (let colIdx = 0; colIdx < totalCols; colIdx++) {
         const gCell = document.createElement('div');
         gCell.className = 'header-group-cell';
         tierGroups.appendChild(gCell);
       }
 
-      // Step cells for Tier 2
+      // Step cells for Top Tier (Step numbers 01 to 24)
       for (let colIdx = 0; colIdx < totalCols; colIdx++) {
         const c = colIdx + 1;
         const item = displayItems[colIdx];
@@ -1934,10 +1938,10 @@
         hCell.dataset.col = c;
 
         if (item.isGroup) {
-          hCell.title = `Group: ${item.group.name} (${item.actions.length} features)\nClick to roll marker here\nDouble-click to Open Group\nRight-click for Group menu`;
+          hCell.title = `Step ${c} — Group: ${item.group.name} (${item.actions.length} features)\nClick to roll marker here\nDouble-click to Open Group\nRight-click for Group menu`;
           hCell.innerHTML = `
             <div class="header-step-tick"></div>
-            <span style="color: #38bdf8; font-weight: 700;">G${item.group.id}</span>
+            <span>${c < 10 ? '0' + c : c}</span>
           `;
           // Double-click on group step cell opens/unfolds group
           hCell.addEventListener('dblclick', (e) => {
@@ -2080,8 +2084,10 @@
         tierGroups.appendChild(pill);
       });
 
-      headerTrack.appendChild(tierGroups);
+      // Topmost row: Step numbers
       headerTrack.appendChild(tierSteps);
+      // Below step numbers: Folders & future timeline features row
+      headerTrack.appendChild(tierGroups);
 
       // 2. Render Component Track Rows
       trackContainer.innerHTML = '';

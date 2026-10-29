@@ -33,15 +33,14 @@ The **2D History Browser** provides a multi-track timeline inspired by video-edi
 
 ### 1. Dedicated Two-Tier Header Track & Timeline Rollback Marker
 - A dedicated **$44\,\text{px}$ Two-Tier header track** positioned directly above the component tracks decouples group management from timeline scrubbing:
-  - **Tier 1 (Top Tier, $18\,\text{px}$)**: Folder management bar. Solid `#182234` group banners (`📁 Group Name (N) Close ▴`) span member columns when open, or compact pills when closed, with zero bleed-through of step numbers.
-  - **Tier 2 (Bottom Tier, $26\,\text{px}$)**: Step numbers (`01`, `02`, ... `24`, `G1`), tick marks, and Scrubber Pin Track. Step numbers remain 100% visible and readable under open groups.
-- **Rollback Marker Vertical Separation**: The draggable blue head pin (`ui_kit::history_marker`) starts at Tier 2 (`top: 18px`), centered vertically at $y = 23\dots 39\,\text{px}$. It never enters Tier 1, ensuring zero visual overlap with group titles or `Close ▴` buttons when scrubbing near open groups.
-- **Full-Height Vertical Line**: Spans from the step tier down across all component rows to clearly delineate active and inactive steps.
-- **Horizontal Scrubbing**: Drag the blue head pin across the header track to scrub forward and backward. Click any step column header to jump the marker immediately.
+  - **Top Tier ($24\,\text{px}$ — Topmost Step Numbers Row)**: Sequential step numbers (`01`, `02`, ... `24`), tick marks, and the Scrubber Head Pin (`ui_kit::history_marker`). Dragging the pin in the top row scrubs the timeline.
+  - **Lower Tier ($20\,\text{px}$ — Folders & Features Row)**: Positioned directly beneath the step numbers and directly above the component tracks. Populated with folder headers (`📁 Group Name (N) Close ▴` or compact `[📁 ▾]` pills), with empty grid cells reserved for future timeline features.
+- **Rollback Marker Scrubber Extension**: The draggable blue head pin starts at `top: 0` in the topmost step numbers row (centered vertically at $y = 4\dots 20\,\text{px}$) and extends all the way down through the folder row and across all component rows to the bottom handle.
+- **Horizontal Scrubbing**: Drag the blue head pin across the topmost header track to scrub forward and backward. Click any step column header to jump the marker immediately.
 - **100% Opacity Display**: All chips remain fully visible at 100% opacity. Inactive features after the marker appear in pure greyscale with desaturated icons and remain fully selectable, inspectable, and reorderable.
 
 ### 2. Leading Header Transport Controls
-- The leading ($160\,\text{px}$ pinned left) side of the timeline header row houses a top category label (`TIMELINE TRANSPORT`, $18\,\text{px}$) and transport controls (First `⏮`, Back `◀`, Play / Pause `▶`/`⏸`, Forward `▶`, Last `⏭`, $26\,\text{px}$).
+- The leading ($160\,\text{px}$ pinned left) side of the timeline header row houses transport controls (First `⏮`, Back `◀`, Play / Pause `▶`/`⏸`, Forward `▶`, Last `⏭`, $20\,\text{px}$) in the top row matching the step numbers, and a lower sub-label (`FOLDERS & MODULES`, $18\,\text{px}$) matching the folder row.
 - Sits on the exact same layer as the component list, remaining fixed and stationary during horizontal timeline scrolling.
 
 ### 3. Full Timeline Length Population (Zero Empty Columns)
