@@ -131,7 +131,7 @@ To support organizing complex feature trees into manageable sub-assemblies or lo
    - When grouped, the sequence of adjacent features collapses into a single column.
    - Across that column, all component track rows are unified into a single **Virtual Group Chip**:
      - **Dimensions**: Full grid height spanning rows 0 to 4 ($182\text{px}$ height, $38\text{px}$ width, $4\text{px}$ margin).
-     - **Visual Assets**: Vector folder icon (`ui_kit::folder`), expansion chevron `▶`, vertical 90°-rotated title, item count badge (`<N>`), and mini row-occupancy indicator dots matching active/inactive tracks.
+     - **Visual Assets**: Expansion chevron `▶`, item count badge (`<N>`), vertical 90°-rotated title, and mini row-occupancy indicator dots matching active/inactive tracks. The folder icon lives exclusively in the upper header row (Tier 1), eliminating redundant icon repetition.
      - **Interaction**: Single-click selects the group; double-click opens/unfolds it; right-click opens the dedicated **Group Context Menu**.
 
 3. **Group Context Menu Options**:
@@ -148,6 +148,12 @@ To support organizing complex feature trees into manageable sub-assemblies or lo
    - **Scrubber Pin Vertical Separation**: The draggable rollback marker head pin is positioned in Tier 2 (`top: 18px`), centered vertically at $y = 23\dots 39\text{px}$. It never enters Tier 1, eliminating any overlap with group titles or the `Close ▴` button when scrubbing near open groups.
    - An **Open Group Corridor** subtly tints the member columns with a dashed border.
    - Right-clicking any chip inside an open group displays the standard feature context menu as usual.
+
+5. **Greyscale Inactive Group Rendering**:
+   - When the timeline rollback marker is positioned to the left of a group (`markerStep < col`):
+     - The **entire group** renders in 100% opacity greyscale.
+     - **Closed state**: The upper header pill, expansion chevron, count badge, vertical title, row occupancy dots, and border switch dynamically to greyscale tokens (`#94a3b8` / `#4b5260` / `#20232b`). When selected, adopts high-contrast silver-grey `#e4e4e7`.
+     - **Open state**: The upper header banner (`📁 Group Name (N) Close ▴`), close button, corridor tint, and all member action chips transition dynamically to pure greyscale.
 
 ---
 
@@ -208,5 +214,9 @@ The standalone demonstration repository and interactive preview artifact feature
 11. **Open Group Header Pills & Corridors**: Clean inline header pills (`Close ▴`) with individual chip context menus preserved inside open groups.
 12. **Dead-Centered Multi-Component Connectors**: Centered dotted lines with clean pass-through.
 13. **1:1 Synchronized Scrolling CAD Grid**: Physical DOM cells moving synchronously with chips and overscroll.
+
+14. **Dedicated Built-in Feature Manual & Interaction Reference**: A complete interaction guide and keyboard cheat sheet situated directly beneath the timeline viewport.
+15. **Greyscale Inactive Group Rendering**: Groups to the right of the rollback marker transition all elements (header pills, virtual chips, badges, titles, and member chips) dynamically to 100% opacity greyscale.
+16. **Streamlined Folder Indicators**: Minimalist upper folder icon in Tier 1; redundant folder icon in the virtual group chip removed in favor of clean chevron + count badge styling.
 
 - **Standalone Repo**: [`../solidcraft-history-2d-preview/index.html`](file:///Users/martinmajewski/Developer/CAD/solidcraft-history-2d-preview/index.html)

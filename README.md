@@ -102,7 +102,8 @@ When an inactive feature is selected (or when an active feature references inact
   - **Contiguous Check**: If the selection consists of adjacent features ($\ge 2$ features without sequence gaps), right-clicking any selected chip reveals the context menu option `"Group Selection (<N> Actions)"`.
 - **Virtual Group Chip (Folded State)**:
   - When grouped, member features collapse into a single column.
-  - Across that column, all component track rows are unified into a single **Virtual Group Chip** ($182\,\text{px}$ height, rows 0 to 4) featuring a vector folder icon, expansion chevron `▶`, rotated title, feature count badge, and component indicator dots.
+  - Across that column, all component track rows are unified into a single **Virtual Group Chip** ($182\,\text{px}$ height, rows 0 to 4) featuring an expansion chevron `▶`, vertical 90°-rotated title, feature count badge, and component indicator dots.
+  - The folder icon lives exclusively in the upper header tier (`FOLDER_ICON_SVG_SMALL` in Tier 1), cleanly avoiding visual doubling on the virtual chip.
   - Single-click selects the group; double-click opens/unfolds it.
 - **Dedicated Group Context Menu**:
   - **Open Group / Close Group**: Toggles folding.
@@ -117,6 +118,17 @@ When an inactive feature is selected (or when an active feature references inact
   - **Rollback Marker Vertical Separation**: Rollback head pin is located in Tier 2 ($y = 23\dots 39\,\text{px}$), never intersecting Tier 1. Zero overlap with group titles or `Close ▴`.
   - An **Open Group Corridor** subtly tints member columns with a dashed border.
   - Right-clicking any chip inside an open group displays the standard feature context menu as usual.
+- **Greyscale Inactive Group Handling**:
+  - Whenever the timeline marker is to the left of a group (`markerStep < col`), the **entire group** renders dynamically in 100% opacity greyscale.
+  - Closed pills, virtual group chips, chevrons, count badges, and component dots transition immediately between full color and neutral greyscale as the marker is scrubbed.
+
+### 12. Built-in Feature Manual & Interaction Legend
+Directly below the viewport and live interaction feedback bar, the page embeds a comprehensive **Feature Manual & Interaction Reference**:
+- **Selection & Multi-Select**: Single click, Shift+Click continuous range, Cmd/Ctrl+Click toggle, and background clearing.
+- **Feature Grouping & Folding**: Contiguous grouping, virtual column chip layout, double-click fold/unfold, and group context menus.
+- **History Rollback & Inactive States**: Header scrubber pin, instant step jumps, active solid-body evaluation vs. 100% opacity greyscale downstream state.
+- **Corridor Reordering & Context Menus**: DAG-based movable brackets `[ ... ]`, ripple push reordering, 1-D timeline parity menu, and stationary transport bar.
+- **Quick Keyboard Cheat Sheet**: Interactive `<kbd>` shortcut reference table for rapid scanning.
 
 ---
 

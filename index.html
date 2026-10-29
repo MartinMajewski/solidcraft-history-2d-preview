@@ -817,9 +817,28 @@
     }
 
     .virtual-group-chip.inactive {
-      background: linear-gradient(180deg, #22252c 0%, #161820 100%);
+      background: linear-gradient(180deg, #20232b 0%, #14161c 100%);
       border-color: #4b5260;
       filter: grayscale(100%);
+    }
+
+    .virtual-group-chip.inactive .virtual-group-chevron {
+      color: #94a3b8;
+    }
+
+    .virtual-group-chip.inactive .virtual-group-badge {
+      color: #94a3b8;
+      background: rgba(148, 163, 184, 0.12);
+      border-color: rgba(148, 163, 184, 0.3);
+    }
+
+    .virtual-group-chip.inactive .virtual-group-title {
+      color: #94a3b8;
+    }
+
+    .virtual-group-chip.inactive.selected {
+      border: 2px solid #e4e4e7;
+      box-shadow: 0 0 14px rgba(228, 228, 231, 0.35);
     }
 
     .virtual-group-chip.suppressed {
@@ -832,20 +851,15 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 2px;
-    }
-
-    .virtual-group-icon {
-      width: 22px;
-      height: 22px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      gap: 4px;
+      margin-top: 3px;
     }
 
     .virtual-group-chevron {
-      font-size: 9px;
+      font-size: 11px;
       color: #38bdf8;
+      line-height: 1;
+      transition: color 0.15s, transform 0.15s;
     }
 
     .virtual-group-body {
@@ -983,6 +997,35 @@
       color: #ffffff;
     }
 
+    .open-group-header-pill.inactive {
+      background: #181b22;
+      border-color: #4b5260;
+      color: #94a3b8;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      filter: grayscale(100%);
+    }
+
+    .open-group-header-pill.inactive .open-group-name {
+      color: #94a3b8;
+    }
+
+    .open-group-header-pill.inactive .open-group-count {
+      color: #94a3b8;
+      opacity: 0.9;
+    }
+
+    .open-group-header-pill.inactive .open-group-close-btn {
+      background: rgba(148, 163, 184, 0.12);
+      border-color: rgba(148, 163, 184, 0.3);
+      color: #94a3b8;
+    }
+
+    .open-group-header-pill.inactive:hover {
+      background: #20242e;
+      border-color: #94a3b8;
+      box-shadow: 0 2px 8px rgba(148, 163, 184, 0.2);
+    }
+
     /* Closed Group Header Pill (in Tier 1 above virtual group chip) */
     .closed-group-header-pill {
       position: absolute;
@@ -1010,6 +1053,32 @@
       border-color: #38bdf8;
     }
 
+    .closed-group-header-pill.selected {
+      border-color: #ffffff;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+    }
+
+    .closed-group-header-pill.inactive.selected {
+      border-color: #e4e4e7;
+      box-shadow: 0 0 8px rgba(228, 228, 231, 0.35);
+    }
+
+    .closed-group-header-pill.inactive {
+      background: #181b22;
+      border-color: #4b5260;
+      color: #94a3b8;
+      filter: grayscale(100%);
+    }
+
+    .closed-group-header-pill.inactive .closed-group-chevron {
+      color: #94a3b8;
+    }
+
+    .closed-group-header-pill.inactive:hover {
+      background: #20242e;
+      border-color: #94a3b8;
+    }
+
     .closed-group-chevron {
       font-size: 8px;
       color: #38bdf8;
@@ -1025,6 +1094,132 @@
       border-right: 1px dashed rgba(56, 189, 248, 0.35);
       pointer-events: none;
       z-index: 5;
+    }
+
+    .open-group-corridor.inactive {
+      background: rgba(161, 161, 170, 0.04);
+      border-left: 1px dashed rgba(161, 161, 170, 0.3);
+      border-right: 1px dashed rgba(161, 161, 170, 0.3);
+    }
+
+    /* Feature Manual & Interaction Reference */
+    .manual-section {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+    }
+
+    .manual-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .manual-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .manual-badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #38bdf8;
+    }
+
+    .manual-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .manual-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .manual-card {
+      background: #12151c;
+      border: 1px solid #232936;
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .manual-card-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #38bdf8;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 6px;
+    }
+
+    .manual-card-icon {
+      font-size: 13px;
+    }
+
+    .manual-card-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 10.5px;
+      color: #94a3b8;
+      line-height: 1.45;
+    }
+
+    .manual-card-list li strong {
+      color: #e2e8f0;
+      font-weight: 600;
+    }
+
+    .manual-cheatsheet {
+      background: #11141a;
+      border: 1px solid #1f2430;
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 10.5px;
+      color: #94a3b8;
+    }
+
+    .cheatsheet-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    kbd {
+      display: inline-block;
+      padding: 2px 5px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 9.5px;
+      font-weight: 600;
+      color: #cbd5e1;
+      background: #1e2430;
+      border: 1px solid #333d4e;
+      border-radius: 3px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
     }
 
     /* Scrollbars */
@@ -1185,6 +1380,111 @@
       </div>
       <div style="font-family: monospace; font-size: 11px; color: var(--text-dim);">
         ↔ Scroll horizontally &nbsp;|&nbsp; ↕ Scroll vertically
+      </div>
+    </div>
+
+    <!-- Feature Manual & Interaction Reference -->
+    <div class="manual-section">
+      <div class="manual-header">
+        <div class="manual-title">
+          <span>📖</span>
+          <span>Timeline Feature Manual &amp; Interaction Reference</span>
+        </div>
+        <span class="manual-badge">SolidCraft Interaction Guide</span>
+      </div>
+
+      <div class="manual-grid">
+        <!-- 1. Selection & Multi-Select -->
+        <div class="manual-card">
+          <div class="manual-card-header">
+            <span class="manual-card-icon">🎯</span>
+            <span>1. Selection &amp; Multi-Select</span>
+          </div>
+          <ul class="manual-card-list">
+            <li><strong>Single Click</strong>: Select an Action chip or virtual group chip. Displays its prerequisite tree, downstream dependents, and valid reorder corridor <code>[ ... ]</code>.</li>
+            <li><strong><kbd>Shift</kbd> + Click</strong>: Continuous range selection. Selects all contiguous features between the anchor and the clicked chip in sequence order.</li>
+            <li><strong><kbd>Cmd ⌘</kbd> / <kbd>Ctrl</kbd> + Click</strong>: Additive non-adjacent toggle. Adds or removes individual features to/from the current selection set.</li>
+            <li><strong>Click Background</strong>: Clears selection and dismisses any open context menus.</li>
+          </ul>
+        </div>
+
+        <!-- 2. Feature Grouping & Folding -->
+        <div class="manual-card">
+          <div class="manual-card-header">
+            <span class="manual-card-icon">📁</span>
+            <span>2. Feature Grouping &amp; Folding</span>
+          </div>
+          <ul class="manual-card-list">
+            <li><strong>Group Selection</strong>: When 2 or more contiguous adjacent features are selected, right-click to choose <em>"Group Selection"</em>.</li>
+            <li><strong>Virtual Group Chip</strong>: Folds member features into a unified column chip spanning all component tracks with item count badge, vertical title, and component row dots.</li>
+            <li><strong>Open / Close Fold</strong>: <strong>Double-click</strong> the upper header pill, the virtual group chip, or click <em>"Close ▴"</em> to toggle between folded and expanded states.</li>
+            <li><strong>Group Menu (Right-Click)</strong>: Dedicated options: <em>Open/Close Group</em>, <em>Delete Group but expand content</em>, <em>Delete Group and content</em>, <em>Deactivate Group</em>, <em>Activate Group</em>.</li>
+          </ul>
+        </div>
+
+        <!-- 3. Rollback & Greyscale Inactive -->
+        <div class="manual-card">
+          <div class="manual-card-header">
+            <span class="manual-card-icon">⏱️</span>
+            <span>3. Rollback &amp; Greyscale Inactive</span>
+          </div>
+          <ul class="manual-card-list">
+            <li><strong>Scrubber Head Pin</strong>: Drag the blue circular pin in Tier 2 of the header track to scrub the timeline boundary forward or backward.</li>
+            <li><strong>Click Step Number</strong>: Click any step column (<code>01</code> to <code>24</code>) to immediately jump the rollback marker.</li>
+            <li><strong>Active Steps (Left)</strong>: Steps up to the marker are evaluated in the 3D solid model, displayed in full color (Orange prereqs, Blue downstream, Green corridor).</li>
+            <li><strong>Inactive Steps (Right)</strong>: Steps after the marker remain unbuilt in solid geometry. Rendered in <strong>100% opacity greyscale</strong> with matched luminance. The whole group and its features turn greyscale.</li>
+          </ul>
+        </div>
+
+        <!-- 4. Reordering & Context Menu -->
+        <div class="manual-card">
+          <div class="manual-card-header">
+            <span class="manual-card-icon">↔️</span>
+            <span>4. Reordering &amp; Context Menu</span>
+          </div>
+          <ul class="manual-card-list">
+            <li><strong>Movable Corridor <code>[ ... ]</code></strong>: Indicates the safe topological drag window bounded by the nearest prerequisite and downstream features.</li>
+            <li><strong>Ripple Push Reordering</strong>: Drag a chip horizontally within its brackets. Intermediate jumped features automatically ripple in the opposite direction.</li>
+            <li><strong>Feature Context Menu</strong>: Right-click any action chip for 1:1 SolidCraft options: <em>Edit Feature</em> (or <strong>Double-Click</strong>), <em>Redefine Sketch</em>, <em>Rename</em>, <em>Suppress</em>, <em>Roll Marker Here</em>, <em>Copy/Paste</em>, <em>Delete</em>.</li>
+            <li><strong>Transport Bar</strong>: Pinned toolbar provides playback simulation (<code>⏮</code>, <code>◀</code>, <code>▶</code>/<code>⏸</code>, <code>▶</code>, <code>⏭</code>) without scrolling horizontally.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Quick Interaction Cheat Sheet -->
+      <div class="manual-cheatsheet">
+        <div class="cheatsheet-item">
+          <kbd>Click</kbd>
+          <span>Select &amp; inspect</span>
+        </div>
+        <div class="cheatsheet-item">
+          <kbd>Shift</kbd> + <kbd>Click</kbd>
+          <span>Range selection</span>
+        </div>
+        <div class="cheatsheet-item">
+          <kbd>Cmd ⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Click</kbd>
+          <span>Toggle selection</span>
+        </div>
+        <div class="cheatsheet-item">
+          <kbd>Double Click</kbd>
+          <span>Open/close group or edit</span>
+        </div>
+        <div class="cheatsheet-item">
+          <kbd>Right Click</kbd>
+          <span>Context menu</span>
+        </div>
+        <div class="cheatsheet-item">
+          <kbd>Drag Chip</kbd>
+          <span>Ripple reorder within <code>[ ]</code></span>
+        </div>
+        <div class="cheatsheet-item">
+          <kbd>Drag Pin</kbd>
+          <span>Scrub rollback history</span>
+        </div>
+        <div class="cheatsheet-item">
+          <kbd>Shift</kbd> + <kbd>Wheel</kbd>
+          <span>Horizontal pan</span>
+        </div>
       </div>
     </div>
   </div>
@@ -1681,8 +1981,13 @@
         if (indices.length > 0) {
           const minIdx = Math.min(...indices);
           const maxIdx = Math.max(...indices);
+          const minCol = minIdx + 1;
+          const isInactive = minCol > markerStep;
           const pill = document.createElement('div');
-          pill.className = 'open-group-header-pill';
+          pill.className = `open-group-header-pill${isInactive ? ' inactive' : ''}`;
+          pill.dataset.minCol = minCol;
+          pill.dataset.maxCol = maxIdx + 1;
+          pill.dataset.groupId = grp.id;
           pill.style.left = `${minIdx * COL_W + 3}px`;
           pill.style.width = `${(maxIdx - minIdx + 1) * COL_W - 6}px`;
           pill.title = `${grp.name} (${grp.actionIds.length} features)\nDouble-click to fold group, Right-click for Group menu`;
@@ -1731,8 +2036,12 @@
       displayItems.forEach((item, colIdx) => {
         if (!item.isGroup) return;
         const grp = item.group;
+        const c = colIdx + 1;
+        const isInactive = c > markerStep;
         const pill = document.createElement('div');
-        pill.className = 'closed-group-header-pill';
+        pill.className = `closed-group-header-pill${isInactive ? ' inactive' : ''}`;
+        pill.dataset.col = c;
+        pill.dataset.groupId = grp.id;
         pill.style.left = `${colIdx * COL_W + 6}px`;
         pill.style.width = `${COL_W - 12}px`;
         pill.title = `${grp.name} (${grp.actionIds.length} features)\nDouble-click to Open Group, Right-click for Group menu`;
@@ -1826,8 +2135,13 @@
         if (indices.length > 0) {
           const minIdx = Math.min(...indices);
           const maxIdx = Math.max(...indices);
+          const minCol = minIdx + 1;
+          const isInactive = minCol > markerStep;
           const corridor = document.createElement('div');
-          corridor.className = 'open-group-corridor';
+          corridor.className = `open-group-corridor${isInactive ? ' inactive' : ''}`;
+          corridor.dataset.minCol = minCol;
+          corridor.dataset.maxCol = maxIdx + 1;
+          corridor.dataset.groupId = grp.id;
           corridor.style.left = `${minIdx * COL_W}px`;
           corridor.style.width = `${(maxIdx - minIdx + 1) * COL_W}px`;
           trackContainer.appendChild(corridor);
@@ -1861,11 +2175,10 @@
 
         vChip.innerHTML = `
           <div class="virtual-group-top">
-            <div class="virtual-group-icon">${FOLDER_ICON_SVG}</div>
             <div class="virtual-group-chevron">▶</div>
+            <div class="virtual-group-badge">${grpActions.length}</div>
           </div>
           <div class="virtual-group-body">
-            <div class="virtual-group-badge">${grpActions.length}</div>
             <div class="virtual-group-title">${grp.name}</div>
           </div>
           <div class="virtual-group-bottom">
@@ -1947,13 +2260,76 @@
 
     // Apply Highlighting, Greyscale Inactive States, Multi-Selection, and Movable Brackets
     function applyHighlight() {
-      // 1. Highlight All Virtual Group Chips
+      // 1. Highlight All Virtual Group Chips & Dynamic Inactive Greyscale
       document.querySelectorAll('.virtual-group-chip').forEach(vChip => {
         const gid = parseInt(vChip.dataset.groupId);
+        const col = parseInt(vChip.dataset.col);
+        const isInactive = col > markerStep;
+        const grp = groups.find(g => g.id === gid);
+        const grpActions = grp ? actions.filter(a => grp.actionIds.includes(a.id)) : [];
+        const isAllSuppressed = grpActions.length > 0 && grpActions.every(a => a.suppressed);
+
+        if (isInactive) {
+          vChip.classList.add('inactive');
+        } else {
+          vChip.classList.remove('inactive');
+        }
+
+        if (isAllSuppressed) {
+          vChip.classList.add('suppressed');
+        } else {
+          vChip.classList.remove('suppressed');
+        }
+
         if (selectedGroupId === gid) {
           vChip.classList.add('selected');
         } else {
           vChip.classList.remove('selected');
+        }
+
+        // Dynamically update dot colors based on active / inactive
+        const usedRows = new Set();
+        grpActions.forEach(a => a.rows.forEach(r => usedRows.add(r)));
+        const dotEls = vChip.querySelectorAll('.v-dot');
+        [0, 1, 2, 3, 4].forEach((r, idx) => {
+          if (dotEls[idx]) {
+            const isUsed = usedRows.has(r);
+            dotEls[idx].style.background = isUsed ? (isInactive ? '#94a3b8' : '#38bdf8') : '#262c37';
+          }
+        });
+      });
+
+      // 1b. Update Closed and Open Group Header Pills & Corridors
+      document.querySelectorAll('.closed-group-header-pill').forEach(pill => {
+        const col = parseInt(pill.dataset.col);
+        const gid = parseInt(pill.dataset.groupId);
+        if (col > markerStep) {
+          pill.classList.add('inactive');
+        } else {
+          pill.classList.remove('inactive');
+        }
+        if (selectedGroupId === gid) {
+          pill.classList.add('selected');
+        } else {
+          pill.classList.remove('selected');
+        }
+      });
+
+      document.querySelectorAll('.open-group-header-pill').forEach(pill => {
+        const minCol = parseInt(pill.dataset.minCol);
+        if (minCol > markerStep) {
+          pill.classList.add('inactive');
+        } else {
+          pill.classList.remove('inactive');
+        }
+      });
+
+      document.querySelectorAll('.open-group-corridor').forEach(corr => {
+        const minCol = parseInt(corr.dataset.minCol);
+        if (minCol > markerStep) {
+          corr.classList.add('inactive');
+        } else {
+          corr.classList.remove('inactive');
         }
       });
 
