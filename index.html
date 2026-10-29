@@ -740,6 +740,162 @@
       margin: 4px 0;
     }
 
+    /* Virtual Group Chip (Closed Folder spanning entire column) */
+    .virtual-group-chip {
+      position: absolute;
+      top: 4px;
+      height: 182px;
+      width: 38px;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #1f2533 0%, #141822 100%);
+      border: 1.5px solid #3b4556;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      z-index: 25;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 2px;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .virtual-group-chip:hover {
+      border-color: #38bdf8;
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .virtual-group-chip.selected {
+      border: 2px solid #ffffff;
+      box-shadow: 0 0 14px rgba(255, 255, 255, 0.45);
+    }
+
+    .virtual-group-chip.inactive {
+      background: linear-gradient(180deg, #22252c 0%, #161820 100%);
+      border-color: #4b5260;
+      filter: grayscale(100%);
+    }
+
+    .virtual-group-chip.suppressed {
+      opacity: 0.55 !important;
+      border-style: dashed !important;
+      background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(0, 0, 0, 0.4) 5px, rgba(0, 0, 0, 0.4) 10px) !important;
+    }
+
+    .virtual-group-top {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .virtual-group-icon {
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .virtual-group-chevron {
+      font-size: 9px;
+      color: #38bdf8;
+    }
+
+    .virtual-group-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .virtual-group-title {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      font-size: 10px;
+      font-weight: 600;
+      color: #cbd5e1;
+      letter-spacing: 0.5px;
+      max-height: 85px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .virtual-group-badge {
+      font-size: 9px;
+      font-weight: 700;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 4px;
+      padding: 1px 4px;
+      white-space: nowrap;
+    }
+
+    .virtual-group-bottom {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .virtual-group-dots {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .v-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #64748b;
+    }
+
+    /* Open Group Header Pill (in Timeline Header Track) */
+    .open-group-header-pill {
+      position: absolute;
+      top: 3px;
+      height: 22px;
+      border-radius: 4px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6px;
+      font-size: 10px;
+      font-weight: 600;
+      color: #38bdf8;
+      cursor: pointer;
+      z-index: 40;
+      user-select: none;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .open-group-header-pill:hover {
+      background: rgba(56, 189, 248, 0.22);
+      border-color: #38bdf8;
+    }
+
+    .open-group-corridor {
+      position: absolute;
+      top: 0;
+      height: 190px;
+      background: rgba(56, 189, 248, 0.03);
+      border-left: 1px dashed rgba(56, 189, 248, 0.35);
+      border-right: 1px dashed rgba(56, 189, 248, 0.35);
+      pointer-events: none;
+      z-index: 5;
+    }
+
     /* Scrollbars */
     ::-webkit-scrollbar {
       width: 8px;
@@ -893,7 +1049,7 @@
     <!-- Live Interaction Log & Instructions -->
     <div class="footer-bar">
       <div id="dragFeedback">
-        💡 <strong>Try this:</strong> Right-click any chip to open the <strong>SolidCraft Context Menu</strong> (Edit, Suppress, Roll Marker, Copy/Paste, Delete). Drag the blue <strong>head pin</strong> to roll back CAD solid-body evaluation!
+        💡 <strong>Try this:</strong> Multi-select chips with <strong>Shift+Click</strong> (range) or <strong>Cmd/Ctrl+Click</strong>. Right-click adjacent selection to <strong>Group Selection</strong>! Right-click virtual group chip for Group menu. Drag head pin to roll back.
       </div>
       <div style="font-family: monospace; font-size: 11px; color: var(--text-dim);">
         ↔ Scroll horizontally &nbsp;|&nbsp; ↕ Scroll vertically
@@ -933,8 +1089,19 @@
       copy: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`,
       paste: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>`,
       message: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
-      delete: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>`
+      delete: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>`,
+      group: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>`,
+      ungroup: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><path d="M11 11l4 4m0-4l-4 4"/></svg>`,
+      expand: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>`,
+      collapse: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="10" y1="14" x2="3" y2="21"/></svg>`
     };
+
+    // Vector Folder SVG for Virtual Group Chip
+    const FOLDER_ICON_SVG = `<svg viewBox="0 0 48 48" width="22" height="22" fill="none">
+      <path d="M6 10C6 7.79 7.79 6 10 6H19L24 12H38C40.21 12 42 13.79 42 16V38C42 40.21 40.21 42 38 42H10C7.79 42 6 40.21 6 38V10Z" fill="#2563eb" fill-opacity="0.25" stroke="#38bdf8" stroke-width="3" stroke-linejoin="round"/>
+      <rect x="14" y="20" width="20" height="14" rx="2" fill="#38bdf8" fill-opacity="0.35" stroke="#38bdf8" stroke-width="2"/>
+      <line x1="18" y1="27" x2="30" y2="27" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+    </svg>`;
 
     const COL_W = 52;
     const ROW_H = 38;
@@ -971,7 +1138,11 @@
     ];
 
     const initialActions = JSON.parse(JSON.stringify(actions));
-    let selectedActionId = 5;       // Default: Fillet Edge
+    let selectedActionIds = [5];    // Multi-selection array (default: Fillet Edge)
+    let anchorActionId = 5;         // Anchor for Shift+Click range
+    let selectedGroupId = null;     // Selected virtual group
+    let groups = [];                // Timeline Groups / Folders
+    let nextGroupId = 1;
     let markerStep = 16;            // Default: 16 active steps, 8 inactive steps to demonstrate greyscale highlights!
     let isPlaying = false;
     let playbackTimer = null;
@@ -1005,22 +1176,170 @@
     const hdrBtnForward = document.getElementById('hdrBtnForward');
     const hdrBtnLast = document.getElementById('hdrBtnLast');
 
-    function getActionCol(actionId) {
-      return actions.findIndex(a => a.id === actionId) + 1;
+    function getDisplayItems() {
+      const items = [];
+      const handledGroupIds = new Set();
+
+      for (let i = 0; i < actions.length; i++) {
+        const act = actions[i];
+        const grp = groups.find(g => g.actionIds.includes(act.id));
+        if (grp) {
+          if (!grp.isOpen) {
+            // Group is closed: collapse all its actions into a single display column
+            if (!handledGroupIds.has(grp.id)) {
+              handledGroupIds.add(grp.id);
+              const grpActions = actions.filter(a => grp.actionIds.includes(a.id));
+              items.push({
+                isGroup: true,
+                group: grp,
+                actions: grpActions,
+                id: `group-${grp.id}`
+              });
+            }
+          } else {
+            // Group is open: each action gets its own column with group reference
+            items.push({
+              isGroup: false,
+              action: act,
+              group: grp,
+              id: act.id
+            });
+          }
+        } else {
+          // Ungrouped individual action
+          items.push({
+            isGroup: false,
+            action: act,
+            group: null,
+            id: act.id
+          });
+        }
+      }
+      return items;
+    }
+
+    function getActionDisplayCol(actionId) {
+      const items = getDisplayItems();
+      for (let idx = 0; idx < items.length; idx++) {
+        const item = items[idx];
+        if (item.isGroup) {
+          if (item.group.actionIds.includes(actionId)) {
+            return idx + 1;
+          }
+        } else {
+          if (item.action.id === actionId) {
+            return idx + 1;
+          }
+        }
+      }
+      return -1;
+    }
+
+    // Check if the current multi-selection consists of adjacent/contiguous actions in the timeline
+    function isSelectionAdjacent() {
+      if (!selectedActionIds || selectedActionIds.length < 2) return false;
+      const indices = selectedActionIds
+        .map(id => actions.findIndex(a => a.id === id))
+        .filter(idx => idx !== -1);
+      if (indices.length !== selectedActionIds.length) return false;
+      indices.sort((a, b) => a - b);
+      for (let i = 0; i < indices.length - 1; i++) {
+        if (indices[i + 1] !== indices[i] + 1) {
+          return false; // Gap found, not adjacent
+        }
+      }
+      return true;
+    }
+
+    // Shift+Click: Select all chips between anchor and target chip
+    function handleShiftClick(targetId) {
+      if (anchorActionId === null || anchorActionId === undefined) {
+        anchorActionId = selectedActionIds[0] || targetId;
+      }
+      const fromIdx = actions.findIndex(a => a.id === anchorActionId);
+      const toIdx = actions.findIndex(a => a.id === targetId);
+      if (fromIdx === -1 || toIdx === -1) return;
+
+      const start = Math.min(fromIdx, toIdx);
+      const end = Math.max(fromIdx, toIdx);
+
+      const rangeIds = [];
+      for (let i = start; i <= end; i++) {
+        rangeIds.push(actions[i].id);
+      }
+      selectedActionIds = rangeIds;
+      selectedGroupId = null;
+      applyHighlight();
+
+      const isAdjacent = isSelectionAdjacent();
+      dragFeedback.innerHTML = `✨ <strong>Range Selected:</strong> ${rangeIds.length} actions selected between Step ${fromIdx + 1} and ${toIdx + 1}. ${isAdjacent ? 'All adjacent! Right-click any selected chip to "Group Selection".' : ''}`;
+    }
+
+    // CMD/CTRL+Click: Toggle chip into/out of selection (non-adjacent allowed)
+    function handleCmdClick(targetId) {
+      const idx = selectedActionIds.indexOf(targetId);
+      if (idx !== -1) {
+        if (selectedActionIds.length > 1) {
+          selectedActionIds.splice(idx, 1);
+        }
+      } else {
+        selectedActionIds.push(targetId);
+      }
+      anchorActionId = targetId;
+      selectedGroupId = null;
+      applyHighlight();
+
+      const isAdjacent = isSelectionAdjacent();
+      dragFeedback.innerHTML = `✨ <strong>Multi-Selection:</strong> ${selectedActionIds.length} action(s) selected. ${isAdjacent ? 'All adjacent! Right-click to "Group Selection".' : 'Non-adjacent selection (Cmd/Ctrl+Click toggled).'}`;
+    }
+
+    // Create a new timeline group from the adjacent selection
+    function createGroupFromSelection() {
+      if (!isSelectionAdjacent()) return;
+      const sortedIds = [...selectedActionIds].sort((a, b) => {
+        return actions.findIndex(act => act.id === a) - actions.findIndex(act => act.id === b);
+      });
+      const defaultName = `Group ${nextGroupId}`;
+      const groupName = prompt(`Enter name for grouped features:`, defaultName);
+      if (groupName === null) return; // User cancelled
+
+      const name = groupName.trim() || defaultName;
+
+      // Remove selected actions from any existing groups to avoid duplication
+      groups.forEach(g => {
+        g.actionIds = g.actionIds.filter(id => !sortedIds.includes(id));
+      });
+      groups = groups.filter(g => g.actionIds.length > 0);
+
+      const newGroup = {
+        id: nextGroupId++,
+        name: name,
+        actionIds: sortedIds,
+        isOpen: false // Folded by default into a single-column virtual group chip!
+      };
+      groups.push(newGroup);
+      selectedGroupId = newGroup.id;
+      selectedActionIds = [...sortedIds];
+      anchorActionId = sortedIds[0];
+
+      renderTimeline();
+      dragFeedback.innerHTML = `📁 <strong>Group Created:</strong> Created <em>${newGroup.name}</em> with ${sortedIds.length} features. Folded into a virtual group chip spanning all component tracks. Right-click for Group menu or double-click to Open!`;
     }
 
     function computeMovableRange(action) {
-      const currentCol = getActionCol(action.id);
+      const displayItems = getDisplayItems();
+      const currentCol = getActionDisplayCol(action.id);
+      if (currentCol === -1) return { minCol: 1, maxCol: 1, currentCol: 1 };
       
       let maxPrereqCol = 0;
       action.prereqs.forEach(pid => {
-        const c = getActionCol(pid);
+        const c = getActionDisplayCol(pid);
         if (c > maxPrereqCol) maxPrereqCol = c;
       });
 
-      let minDownstreamCol = actions.length + 1;
+      let minDownstreamCol = displayItems.length + 1;
       action.downstream.forEach(did => {
-        const c = getActionCol(did);
+        const c = getActionDisplayCol(did);
         if (c < minDownstreamCol) minDownstreamCol = c;
       });
 
@@ -1033,7 +1352,8 @@
 
     // Set Timeline Rollback Marker Step
     function setMarkerStep(step, updateFeedback = true) {
-      markerStep = Math.max(0, Math.min(actions.length, step));
+      const totalCols = getDisplayItems().length;
+      markerStep = Math.max(0, Math.min(totalCols, step));
       
       if (timelineMarker) {
         timelineMarker.style.left = `${markerStep * COL_W}px`;
@@ -1041,7 +1361,7 @@
 
       // Update Both Transport Button Sets
       const isFirst = markerStep === 0;
-      const isLast = markerStep === actions.length;
+      const isLast = markerStep === totalCols;
 
       if (btnFirst) btnFirst.disabled = isFirst;
       if (btnBack) btnBack.disabled = isFirst;
@@ -1055,8 +1375,8 @@
 
       // Update Active Badge
       if (activeMarkerBadge) {
-        activeMarkerBadge.textContent = `Active: ${markerStep} / ${actions.length} Steps`;
-        if (markerStep < actions.length) {
+        activeMarkerBadge.textContent = `Active: ${markerStep} / ${totalCols} Steps`;
+        if (markerStep < totalCols) {
           activeMarkerBadge.style.color = '#f59e0b';
           activeMarkerBadge.style.borderColor = 'rgba(245, 158, 11, 0.4)';
           activeMarkerBadge.style.background = 'rgba(245, 158, 11, 0.15)';
@@ -1078,12 +1398,12 @@
       });
 
       // Re-apply Highlight to reflect current active / inactive positions
-      applyHighlight(selectedActionId);
+      applyHighlight();
 
       // Feedback description
       if (updateFeedback && !isPlaying) {
-        if (markerStep < actions.length) {
-          const rolledCount = actions.length - markerStep;
+        if (markerStep < totalCols) {
+          const rolledCount = totalCols - markerStep;
           dragFeedback.innerHTML = `⏪ <strong>Timeline Rolled Back:</strong> Steps 1 to ${markerStep} are active in CAD solid model. ${rolledCount} step(s) after the marker are inactive in 3D solid-body evaluation, but remain fully editable and selectable in 100% opacity greyscale!`;
         } else {
           dragFeedback.innerHTML = `✨ <strong>All Steps Active:</strong> The timeline marker is at the end. Drag the blue head pin left to roll back solid-body evaluation!`;
@@ -1101,7 +1421,8 @@
     }
 
     function startPlayback() {
-      if (markerStep >= actions.length) {
+      const totalCols = getDisplayItems().length;
+      if (markerStep >= totalCols) {
         setMarkerStep(0, false);
       }
       isPlaying = true;
@@ -1116,11 +1437,12 @@
       dragFeedback.innerHTML = `▶️ <strong>Playing History Sequence:</strong> Re-evaluating features step by step...`;
 
       playbackTimer = setInterval(() => {
-        if (markerStep < actions.length) {
+        const totalCols = getDisplayItems().length;
+        if (markerStep < totalCols) {
           setMarkerStep(markerStep + 1, false);
         } else {
           stopPlayback();
-          dragFeedback.innerHTML = `🏁 <strong>Playback Complete:</strong> All ${actions.length} features evaluated in CAD model.`;
+          dragFeedback.innerHTML = `🏁 <strong>Playback Complete:</strong> All ${totalCols} timeline steps evaluated in CAD model.`;
         }
       }, 380);
     }
@@ -1141,28 +1463,82 @@
       }
     }
 
-    // Render Timeline: Header Track & Component Tracks (Zero Empty Columns, 100% Opacity)
+    // Render Timeline: Header Track & Component Tracks (Supports Virtual Group Chips & Open Group Pills)
     function renderTimeline() {
-      const totalCols = actions.length;
+      const displayItems = getDisplayItems();
+      const totalCols = displayItems.length;
 
       // 1. Render Header Scrubber Track Cells
       headerTrack.innerHTML = '';
       for (let colIdx = 0; colIdx < totalCols; colIdx++) {
         const c = colIdx + 1;
+        const item = displayItems[colIdx];
         const hCell = document.createElement('div');
         hCell.className = `header-step-cell ${c > markerStep ? 'rolled-back-step' : 'active-step'}`;
         hCell.dataset.col = c;
-        hCell.title = `Step ${c}: ${actions[colIdx].name} (Click to roll marker here)`;
-        hCell.innerHTML = `
-          <div class="header-step-tick"></div>
-          <span>${c < 10 ? '0' + c : c}</span>
-        `;
+
+        if (item.isGroup) {
+          hCell.title = `Group: ${item.group.name} (${item.actions.length} features) [Click to roll marker here, Right-click for Group menu]`;
+          hCell.innerHTML = `
+            <div class="header-step-tick"></div>
+            <span style="color: #38bdf8; font-weight: 700;">G${item.group.id}</span>
+          `;
+          hCell.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            openGroupContextMenu(e.clientX, e.clientY, item.group);
+          });
+        } else {
+          hCell.title = `Step ${c}: ${item.action.name} (Click to roll marker here)`;
+          hCell.innerHTML = `
+            <div class="header-step-tick"></div>
+            <span>${c < 10 ? '0' + c : c}</span>
+          `;
+        }
+
         hCell.addEventListener('click', () => {
           stopPlayback();
           setMarkerStep(c);
         });
         headerTrack.appendChild(hCell);
       }
+
+      // 1b. Render Open Group Header Pills in Header Track
+      groups.forEach(grp => {
+        if (!grp.isOpen) return;
+        const indices = [];
+        displayItems.forEach((it, idx) => {
+          if (it.group && it.group.id === grp.id) {
+            indices.push(idx);
+          }
+        });
+        if (indices.length > 0) {
+          const minIdx = Math.min(...indices);
+          const maxIdx = Math.max(...indices);
+          const pill = document.createElement('div');
+          pill.className = 'open-group-header-pill';
+          pill.style.left = `${minIdx * COL_W + 3}px`;
+          pill.style.width = `${(maxIdx - minIdx + 1) * COL_W - 6}px`;
+          pill.title = `${grp.name} (${grp.actionIds.length} features)\nClick Close to fold group, Right-click for Group menu`;
+          pill.innerHTML = `
+            <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10px;">📁 ${grp.name} (${grp.actionIds.length})</span>
+            <span style="font-size: 9px; padding: 1px 4px; background: rgba(56, 189, 248, 0.2); border-radius: 3px; margin-left: 4px;">Close ▴</span>
+          `;
+          pill.addEventListener('click', (e) => {
+            e.stopPropagation();
+            closeContextMenu();
+            grp.isOpen = false;
+            renderTimeline();
+            dragFeedback.innerHTML = `📁 <strong>Group Closed:</strong> Folded <em>${grp.name}</em> into a virtual group chip.`;
+          });
+          pill.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            openGroupContextMenu(e.clientX, e.clientY, grp);
+          });
+          headerTrack.appendChild(pill);
+        }
+      });
 
       // 2. Render Component Track Rows
       trackContainer.innerHTML = '';
@@ -1178,36 +1554,139 @@
           cell.dataset.col = c;
           cell.dataset.row = r;
 
-          const act = actions[colIdx];
-          if (act.rows.includes(r)) {
-            const chip = document.createElement('div');
-            chip.className = `chip${act.suppressed ? ' suppressed' : ''}`;
-            chip.dataset.id = act.id;
-            chip.dataset.col = c;
-            chip.dataset.row = r;
-            chip.innerHTML = ICONS[act.type] || ICONS.extrude;
-            chip.title = `${act.name} (Step ${c})${act.suppressed ? ' [Suppressed]' : ''}`;
-
-            attachDragHandlers(chip, act);
-            cell.appendChild(chip);
+          const item = displayItems[colIdx];
+          if (item.isGroup) {
+            // Group column: row cells left clear for the column-spanning virtual chip
+            cell.innerHTML = '';
           } else {
-            cell.innerHTML = '<span class="empty-hint">·</span>';
+            const act = item.action;
+            if (act.rows.includes(r)) {
+              const chip = document.createElement('div');
+              chip.className = `chip${act.suppressed ? ' suppressed' : ''}`;
+              chip.dataset.id = act.id;
+              chip.dataset.col = c;
+              chip.dataset.row = r;
+              chip.innerHTML = ICONS[act.type] || ICONS.extrude;
+              chip.title = `${act.name} (Step ${c})${act.suppressed ? ' [Suppressed]' : ''}`;
+
+              attachDragHandlers(chip, act);
+              cell.appendChild(chip);
+            } else {
+              cell.innerHTML = '<span class="empty-hint">·</span>';
+            }
           }
           rowDiv.appendChild(cell);
         }
         trackContainer.appendChild(rowDiv);
       }
 
+      // 2b. Render Open Group Corridor Background Tint
+      groups.forEach(grp => {
+        if (!grp.isOpen) return;
+        const indices = [];
+        displayItems.forEach((it, idx) => {
+          if (it.group && it.group.id === grp.id) {
+            indices.push(idx);
+          }
+        });
+        if (indices.length > 0) {
+          const minIdx = Math.min(...indices);
+          const maxIdx = Math.max(...indices);
+          const corridor = document.createElement('div');
+          corridor.className = 'open-group-corridor';
+          corridor.style.left = `${minIdx * COL_W}px`;
+          corridor.style.width = `${(maxIdx - minIdx + 1) * COL_W}px`;
+          trackContainer.appendChild(corridor);
+        }
+      });
+
+      // 2c. Render Virtual Group Chips (Folded Groups Spanning Entire Column)
+      displayItems.forEach((item, colIdx) => {
+        if (!item.isGroup) return;
+        const grp = item.group;
+        const grpActions = item.actions;
+        const c = colIdx + 1;
+        const isInactive = c > markerStep;
+        const isAllSuppressed = grpActions.length > 0 && grpActions.every(a => a.suppressed);
+        const isSelected = selectedGroupId === grp.id;
+
+        const vChip = document.createElement('div');
+        vChip.className = `virtual-group-chip${isInactive ? ' inactive' : ''}${isAllSuppressed ? ' suppressed' : ''}${isSelected ? ' selected' : ''}`;
+        vChip.style.left = `${(colIdx * COL_W) + 7}px`;
+        vChip.dataset.groupId = grp.id;
+        vChip.dataset.col = c;
+        vChip.title = `${grp.name} (${grpActions.length} features)\nClick to Select, Double-click to Open Group, Right-click for Group Menu`;
+
+        // Dots representing component rows touched by this group
+        const usedRows = new Set();
+        grpActions.forEach(a => a.rows.forEach(r => usedRows.add(r)));
+        const dotsHtml = [0, 1, 2, 3, 4].map(r => {
+          const isUsed = usedRows.has(r);
+          return `<div class="v-dot" style="background: ${isUsed ? (isInactive ? '#94a3b8' : '#38bdf8') : '#262c37'}; opacity: ${isUsed ? 1 : 0.35};"></div>`;
+        }).join('');
+
+        vChip.innerHTML = `
+          <div class="virtual-group-top">
+            <div class="virtual-group-icon">${FOLDER_ICON_SVG}</div>
+            <div class="virtual-group-chevron">▶</div>
+          </div>
+          <div class="virtual-group-body">
+            <div class="virtual-group-badge">${grpActions.length}</div>
+            <div class="virtual-group-title">${grp.name}</div>
+          </div>
+          <div class="virtual-group-bottom">
+            <div class="virtual-group-dots">${dotsHtml}</div>
+          </div>
+        `;
+
+        // Single click: Select group
+        vChip.addEventListener('click', (e) => {
+          e.stopPropagation();
+          closeContextMenu();
+          selectedGroupId = grp.id;
+          selectedActionIds = [...grp.actionIds];
+          anchorActionId = grp.actionIds[0];
+          applyHighlight();
+          dragFeedback.innerHTML = `📁 <strong>Group Selected:</strong> <em>${grp.name}</em> (${grpActions.length} features). Double-click to Open or Right-click for Group options.`;
+        });
+
+        // Double click: Open / Unfold group
+        vChip.addEventListener('dblclick', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          closeContextMenu();
+          grp.isOpen = true;
+          renderTimeline();
+          dragFeedback.innerHTML = `📂 <strong>Group Opened:</strong> Expanded <em>${grp.name}</em>. Right-click individual chips for feature menu.`;
+        });
+
+        // Right click: Open Group Context Menu
+        vChip.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          selectedGroupId = grp.id;
+          selectedActionIds = [...grp.actionIds];
+          anchorActionId = grp.actionIds[0];
+          applyHighlight();
+          openGroupContextMenu(e.clientX, e.clientY, grp);
+        });
+
+        trackContainer.appendChild(vChip);
+      });
+
       renderConnectors();
       setMarkerStep(markerStep, false);
-      applyHighlight(selectedActionId);
+      applyHighlight();
     }
 
     // Render Dead-Centered Dotted Connectors
     function renderConnectors() {
       connectorsGroup.innerHTML = '';
+      const displayItems = getDisplayItems();
 
-      actions.forEach((act, colIdx) => {
+      displayItems.forEach((item, colIdx) => {
+        if (item.isGroup) return;
+        const act = item.action;
         if (act.rows.length > 1) {
           const c = colIdx + 1;
           const minRow = Math.min(...act.rows);
@@ -1224,27 +1703,27 @@
           line.setAttribute('x2', cx);
           line.setAttribute('y2', y2);
           const isInactive = c > markerStep;
-          line.setAttribute('class', `connector-dots ${act.id === selectedActionId ? (isInactive ? 'active-inactive' : 'active') : (isInactive ? 'inactive' : '')}`);
+          const isSelected = selectedActionIds.includes(act.id);
+          line.setAttribute('class', `connector-dots ${isSelected ? (isInactive ? 'active-inactive' : 'active') : (isInactive ? 'inactive' : '')}`);
           line.dataset.actionId = act.id;
-
           connectorsGroup.appendChild(line);
         }
       });
     }
 
-    // Apply Highlighting, Greyscale Inactive States, and Movable Brackets
-    function applyHighlight(actionId) {
-      selectedActionId = actionId;
-      const act = actions.find(a => a.id === actionId);
-      if (!act) {
-        bracketGroup.style.display = 'none';
-        return;
-      }
+    // Apply Highlighting, Greyscale Inactive States, Multi-Selection, and Movable Brackets
+    function applyHighlight() {
+      // 1. Highlight All Virtual Group Chips
+      document.querySelectorAll('.virtual-group-chip').forEach(vChip => {
+        const gid = parseInt(vChip.dataset.groupId);
+        if (selectedGroupId === gid) {
+          vChip.classList.add('selected');
+        } else {
+          vChip.classList.remove('selected');
+        }
+      });
 
-      const { minCol, maxCol, currentCol } = computeMovableRange(act);
-      const isSelectedInactive = currentCol > markerStep;
-
-      // 1. Highlight All Chips with 100% Opacity (Active in color, Inactive in greyscale)
+      // 2. Highlight All Action Chips with 100% Opacity
       document.querySelectorAll('.chip').forEach(chip => {
         const id = parseInt(chip.dataset.id);
         const col = parseInt(chip.dataset.col);
@@ -1254,7 +1733,7 @@
 
         chip.style.transform = '';
 
-        if (id === actionId) {
+        if (selectedActionIds.includes(id)) {
           if (isChipInactive) {
             chip.className = 'chip selected-inactive';
             chip.title = `${actName} (Step ${col}) - Selected [Inactive / Unbuilt Solid]`;
@@ -1262,21 +1741,32 @@
             chip.className = 'chip selected';
             chip.title = `${actName} (Step ${col}) - Selected [Active / Evaluated Solid]`;
           }
-        } else if (act.prereqs.includes(id)) {
-          if (isChipInactive) {
-            chip.className = 'chip prereq-inactive';
-            chip.title = `${actName} (Step ${col}) - Prerequisite [Inactive: Light Grey]`;
+        } else if (selectedActionIds.length === 1 && selectedGroupId === null) {
+          const act = actions.find(a => a.id === selectedActionIds[0]);
+          if (act && act.prereqs.includes(id)) {
+            if (isChipInactive) {
+              chip.className = 'chip prereq-inactive';
+              chip.title = `${actName} (Step ${col}) - Prerequisite [Inactive: Light Grey]`;
+            } else {
+              chip.className = 'chip prereq';
+              chip.title = `${actName} (Step ${col}) - Prerequisite [Active: Orange]`;
+            }
+          } else if (act && act.downstream.includes(id)) {
+            if (isChipInactive) {
+              chip.className = 'chip downstream-inactive';
+              chip.title = `${actName} (Step ${col}) - Downstream Dependent [Inactive: Mid Grey]`;
+            } else {
+              chip.className = 'chip downstream';
+              chip.title = `${actName} (Step ${col}) - Downstream Dependent [Active: Blue]`;
+            }
           } else {
-            chip.className = 'chip prereq';
-            chip.title = `${actName} (Step ${col}) - Prerequisite [Active: Orange]`;
-          }
-        } else if (act.downstream.includes(id)) {
-          if (isChipInactive) {
-            chip.className = 'chip downstream-inactive';
-            chip.title = `${actName} (Step ${col}) - Downstream Dependent [Inactive: Mid Grey]`;
-          } else {
-            chip.className = 'chip downstream';
-            chip.title = `${actName} (Step ${col}) - Downstream Dependent [Active: Blue]`;
+            if (isChipInactive) {
+              chip.className = 'chip unselected-inactive';
+              chip.title = `${actName} (Step ${col}) - Inactive (100% Opacity Greyscale)`;
+            } else {
+              chip.className = 'chip unselected-active';
+              chip.title = `${actName} (Step ${col}) - Active (100% Opacity Full Color)`;
+            }
           }
         } else {
           if (isChipInactive) {
@@ -1293,113 +1783,163 @@
         }
       });
 
-      // 2. Multi-Component Connectors
+      // 3. Multi-Component Connectors
       document.querySelectorAll('.connector-dots').forEach(line => {
         const actId = parseInt(line.dataset.actionId);
-        const lineAct = actions.find(a => a.id === actId);
-        const col = lineAct ? getActionCol(lineAct.id) : 0;
+        const col = getActionDisplayCol(actId);
         const isLineInactive = col > markerStep;
+        const isSelected = selectedActionIds.includes(actId);
 
-        if (actId === actionId) {
+        if (isSelected) {
           line.className = `connector-dots ${isLineInactive ? 'active-inactive' : 'active'}`;
         } else {
           line.className = `connector-dots ${isLineInactive ? 'inactive' : ''}`;
         }
       });
 
-      // 3. Movable Corridor Brackets [ ... ] (Dynamically split by timeline marker)
-      if (minCol <= maxCol) {
-        bracketGroup.style.display = 'block';
-        const xLeft = (minCol - 1) * COL_W;
-        const xRight = maxCol * COL_W;
-        const totalHeight = NUM_ROWS * ROW_H;
-        const markerX = markerStep * COL_W;
+      // 4. Movable Corridor Brackets [ ... ] (Shown for Single Selected Action)
+      if (selectedActionIds.length === 1 && selectedGroupId === null) {
+        const act = actions.find(a => a.id === selectedActionIds[0]);
+        if (act) {
+          const { minCol, maxCol, currentCol } = computeMovableRange(act);
+          if (minCol <= maxCol) {
+            bracketGroup.style.display = 'block';
+            const xLeft = (minCol - 1) * COL_W;
+            const xRight = maxCol * COL_W;
+            const totalHeight = NUM_ROWS * ROW_H;
+            const markerX = markerStep * COL_W;
 
-        // Active corridor background (to the left of the timeline marker: Green)
-        const activeStartX = xLeft;
-        const activeEndX = Math.min(xRight, markerX);
-        const activeWidth = Math.max(0, activeEndX - activeStartX);
+            // Active corridor background
+            const activeStartX = xLeft;
+            const activeEndX = Math.min(xRight, markerX);
+            const activeWidth = Math.max(0, activeEndX - activeStartX);
 
-        if (activeWidth > 0) {
-          bracketCorridorActive.style.display = 'block';
-          bracketCorridorActive.setAttribute('x', activeStartX);
-          bracketCorridorActive.setAttribute('width', activeWidth);
-          bracketCorridorActive.setAttribute('height', totalHeight);
-          bracketCorridorActive.setAttribute('fill', 'rgba(34, 197, 94, 0.08)');
+            if (activeWidth > 0) {
+              bracketCorridorActive.style.display = 'block';
+              bracketCorridorActive.setAttribute('x', activeStartX);
+              bracketCorridorActive.setAttribute('width', activeWidth);
+              bracketCorridorActive.setAttribute('height', totalHeight);
+              bracketCorridorActive.setAttribute('fill', 'rgba(34, 197, 94, 0.08)');
+            } else {
+              bracketCorridorActive.style.display = 'none';
+            }
+
+            // Inactive corridor background
+            const inactiveStartX = Math.max(xLeft, markerX);
+            const inactiveEndX = xRight;
+            const inactiveWidth = Math.max(0, inactiveEndX - inactiveStartX);
+
+            if (inactiveWidth > 0) {
+              bracketCorridorInactive.style.display = 'block';
+              bracketCorridorInactive.setAttribute('x', inactiveStartX);
+              bracketCorridorInactive.setAttribute('width', inactiveWidth);
+              bracketCorridorInactive.setAttribute('height', totalHeight);
+              bracketCorridorInactive.setAttribute('fill', 'var(--grey-corridor-bg)');
+            } else {
+              bracketCorridorInactive.style.display = 'none';
+            }
+
+            // Opening Bracket [
+            const leftBracketColor = xLeft < markerX ? '#22c55e' : 'var(--grey-corridor)';
+            pathBracketLeft.setAttribute('stroke', leftBracketColor);
+            pathBracketLeft.setAttribute('d', `M ${xLeft + 7} 4 L ${xLeft} 4 L ${xLeft} ${totalHeight - 4} L ${xLeft + 7} ${totalHeight - 4}`);
+
+            // Closing Bracket ]
+            const rightBracketColor = xRight <= markerX ? '#22c55e' : 'var(--grey-corridor)';
+            pathBracketRight.setAttribute('stroke', rightBracketColor);
+            pathBracketRight.setAttribute('d', `M ${xRight - 7} 4 L ${xRight} 4 L ${xRight} ${totalHeight - 4} L ${xRight - 7} ${totalHeight - 4}`);
+          } else {
+            bracketGroup.style.display = 'none';
+          }
         } else {
-          bracketCorridorActive.style.display = 'none';
+          bracketGroup.style.display = 'none';
         }
-
-        // Inactive corridor background (to the right of the timeline marker: Greyscale)
-        const inactiveStartX = Math.max(xLeft, markerX);
-        const inactiveEndX = xRight;
-        const inactiveWidth = Math.max(0, inactiveEndX - inactiveStartX);
-
-        if (inactiveWidth > 0) {
-          bracketCorridorInactive.style.display = 'block';
-          bracketCorridorInactive.setAttribute('x', inactiveStartX);
-          bracketCorridorInactive.setAttribute('width', inactiveWidth);
-          bracketCorridorInactive.setAttribute('height', totalHeight);
-          bracketCorridorInactive.setAttribute('fill', 'var(--grey-corridor-bg)');
-        } else {
-          bracketCorridorInactive.style.display = 'none';
-        }
-
-        // Opening Bracket [ (Green to the left of marker, Greyscale to the right)
-        const leftBracketColor = xLeft < markerX ? '#22c55e' : 'var(--grey-corridor)';
-        pathBracketLeft.setAttribute('stroke', leftBracketColor);
-        pathBracketLeft.setAttribute('d', `M ${xLeft + 7} 4 L ${xLeft} 4 L ${xLeft} ${totalHeight - 4} L ${xLeft + 7} ${totalHeight - 4}`);
-
-        // Closing Bracket ] (Green to the left of or on marker, Greyscale to the right)
-        const rightBracketColor = xRight <= markerX ? '#22c55e' : 'var(--grey-corridor)';
-        pathBracketRight.setAttribute('stroke', rightBracketColor);
-        pathBracketRight.setAttribute('d', `M ${xRight - 7} 4 L ${xRight} 4 L ${xRight} ${totalHeight - 4} L ${xRight - 7} ${totalHeight - 4}`);
       } else {
         bracketGroup.style.display = 'none';
       }
 
-      // 4. Status Bar Details
-      const isMovable = minCol < maxCol;
-      const prereqsText = act.prereqs.length > 0 ? act.prereqs.map(p => '#' + p).join(', ') : 'None';
-      const downstreamText = act.downstream.length > 0 ? act.downstream.map(d => '#' + d).join(', ') : 'None';
+      // 5. Status Bar Details
+      if (selectedGroupId !== null) {
+        const grp = groups.find(g => g.id === selectedGroupId);
+        if (grp) {
+          const grpActions = actions.filter(a => grp.actionIds.includes(a.id));
+          const col = getActionDisplayCol(grp.actionIds[0]);
+          const isInactive = col > markerStep;
+          statusDetails.innerHTML = `
+            <strong style="color: #fff;">📁 ${grp.name}</strong> (${grp.isOpen ? 'Open Group' : 'Folded Virtual Group'} · Step ${col} · ${grpActions.length} Features · ${isInactive ? '<span style="color: #cbd5e1;">Inactive Step</span>' : '<span style="color: #38bdf8;">Active Step</span>'}):
+            <span style="color: #94a3b8; margin-left: 8px;">Contains: [${grpActions.map(a => a.name).join(', ')}]</span> ·
+            <span style="color: #38bdf8; font-weight: 600; margin-left: 8px;">${grp.isOpen ? 'Click "Close" on header pill or right-click to manage' : 'Double-click to open or right-click for Group options'}</span>
+          `;
+        }
+      } else if (selectedActionIds.length > 1) {
+        const isAdjacent = isSelectionAdjacent();
+        const selActions = actions.filter(a => selectedActionIds.includes(a.id));
+        statusDetails.innerHTML = `
+          <strong style="color: #fff;">${selectedActionIds.length} Features Selected</strong> (${isAdjacent ? '<span style="color: #22c55e; font-weight: bold;">Adjacent Range</span>' : '<span style="color: #f59e0b; font-weight: bold;">Non-Adjacent</span>'}):
+          <span style="color: #cbd5e1; margin-left: 8px;">[${selActions.map(a => a.name).join(', ')}]</span>
+          ${isAdjacent ? '<span style="color: #38bdf8; font-weight: bold; margin-left: 8px;">👉 Right-click any selected chip to "Group Selection"!</span>' : '<span style="color: #94a3b8; margin-left: 8px;">(Only adjacent features can be grouped into a single folder column)</span>'}
+        `;
+      } else if (selectedActionIds.length === 1) {
+        const act = actions.find(a => a.id === selectedActionIds[0]);
+        if (act) {
+          const { minCol, maxCol, currentCol } = computeMovableRange(act);
+          const isSelectedInactive = currentCol > markerStep;
+          const prereqsText = act.prereqs.length > 0 ? act.prereqs.map(p => '#' + p).join(', ') : 'None';
+          const downstreamText = act.downstream.length > 0 ? act.downstream.map(d => '#' + d).join(', ') : 'None';
 
-      statusDetails.innerHTML = `
-        <strong style="color: #fff;">${act.name}</strong> (Step ${currentCol} · ${act.suppressed ? '<span style="color: #f87171; font-weight: bold;">Suppressed</span> · ' : ''}${isSelectedInactive ? '<span style="color: #cbd5e1;">Inactive Step</span>' : '<span style="color: #38bdf8;">Active Step</span>'}):
-        <span style="color: ${isSelectedInactive ? 'var(--grey-prereq)' : 'var(--orange)'}; font-weight: 600; margin-left: 8px;">
-          Prerequisites: [${prereqsText}]
-        </span> ·
-        <span style="color: ${isSelectedInactive ? 'var(--grey-downstream)' : 'var(--blue)'}; font-weight: 600; margin-left: 8px;">
-          Downstream: [${downstreamText}]
-        </span> ·
-        <span style="color: ${isSelectedInactive ? 'var(--grey-corridor)' : 'var(--green)'}; font-weight: bold; margin-left: 8px;">
-          [ Movable Corridor: Steps ${minCol} to ${maxCol} ]
-        </span>
-        ${act.warning ? `<span style="color: #f59e0b; font-size: 11px; margin-left: 6px;">⚠️ ${act.warning}</span>` : ''}
-        ${isSelectedInactive ? `<span style="color: #94a3b8; font-size: 11px; margin-left: 6px;">(Solid-body evaluated up to Step ${markerStep})</span>` : ''}
-      `;
-
-      if (!isPlaying) {
-        if (isSelectedInactive) {
-          dragFeedback.innerHTML = `⚙️ <strong>Inactive Step Selected:</strong> <em>${act.name}</em> is inactive in CAD solid model, but fully modifiable! Drag anywhere between Step ${minCol} and ${maxCol}.`;
-        } else {
-          dragFeedback.innerHTML = isMovable
-            ? `✅ <strong>Movable Corridor:</strong> Drag <em>${act.name}</em> anywhere between Step ${minCol} and ${maxCol}. All jumped actions ripple automatically!`
-            : `🔒 <strong>Constraint Locked:</strong> <em>${act.name}</em> is bounded directly by its immediate dependencies.`;
+          statusDetails.innerHTML = `
+            <strong style="color: #fff;">${act.name}</strong> (Step ${currentCol} · ${act.suppressed ? '<span style="color: #f87171; font-weight: bold;">Suppressed</span> · ' : ''}${isSelectedInactive ? '<span style="color: #cbd5e1;">Inactive Step</span>' : '<span style="color: #38bdf8;">Active Step</span>'}):
+            <span style="color: ${isSelectedInactive ? 'var(--grey-prereq)' : 'var(--orange)'}; font-weight: 600; margin-left: 8px;">
+              Prerequisites: [${prereqsText}]
+            </span> ·
+            <span style="color: ${isSelectedInactive ? 'var(--grey-downstream)' : 'var(--blue)'}; font-weight: 600; margin-left: 8px;">
+              Downstream: [${downstreamText}]
+            </span> ·
+            <span style="color: ${isSelectedInactive ? 'var(--grey-corridor)' : 'var(--green)'}; font-weight: bold; margin-left: 8px;">
+              [ Movable Corridor: Steps ${minCol} to ${maxCol} ]
+            </span>
+            ${act.warning ? `<span style="color: #f59e0b; font-size: 11px; margin-left: 6px;">⚠️ ${act.warning}</span>` : ''}
+            ${isSelectedInactive ? `<span style="color: #94a3b8; font-size: 11px; margin-left: 6px;">(Solid-body evaluated up to Step ${markerStep})</span>` : ''}
+          `;
         }
       }
     }
 
-    // Attach Interactive Drag & Ripple Reorder Handlers (Fully Functional on Both Active & Inactive Chips)
+    // Attach Interactive Drag & Ripple Reorder Handlers (Shift+Click, Cmd/Ctrl+Click, and Drag)
     function attachDragHandlers(chip, act) {
       let isDragging = false;
       let startX = 0;
       let currentDeltaX = 0;
 
-      // Primary left-click: select & initiate drag
+      // Primary left-click: Shift+Click range, Cmd/Ctrl+Click toggle, or select & initiate drag
       chip.addEventListener('mousedown', (e) => {
-        if (e.button !== 0) return; // Only drag on primary left click!
+        if (e.button !== 0) return; // Only primary left click!
+
+        // Shift+Click: Continuous range selection
+        if (e.shiftKey) {
+          e.preventDefault();
+          closeContextMenu();
+          handleShiftClick(act.id);
+          return;
+        }
+
+        // CMD/CTRL+Click: Non-adjacent multi-selection toggle
+        if (e.metaKey || e.ctrlKey) {
+          e.preventDefault();
+          closeContextMenu();
+          handleCmdClick(act.id);
+          return;
+        }
+
+        // Standard Left Click: Select single chip and prepare for drag
         closeContextMenu();
-        applyHighlight(act.id);
+        if (!selectedActionIds.includes(act.id) || selectedActionIds.length > 1) {
+          selectedActionIds = [act.id];
+          anchorActionId = act.id;
+          selectedGroupId = null;
+        }
+        applyHighlight();
+
         isDragging = true;
         startX = e.clientX;
         currentDeltaX = 0;
@@ -1407,7 +1947,7 @@
         document.body.style.cursor = 'grabbing';
 
         const { minCol, maxCol, currentCol } = computeMovableRange(act);
-        const fromIndex = currentCol - 1;
+        const fromIndex = actions.findIndex(a => a.id === act.id);
 
         function onMouseMove(e) {
           if (!isDragging) return;
@@ -1444,8 +1984,19 @@
           const targetCol = currentCol + colShift;
 
           if (targetCol >= minCol && targetCol <= maxCol && targetCol !== currentCol) {
-            // Ripple array push (splice semantics on underlying data structure)
-            const toIndex = targetCol - 1;
+            const displayItems = getDisplayItems();
+            const targetItem = displayItems[targetCol - 1];
+            let toIndex = actions.length - 1;
+            if (targetItem) {
+              toIndex = targetItem.isGroup 
+                ? actions.findIndex(a => a.id === targetItem.actions[0].id)
+                : actions.findIndex(a => a.id === targetItem.action.id);
+              if (colShift > 0 && targetItem.isGroup) {
+                toIndex += targetItem.actions.length - 1;
+              }
+            }
+
+            // Ripple array splice
             const [movedAction] = actions.splice(fromIndex, 1);
             actions.splice(toIndex, 0, movedAction);
 
@@ -1472,7 +2023,14 @@
       chip.addEventListener('contextmenu', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        applyHighlight(act.id);
+
+        // If right-clicked chip is not part of the current multi-selection, select it alone
+        if (!selectedActionIds.includes(act.id)) {
+          selectedActionIds = [act.id];
+          anchorActionId = act.id;
+          selectedGroupId = null;
+        }
+        applyHighlight();
         openContextMenu(e.clientX, e.clientY, act);
       });
 
@@ -1490,16 +2048,32 @@
       const menu = document.getElementById('timelineContextMenu');
       if (!menu) return;
 
-      const currentCol = getActionCol(act.id);
+      const currentCol = getActionDisplayCol(act.id);
       const isAfterMarker = currentCol > markerStep;
       const isAtOrAfterMarker = currentCol >= markerStep;
-      const itemsAfterMarkerCount = actions.length - markerStep;
+      const totalCols = getDisplayItems().length;
+      const itemsAfterMarkerCount = totalCols - markerStep;
+      const isAdjacent = isSelectionAdjacent();
 
       let html = `
         <div class="context-menu-header">
-          <span>${act.name}</span>
+          <span>${selectedActionIds.length > 1 ? `${selectedActionIds.length} Features Selected` : act.name}</span>
           <span style="font-size: 10px; color: ${isAfterMarker ? '#a1a1aa' : '#38bdf8'}; font-weight: normal;">Step ${currentCol}${isAfterMarker ? ' (Inactive)' : ''}</span>
         </div>
+      `;
+
+      // 3. If only adjacent chips are selected, provide the "Group Selection" context menu option!
+      if (isAdjacent) {
+        html += `
+          <div class="context-menu-item" id="cmenuGroupSelection" style="color: #38bdf8; font-weight: 600;">
+            <span class="context-menu-icon" style="color: #38bdf8;">${MENU_ICONS.group}</span>
+            <span>Group Selection (${selectedActionIds.length} Actions)</span>
+          </div>
+          <div class="context-menu-sep"></div>
+        `;
+      }
+
+      html += `
         <div class="context-menu-item" id="cmenuEdit">
           <span class="context-menu-icon">${MENU_ICONS.edit}</span>
           <span>Edit Feature</span>
@@ -1640,6 +2214,11 @@
       menu.style.top = `${Math.max(10, posY)}px`;
 
       // Item handlers
+      document.getElementById('cmenuGroupSelection')?.addEventListener('click', () => {
+        closeContextMenu();
+        createGroupFromSelection();
+      });
+
       document.getElementById('cmenuEdit')?.addEventListener('click', () => {
         closeContextMenu();
         editFeature(act);
@@ -1718,6 +2297,129 @@
       });
     }
 
+    // Open Group Context Menu with 5 Specific Group Operations
+    function openGroupContextMenu(clientX, clientY, group) {
+      const menu = document.getElementById('timelineContextMenu');
+      if (!menu) return;
+
+      const groupActions = actions.filter(a => group.actionIds.includes(a.id));
+      const isAllDeactivated = groupActions.length > 0 && groupActions.every(a => a.suppressed);
+      const isAllActivated = groupActions.length > 0 && groupActions.every(a => !a.suppressed);
+      const col = getActionDisplayCol(group.actionIds[0]);
+      const isAfterMarker = col > markerStep;
+
+      let html = `
+        <div class="context-menu-header">
+          <span>${group.name}</span>
+          <span style="font-size: 10px; color: ${isAfterMarker ? '#a1a1aa' : '#38bdf8'}; font-weight: normal;">Group (${groupActions.length} Actions)</span>
+        </div>
+        <div class="context-menu-item" id="cmenuToggleGroup">
+          <span class="context-menu-icon">${group.isOpen ? MENU_ICONS.collapse : MENU_ICONS.expand}</span>
+          <span>${group.isOpen ? 'Close Group' : 'Open Group'}</span>
+        </div>
+        <div class="context-menu-item" id="cmenuDeleteGroupExpand">
+          <span class="context-menu-icon">${MENU_ICONS.ungroup}</span>
+          <span>Delete Group but expand content</span>
+        </div>
+        <div class="context-menu-item danger" id="cmenuDeleteGroupContent">
+          <span class="context-menu-icon">${MENU_ICONS.delete}</span>
+          <span>Delete Group and content</span>
+        </div>
+        <div class="context-menu-sep"></div>
+        <div class="context-menu-item ${isAllDeactivated ? 'disabled' : ''}" id="cmenuDeactivateGroup" title="${isAllDeactivated ? 'All actions in this group are already deactivated' : 'Deactivate / suppress all actions within group'}">
+          <span class="context-menu-icon">${MENU_ICONS.suppress}</span>
+          <span>Deactivate Group</span>
+        </div>
+        <div class="context-menu-item ${isAllActivated ? 'disabled' : ''}" id="cmenuActivateGroup" title="${isAllActivated ? 'All actions in this group are already activated' : 'Activate / unsuppress all actions within group'}">
+          <span class="context-menu-icon">${MENU_ICONS.unsuppress}</span>
+          <span>Activate Group</span>
+        </div>
+      `;
+
+      menu.innerHTML = html;
+      menu.style.display = 'block';
+
+      // Clamp position to window viewport
+      const menuWidth = menu.offsetWidth || 230;
+      const menuHeight = menu.offsetHeight || 220;
+      let posX = clientX;
+      let posY = clientY;
+      if (posX + menuWidth > window.innerWidth - 10) posX = window.innerWidth - menuWidth - 10;
+      if (posY + menuHeight > window.innerHeight - 10) posY = window.innerHeight - menuHeight - 10;
+      menu.style.left = `${Math.max(10, posX)}px`;
+      menu.style.top = `${Math.max(10, posY)}px`;
+
+      // Item listeners
+      document.getElementById('cmenuToggleGroup')?.addEventListener('click', () => {
+        closeContextMenu();
+        group.isOpen = !group.isOpen;
+        renderTimeline();
+        dragFeedback.innerHTML = group.isOpen
+          ? `📂 <strong>Group Opened:</strong> Expanded <em>${group.name}</em>. Right-click individual chips for feature menu.`
+          : `📁 <strong>Group Closed:</strong> Folded <em>${group.name}</em> into virtual group column chip.`;
+      });
+
+      document.getElementById('cmenuDeleteGroupExpand')?.addEventListener('click', () => {
+        closeContextMenu();
+        deleteGroupExpand(group);
+      });
+
+      document.getElementById('cmenuDeleteGroupContent')?.addEventListener('click', () => {
+        closeContextMenu();
+        deleteGroupContent(group);
+      });
+
+      document.getElementById('cmenuDeactivateGroup')?.addEventListener('click', () => {
+        if (isAllDeactivated) return;
+        closeContextMenu();
+        groupActions.forEach(a => a.suppressed = true);
+        renderTimeline();
+        dragFeedback.innerHTML = `⏸️ <strong>Group Deactivated:</strong> All ${groupActions.length} features in <em>${group.name}</em> suppressed from CAD evaluation.`;
+      });
+
+      document.getElementById('cmenuActivateGroup')?.addEventListener('click', () => {
+        if (isAllActivated) return;
+        closeContextMenu();
+        groupActions.forEach(a => a.suppressed = false);
+        renderTimeline();
+        dragFeedback.innerHTML = `▶️ <strong>Group Activated:</strong> All ${groupActions.length} features in <em>${group.name}</em> activated and included in solid-body rebuild.`;
+      });
+    }
+
+    function deleteGroupExpand(group) {
+      const gName = group.name;
+      const count = group.actionIds.length;
+      groups = groups.filter(g => g.id !== group.id);
+      selectedGroupId = null;
+      selectedActionIds = [...group.actionIds];
+      anchorActionId = selectedActionIds[0] || null;
+      renderTimeline();
+      dragFeedback.innerHTML = `📂 <strong>Group Dissolved:</strong> Group <em>${gName}</em> deleted; all ${count} features expanded and preserved in timeline.`;
+    }
+
+    function deleteGroupContent(group) {
+      const gName = group.name;
+      const count = group.actionIds.length;
+      const deletedIds = new Set(group.actionIds);
+      actions = actions.filter(a => !deletedIds.has(a.id));
+      actions.forEach(a => {
+        a.prereqs = a.prereqs.filter(pid => !deletedIds.has(pid));
+        a.downstream = a.downstream.filter(did => !deletedIds.has(did));
+      });
+      groups = groups.filter(g => g.id !== group.id);
+      selectedGroupId = null;
+      selectedActionIds = actions.length > 0 ? [actions[0].id] : [];
+      anchorActionId = selectedActionIds[0] || null;
+
+      const totalCols = getDisplayItems().length;
+      if (markerStep > totalCols) {
+        markerStep = totalCols;
+      }
+
+      renderTimeline();
+      dragFeedback.innerHTML = `🗑️ <strong>Group & Content Deleted:</strong> Removed <em>${gName}</em> and all its ${count} features from timeline.`;
+    }
+
     function closeContextMenu() {
       const menu = document.getElementById('timelineContextMenu');
       if (menu) {
@@ -1726,7 +2428,7 @@
     }
 
     function editFeature(act) {
-      const col = getActionCol(act.id);
+      const col = getActionDisplayCol(act.id);
       dragFeedback.innerHTML = `✏️ <strong>Edit Feature:</strong> Opened parameter sheet for <em>${act.name}</em> (Step ${col}, Type: ${act.type}). Double-click or context menu triggers this.`;
     }
 
@@ -1743,12 +2445,22 @@
         a.downstream = a.downstream.filter(did => did !== id);
       });
 
-      if (markerStep > actions.length) {
-        markerStep = actions.length;
-      }
+      // Clean up groups containing this action
+      groups.forEach(g => {
+        g.actionIds = g.actionIds.filter(aid => aid !== id);
+      });
+      groups = groups.filter(g => g.actionIds.length > 0);
 
-      if (selectedActionId === id) {
-        selectedActionId = actions.length > 0 ? actions[Math.min(index, actions.length - 1)].id : null;
+      selectedActionIds = selectedActionIds.filter(aid => aid !== id);
+      if (selectedActionIds.length === 0 && actions.length > 0) {
+        selectedActionIds = [actions[Math.min(index, actions.length - 1)].id];
+        anchorActionId = selectedActionIds[0];
+      }
+      selectedGroupId = null;
+
+      const totalCols = getDisplayItems().length;
+      if (markerStep > totalCols) {
+        markerStep = totalCols;
       }
 
       renderTimeline();
@@ -1756,19 +2468,38 @@
     }
 
     function deleteFeaturesAfterMarker() {
-      if (actions.length <= markerStep) return;
-      const count = actions.length - markerStep;
-      const deletedIds = actions.slice(markerStep).map(a => a.id);
-      actions = actions.slice(0, markerStep);
+      const displayItems = getDisplayItems();
+      if (displayItems.length <= markerStep) return;
+      
+      const itemsAfter = displayItems.slice(markerStep);
+      const deletedIds = [];
+      itemsAfter.forEach(item => {
+        if (item.isGroup) {
+          item.actions.forEach(a => deletedIds.push(a.id));
+        } else {
+          deletedIds.push(item.action.id);
+        }
+      });
+
+      const count = deletedIds.length;
+      actions = actions.filter(a => !deletedIds.includes(a.id));
 
       actions.forEach(a => {
         a.prereqs = a.prereqs.filter(pid => !deletedIds.includes(pid));
         a.downstream = a.downstream.filter(did => !deletedIds.includes(did));
       });
 
-      if (deletedIds.includes(selectedActionId)) {
-        selectedActionId = actions.length > 0 ? actions[actions.length - 1].id : null;
+      groups.forEach(g => {
+        g.actionIds = g.actionIds.filter(id => !deletedIds.includes(id));
+      });
+      groups = groups.filter(g => g.actionIds.length > 0);
+
+      selectedActionIds = selectedActionIds.filter(id => !deletedIds.includes(id));
+      if (selectedActionIds.length === 0 && actions.length > 0) {
+        selectedActionIds = [actions[actions.length - 1].id];
+        anchorActionId = selectedActionIds[0];
       }
+      selectedGroupId = null;
 
       renderTimeline();
       dragFeedback.innerHTML = `🗑️ <strong>Deleted ${count} Rolled-Back Feature(s):</strong> Removed all features after Step ${markerStep}.`;
@@ -1784,13 +2515,22 @@
       newAct.downstream = [];
       delete newAct.suppressed;
 
-      const insertIndex = markerStep;
+      const displayItems = getDisplayItems();
+      let insertIndex = actions.length;
+      if (markerStep < displayItems.length) {
+        const targetItem = displayItems[markerStep];
+        const targetActId = targetItem.isGroup ? targetItem.actions[0].id : targetItem.action.id;
+        insertIndex = actions.findIndex(a => a.id === targetActId);
+        if (insertIndex === -1) insertIndex = actions.length;
+      }
       actions.splice(insertIndex, 0, newAct);
       markerStep++;
-      selectedActionId = newId;
+      selectedActionIds = [newId];
+      anchorActionId = newId;
+      selectedGroupId = null;
 
       renderTimeline();
-      dragFeedback.innerHTML = `📋 <strong>Pasted Feature:</strong> Inserted <em>${newAct.name}</em> at Step ${insertIndex + 1}. Marker rolled to Step ${markerStep}.`;
+      dragFeedback.innerHTML = `📋 <strong>Pasted Feature:</strong> Inserted <em>${newAct.name}</em> at Step ${markerStep}. Marker rolled forward.`;
     }
 
     // Attach Marker Scrubbing Logic via Head Pin & Scrubber Track
@@ -1811,7 +2551,8 @@
           if (!isScrubbing) return;
           const tracksRect = tracksContent.getBoundingClientRect();
           const relX = e.clientX - tracksRect.left;
-          const targetStep = Math.max(0, Math.min(actions.length, Math.round(relX / COL_W)));
+          const totalCols = getDisplayItems().length;
+          const targetStep = Math.max(0, Math.min(totalCols, Math.round(relX / COL_W)));
           setMarkerStep(targetStep);
         }
 
@@ -1835,7 +2576,7 @@
       const handleBack = () => { stopPlayback(); setMarkerStep(markerStep - 1); };
       const handlePlay = () => { togglePlayback(); };
       const handleForward = () => { stopPlayback(); setMarkerStep(markerStep + 1); };
-      const handleLast = () => { stopPlayback(); setMarkerStep(actions.length); };
+      const handleLast = () => { stopPlayback(); setMarkerStep(getDisplayItems().length); };
 
       // Legend transport buttons
       if (btnFirst) btnFirst.addEventListener('click', handleFirst);
@@ -1914,10 +2655,15 @@
       stopPlayback();
       closeContextMenu();
       clipboardFeature = null;
+      groups = [];
+      nextGroupId = 1;
+      selectedGroupId = null;
       actions = JSON.parse(JSON.stringify(initialActions));
-      selectedActionId = 5;
+      selectedActionIds = [5];
+      anchorActionId = 5;
       markerStep = 16;
       renderTimeline();
+      dragFeedback.innerHTML = `🔄 <strong>Timeline Reset:</strong> Restored default sequence (16 active, 8 inactive steps). Ready to test!`;
     });
 
     // Initialize transport handlers, marker scrubbing, and render

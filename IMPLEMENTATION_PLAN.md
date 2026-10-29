@@ -35,7 +35,13 @@ This document outlines the architecture, data structures, UI design, and impleme
 - **Dead-Centered Dotted Connectors**: Multi-component Actions are connected by a vertical dotted line (`t.secondary_dots`) positioned at the exact mathematical center of that column ($\text{col\_x} + \text{col\_w}/2$). Active multi-component lines highlight in Blue; inactive multi-component lines highlight in Grey.
 - **Ripple Push Reordering**: Moving an Action $k$ steps to the right pushes all jumped Actions $k$ steps to the left; moving $k$ steps to the left pushes jumped Actions $k$ steps to the right (strict array splice reordering).
 - **Header + 3.5 Row Height & Rubberband Overscroll**: Height auto-expands to $28\text{px}$ header $+ 3.5$ component rows ($170\text{px}$ total height with scrollbar) with elastic spring damping on overscroll.
-- **Pinned Headers & Layered 2D Scrolling**: Left component headers and transport controls remain pinned while timeline tracks scroll horizontally behind them.
+- **Pinned Left Headers & Layered 2D Scrolling**: Left component headers and transport controls remain pinned while timeline tracks scroll horizontally behind them.
+- **Timeline Feature Grouping & Folding (Virtual Column Chips)**:
+  - Multi-selection via **Shift+Click** (continuous range) and **Cmd/Ctrl+Click** (additive non-adjacent toggle).
+  - Contiguous selection sets provide a `"Group Selection"` option in the context menu.
+  - Closed groups collapse into a single-column **virtual group chip** spanning all component tracks (height $182\text{px}$, rows 0 to 4) with folder icon, count badge, rotated title, and component indicator dots.
+  - Dedicated group context menu: `Open Group` / `Close Group`, `Delete Group but expand content`, `Delete Group and content`, `Deactivate Group` (disabled if all deactivated), `Activate Group` (disabled if all activated).
+  - Open groups expand into individual columns and tracks with an open group header pill (`📁 Group Name (N) Close ▴`) and corridor background tint, with standard feature context menus on individual chips.
 - **Anchored Bottom Dock**: Strictly docked at the bottom of the viewport; not dockable to side panels.
 
 ---
@@ -108,6 +114,35 @@ SolidCraft's 1-D timeline (`crates/ui-egui/src/timeline.rs#L790-L835`) attaches 
    - Heavy solid B-rep evaluation (`s.model.evaluate`) stops strictly at `doc.marker`. Inactive features remain unbuilt in the 3D viewport until the marker rolls over them.
    - Choosing "Roll History Marker Here" on an inactive feature advances the marker to that position and evaluates all features up to that step.
 
+### 2.5 Multi-Selection & Feature Grouping / Folding
+
+To support organizing complex feature trees into manageable sub-assemblies or logical modules, the 2D History Browser introduces multi-selection and hierarchical column folding:
+
+1. **Selection Set Interactions**:
+   - **Shift+Click**: Selects all feature chips between the first (anchor) chip and the clicked chip in timeline sequence order.
+   - **CMD+Click (macOS) / CTRL+Click (Windows/Linux)**: Toggles individual chips into or out of the selection set, allowing non-adjacent selections.
+   - **Adjacency Check (`isSelectionAdjacent`)**: Only contiguous selection sets ($\ge 2$ features without sequence gaps) qualify for grouping. When adjacent, right-clicking any selected chip provides the context menu option `"Group Selection (<N> Actions)"`.
+
+2. **Virtual Group Chip (Folded / Closed Mode)**:
+   - When grouped, the sequence of adjacent features collapses into a single column.
+   - Across that column, all component track rows are unified into a single **Virtual Group Chip**:
+     - **Dimensions**: Full grid height spanning rows 0 to 4 ($182\text{px}$ height, $38\text{px}$ width, $4\text{px}$ margin).
+     - **Visual Assets**: Vector folder icon (`ui_kit::folder`), expansion chevron `▶`, vertical 90°-rotated title, item count badge (`<N>`), and mini row-occupancy indicator dots matching active/inactive tracks.
+     - **Interaction**: Single-click selects the group; double-click opens/unfolds it; right-click opens the dedicated **Group Context Menu**.
+
+3. **Group Context Menu Options**:
+   - `Open Group` / `Close Group`: Toggles folding.
+   - `Delete Group but expand content`: Dissolves the group container while preserving all member features in their current timeline slots.
+   - `Delete Group and content`: Deletes the group and purges all member features from the document, updating dependency references.
+   - `Deactivate Group`: Deactivates/suppresses all actions within the group from CAD solid-body evaluation (disabled/not clickable if all actions are already deactivated).
+   - `Activate Group`: Activates/unsuppresses all actions within the group (disabled/not clickable if all actions are already activated).
+
+4. **Open Group Behavior**:
+   - Expanding a group reveals its individual feature chips in their natural columns and component rows.
+   - An **Open Group Header Pill** (`📁 Group Name (N) Close ▴`) appears in the scrubber track, providing one-click collapse and group menu access.
+   - An **Open Group Corridor** subtly tints the member columns with a dashed border.
+   - Right-clicking any chip inside an open group displays the standard feature context menu as usual.
+
 ---
 
 ## 3. Visual Styling & Uniform CAD Grid
@@ -146,7 +181,8 @@ SolidCraft's 1-D timeline (`crates/ui-egui/src/timeline.rs#L790-L835`) attaches 
 - **Phase 3**: Uniform 2D Grid Canvas, header scrubber track ($28\text{px}$), leading transport controls, 3.5-row auto-expansion, pinned left headers, rollback marker vertical rendering (`ui_kit::history_marker`), 100% opacity greyscale inactive rendering, and rubberband vertical scrolling.
 - **Phase 4**: Dependency visualization (Active: Orange prereqs, Blue downstream, Green movable brackets; Inactive: Light Grey prereqs, Mid Grey downstream, Greyish movable brackets).
 - **Phase 5**: Multi-component dead-centered dotted connectors, marker drag scrubbing (`cmd.timeline_roll`), `HistoryTransport` controls, chip double-click editing, `Menu::context` menu integration (`crates/ui-egui/src/timeline.rs#L790-L835`), and drag-and-drop ripple push reordering across active and inactive zones.
-- **Phase 6**: Unit tests, UI scenario integration, and `cargo xtask ci` verification.
+- **Phase 6**: Multi-selection (Shift+Click, Cmd/Ctrl+Click), adjacent grouping logic, virtual group chips spanning tracks, open group header pills, and group context menu (`timeline_2d/group.rs`).
+- **Phase 7**: Unit tests, UI scenario integration, and `cargo xtask ci` verification.
 
 ---
 
@@ -160,7 +196,11 @@ The standalone demonstration repository and interactive preview artifact feature
 5. **Greyscale Inactive Highlights with Matched Luminance**: Inactive prereqs (Light Grey), downstream (Mid Grey), and brackets (Greyish).
 6. **Reordering Everywhere**: Full ripple reordering supported on both active and inactive features.
 7. **Full SolidCraft Context Menu & Double-Click Support**: 1:1 simulation of the 1-D timeline's right-click context menu (Edit, Redefine Sketch Plane, Edit Profile Sketch, Rename, Suppress/Unsuppress, Roll Marker Here, Find in Browser, Copy/Paste, Copy Diagnostic Message, Delete, Delete After Marker).
-8. **Dead-Centered Multi-Component Connectors**: Centered dotted lines with clean pass-through.
-9. **1:1 Synchronized Scrolling CAD Grid**: Physical DOM cells moving synchronously with chips and overscroll.
+8. **Multi-Selection (Shift+Click range & Cmd/Ctrl+Click toggle)**: Seamless contiguous and non-contiguous selection sets.
+9. **Contiguous Feature Grouping / Folding**: "Group Selection" context menu option on adjacent chips; folds selection into a virtual group chip spanning all component tracks.
+10. **Dedicated Group Context Menu**: `Open/Close Group`, `Delete Group but expand content`, `Delete Group and content`, `Deactivate Group` (disabled if all deactivated), `Activate Group` (disabled if all activated).
+11. **Open Group Header Pills & Corridors**: Clean inline header pills (`Close ▴`) with individual chip context menus preserved inside open groups.
+12. **Dead-Centered Multi-Component Connectors**: Centered dotted lines with clean pass-through.
+13. **1:1 Synchronized Scrolling CAD Grid**: Physical DOM cells moving synchronously with chips and overscroll.
 
 - **Standalone Repo**: [`../solidcraft-history-2d-preview/index.html`](file:///Users/martinmajewski/Developer/CAD/solidcraft-history-2d-preview/index.html)

@@ -92,6 +92,27 @@ When an inactive feature is selected (or when an active feature references inact
   - **Delete Features After History Marker**: Offered on rolled-back features (`index >= marker`) to delete all features after the marker in one step.
 - Full context menu functionality is active across both **active and inactive** features. Modifying inactive features updates the document structure without triggering 3D solid-body rebuilds.
 
+### 11. Multi-Selection & Hierarchical Feature Grouping / Folding
+- **Selection Sets**:
+  - **Shift+Click**: Selects all feature chips between the first (anchor) chip and the clicked chip in timeline sequence order.
+  - **CMD+Click (macOS) / CTRL+Click (Windows/Linux)**: Toggles individual chips into or out of the selection set, allowing non-adjacent selections.
+  - **Contiguous Check**: If the selection consists of adjacent features ($\ge 2$ features without sequence gaps), right-clicking any selected chip reveals the context menu option `"Group Selection (<N> Actions)"`.
+- **Virtual Group Chip (Folded State)**:
+  - When grouped, member features collapse into a single column.
+  - Across that column, all component track rows are unified into a single **Virtual Group Chip** ($182\,\text{px}$ height, rows 0 to 4) featuring a vector folder icon, expansion chevron `▶`, rotated title, feature count badge, and component indicator dots.
+  - Single-click selects the group; double-click opens/unfolds it.
+- **Dedicated Group Context Menu**:
+  - **Open Group / Close Group**: Toggles folding.
+  - **Delete Group but expand content**: Dissolves the group container while preserving all member features in their current timeline positions.
+  - **Delete Group and content**: Removes the group and purges all member features from the timeline.
+  - **Deactivate Group**: Suppresses all member actions from CAD solid-body evaluation (disabled/not clickable if all are already deactivated).
+  - **Activate Group**: Unsuppresses all member actions (disabled/not clickable if all are already activated).
+- **Open Group Experience**:
+  - Unfolded groups display individual feature chips across their natural columns and component tracks.
+  - An **Open Group Header Pill** (`📁 Group Name (N) Close ▴`) in the scrubber track allows one-click collapse or group context menu access.
+  - An **Open Group Corridor** subtly tints the member columns with a dashed border.
+  - Right-clicking any chip inside an open group displays the standard feature context menu as usual.
+
 ---
 
 ## 💻 How to Run the Demonstration
@@ -125,6 +146,9 @@ When integrated into the SolidCraft Rust codebase:
 | **Leading Transport Controls** | `ui_kit::HistoryTransport` embedded in pinned left header (`cmd.timeline_roll`, `cmd.timeline_play`) |
 | **Rollback Marker & Scrubbing** | `app.session.doc.marker: Option<usize>` and `ui_kit::history_marker` |
 | **100% Opacity Display & Greyscale Inactive** | Greyscale theme tokens for inactive features, 100% alpha everywhere |
+| **Multi-Selection & Selection Sets** | `timeline_2d::selection::SelectionSet` (Shift+Click range & Cmd+Click toggle) |
+| **Virtual Group Chips & Folding** | `timeline_2d::group::TimelineGroup` and column-spanning widget |
+| **Group Context Menu** | `crate::ui_kit::Menu::context` for groups with Deactivate/Activate state guards |
 | **Component Rows** | Extracted from `doc.tree.components()` and `f.component` |
 | **Dependency Graph** | Direct DAG traversal via `f.kind.walk_refs()` and `f.kind.input_sketches()` |
 | **Reorder Engine Command** | Dispatches heavy command `timeline.reorder` in `crates/engine/src/cmd/edit.rs` |
