@@ -506,6 +506,21 @@
       margin-bottom: 1px;
     }
 
+    .group-step-dash {
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+      line-height: 1;
+    }
+
+    .header-step-cell.active-step .group-step-dash {
+      color: #94a3b8;
+    }
+
+    .header-step-cell.rolled-back-step .group-step-dash {
+      color: #4b5563;
+    }
+
     /* Lower Tier: Folders & Timeline Features Row (Directly above component tracks) */
     .header-tier-groups {
       height: var(--header-group-h);
@@ -1785,9 +1800,21 @@
       if (hdrBtnForward) hdrBtnForward.disabled = isLast;
       if (hdrBtnLast) hdrBtnLast.disabled = isLast;
 
+      // Calculate evaluated active features in CAD solid model
+      const displayItems = getDisplayItems();
+      let activeFeatureCount = 0;
+      for (let i = 0; i < markerStep && i < displayItems.length; i++) {
+        const item = displayItems[i];
+        if (item.isGroup) {
+          activeFeatureCount += item.actions.length;
+        } else {
+          activeFeatureCount += 1;
+        }
+      }
+
       // Update Active Badge
       if (activeMarkerBadge) {
-        activeMarkerBadge.textContent = `Active: ${markerStep} / ${totalCols} Steps`;
+        activeMarkerBadge.textContent = `Active: ${activeFeatureCount} / ${actions.length} Features`;
         if (markerStep < totalCols) {
           activeMarkerBadge.style.color = '#f59e0b';
           activeMarkerBadge.style.borderColor = 'rgba(245, 158, 11, 0.4)';
@@ -1815,10 +1842,10 @@
       // Feedback description
       if (updateFeedback && !isPlaying) {
         if (markerStep < totalCols) {
-          const rolledCount = totalCols - markerStep;
-          dragFeedback.innerHTML = `⏪ <strong>Timeline Rolled Back:</strong> Steps 1 to ${markerStep} are active in CAD solid model. ${rolledCount} step(s) after the marker are inactive in 3D solid-body evaluation, but remain fully editable and selectable in 100% opacity greyscale!`;
+          const rolledCount = actions.length - activeFeatureCount;
+          dragFeedback.innerHTML = `⏪ <strong>Timeline Rolled Back:</strong> Features 1 to ${activeFeatureCount} are active in CAD solid model. ${rolledCount} feature(s) after the marker are inactive in 3D solid-body evaluation, but remain fully editable and selectable in 100% opacity greyscale!`;
         } else {
-          dragFeedback.innerHTML = `✨ <strong>All Steps Active:</strong> The timeline marker is at the end. Drag the blue head pin left to roll back solid-body evaluation!`;
+          dragFeedback.innerHTML = `✨ <strong>All Features Active:</strong> All ${actions.length} features active in CAD solid model. Drag the blue head pin left to roll back solid-body evaluation!`;
         }
       }
     }
@@ -1907,10 +1934,15 @@
         hCell.dataset.col = c;
 
         if (item.isGroup) {
-          // Closed group: hide step number in this column, group starts on second header row
-          hCell.title = `Group: ${item.group.name} (${item.actions.length} features)\nClick to roll marker here\nDouble-click to Open Group\nRight-click for Group menu`;
+          // Closed group: display "-" in numbers row; subsequent features continue with their actual step numbers
+          const minStep = Math.min(...item.actions.map(a => actions.findIndex(act => act.id === a.id) + 1));
+          const maxStep = Math.max(...item.actions.map(a => actions.findIndex(act => act.id === a.id) + 1));
+          const minStepStr = minStep < 10 ? '0' + minStep : minStep;
+          const maxStepStr = maxStep < 10 ? '0' + maxStep : maxStep;
+          hCell.title = `Group: ${item.group.name} (Steps ${minStepStr}–${maxStepStr})\nClick to roll marker here\nDouble-click to Open Group\nRight-click for Group menu`;
           hCell.innerHTML = `
             <div class="header-step-tick"></div>
+            <span class="group-step-dash">-</span>
           `;
           // Double-click on group step cell opens/unfolds group
           hCell.addEventListener('dblclick', (e) => {
@@ -1927,10 +1959,12 @@
             openGroupContextMenu(e.clientX, e.clientY, item.group);
           });
         } else {
-          hCell.title = `Step ${c}: ${item.action.name} (Click to roll marker here)`;
+          const stepNum = actions.findIndex(a => a.id === item.action.id) + 1;
+          const stepStr = stepNum < 10 ? '0' + stepNum : stepNum;
+          hCell.title = `Step ${stepStr}: ${item.action.name} (Click to roll marker here)`;
           hCell.innerHTML = `
             <div class="header-step-tick"></div>
-            <span>${c < 10 ? '0' + c : c}</span>
+            <span>${stepStr}</span>
           `;
         }
 
@@ -2037,7 +2071,9 @@
               chip.dataset.col = c;
               chip.dataset.row = r;
               chip.innerHTML = ICONS[act.type] || ICONS.extrude;
-              chip.title = `${act.name} (Step ${c})${act.suppressed ? ' [Suppressed]' : ''}`;
+              const actStep = actions.findIndex(a => a.id === act.id) + 1;
+              const actStepStr = actStep < 10 ? '0' + actStep : actStep;
+              chip.title = `${act.name} (Step ${actStepStr})${act.suppressed ? ' [Suppressed]' : ''}`;
 
               attachDragHandlers(chip, act);
               cell.appendChild(chip);
@@ -2257,51 +2293,53 @@
         const chipAct = actions.find(a => a.id === id);
         const actName = chipAct ? chipAct.name : 'Feature';
         const isChipInactive = col > markerStep;
+        const actStep = actions.findIndex(a => a.id === id) + 1;
+        const actStepStr = actStep < 10 ? '0' + actStep : actStep;
 
         chip.style.transform = '';
 
         if (selectedActionIds.includes(id)) {
           if (isChipInactive) {
             chip.className = 'chip selected-inactive';
-            chip.title = `${actName} (Step ${col}) - Selected [Inactive / Unbuilt Solid]`;
+            chip.title = `${actName} (Step ${actStepStr}) - Selected [Inactive / Unbuilt Solid]`;
           } else {
             chip.className = 'chip selected';
-            chip.title = `${actName} (Step ${col}) - Selected [Active / Evaluated Solid]`;
+            chip.title = `${actName} (Step ${actStepStr}) - Selected [Active / Evaluated Solid]`;
           }
         } else if (selectedActionIds.length === 1 && selectedGroupId === null) {
           const act = actions.find(a => a.id === selectedActionIds[0]);
           if (act && act.prereqs.includes(id)) {
             if (isChipInactive) {
               chip.className = 'chip prereq-inactive';
-              chip.title = `${actName} (Step ${col}) - Prerequisite [Inactive: Light Grey]`;
+              chip.title = `${actName} (Step ${actStepStr}) - Prerequisite [Inactive: Light Grey]`;
             } else {
               chip.className = 'chip prereq';
-              chip.title = `${actName} (Step ${col}) - Prerequisite [Active: Orange]`;
+              chip.title = `${actName} (Step ${actStepStr}) - Prerequisite [Active: Orange]`;
             }
           } else if (act && act.downstream.includes(id)) {
             if (isChipInactive) {
               chip.className = 'chip downstream-inactive';
-              chip.title = `${actName} (Step ${col}) - Downstream Dependent [Inactive: Mid Grey]`;
+              chip.title = `${actName} (Step ${actStepStr}) - Downstream Dependent [Inactive: Mid Grey]`;
             } else {
               chip.className = 'chip downstream';
-              chip.title = `${actName} (Step ${col}) - Downstream Dependent [Active: Blue]`;
+              chip.title = `${actName} (Step ${actStepStr}) - Downstream Dependent [Active: Blue]`;
             }
           } else {
             if (isChipInactive) {
               chip.className = 'chip unselected-inactive';
-              chip.title = `${actName} (Step ${col}) - Inactive (100% Opacity Greyscale)`;
+              chip.title = `${actName} (Step ${actStepStr}) - Inactive (100% Opacity Greyscale)`;
             } else {
               chip.className = 'chip unselected-active';
-              chip.title = `${actName} (Step ${col}) - Active (100% Opacity Full Color)`;
+              chip.title = `${actName} (Step ${actStepStr}) - Active (100% Opacity Full Color)`;
             }
           }
         } else {
           if (isChipInactive) {
             chip.className = 'chip unselected-inactive';
-            chip.title = `${actName} (Step ${col}) - Inactive (100% Opacity Greyscale)`;
+            chip.title = `${actName} (Step ${actStepStr}) - Inactive (100% Opacity Greyscale)`;
           } else {
             chip.className = 'chip unselected-active';
-            chip.title = `${actName} (Step ${col}) - Active (100% Opacity Full Color)`;
+            chip.title = `${actName} (Step ${actStepStr}) - Active (100% Opacity Full Color)`;
           }
         }
 
@@ -2392,8 +2430,13 @@
           const grpActions = actions.filter(a => grp.actionIds.includes(a.id));
           const col = getActionDisplayCol(grp.actionIds[0]);
           const isInactive = col > markerStep;
+          const minStep = Math.min(...grpActions.map(a => actions.findIndex(act => act.id === a.id) + 1));
+          const maxStep = Math.max(...grpActions.map(a => actions.findIndex(act => act.id === a.id) + 1));
+          const minStepStr = minStep < 10 ? '0' + minStep : minStep;
+          const maxStepStr = maxStep < 10 ? '0' + maxStep : maxStep;
+          const stepRangeStr = minStep === maxStep ? `Step ${minStepStr}` : `Steps ${minStepStr}–${maxStepStr}`;
           statusDetails.innerHTML = `
-            <strong style="color: #fff;">📁 ${grp.name}</strong> (${grp.isOpen ? 'Open Group' : 'Folded Virtual Group'} · Step ${col} · ${grpActions.length} Features · ${isInactive ? '<span style="color: #cbd5e1;">Inactive Step</span>' : '<span style="color: #38bdf8;">Active Step</span>'}):
+            <strong style="color: #fff;">📁 ${grp.name}</strong> (${grp.isOpen ? 'Open Group' : 'Folded Virtual Group'} · ${stepRangeStr} · ${grpActions.length} Features · ${isInactive ? '<span style="color: #cbd5e1;">Inactive Step</span>' : '<span style="color: #38bdf8;">Active Step</span>'}):
             <span style="color: #94a3b8; margin-left: 8px;">Contains: [${grpActions.map(a => a.name).join(', ')}]</span> ·
             <span style="color: #38bdf8; font-weight: 600; margin-left: 8px;">${grp.isOpen ? 'Click "Close" on header pill or right-click to manage' : 'Double-click to open or right-click for Group options'}</span>
           `;
@@ -2414,8 +2457,10 @@
           const prereqsText = act.prereqs.length > 0 ? act.prereqs.map(p => '#' + p).join(', ') : 'None';
           const downstreamText = act.downstream.length > 0 ? act.downstream.map(d => '#' + d).join(', ') : 'None';
 
+          const actStep = actions.findIndex(a => a.id === act.id) + 1;
+          const actStepStr = actStep < 10 ? '0' + actStep : actStep;
           statusDetails.innerHTML = `
-            <strong style="color: #fff;">${act.name}</strong> (Step ${currentCol} · ${act.suppressed ? '<span style="color: #f87171; font-weight: bold;">Suppressed</span> · ' : ''}${isSelectedInactive ? '<span style="color: #cbd5e1;">Inactive Step</span>' : '<span style="color: #38bdf8;">Active Step</span>'}):
+            <strong style="color: #fff;">${act.name}</strong> (Step ${actStepStr} · ${act.suppressed ? '<span style="color: #f87171; font-weight: bold;">Suppressed</span> · ' : ''}${isSelectedInactive ? '<span style="color: #cbd5e1;">Inactive Step</span>' : '<span style="color: #38bdf8;">Active Step</span>'}):
             <span style="color: ${isSelectedInactive ? 'var(--grey-prereq)' : 'var(--orange)'}; font-weight: 600; margin-left: 8px;">
               Prerequisites: [${prereqsText}]
             </span> ·
@@ -2582,10 +2627,13 @@
       const itemsAfterMarkerCount = totalCols - markerStep;
       const isAdjacent = isSelectionAdjacent();
 
+      const actStep = actions.findIndex(a => a.id === act.id) + 1;
+      const actStepStr = actStep < 10 ? '0' + actStep : actStep;
+
       let html = `
         <div class="context-menu-header">
           <span>${selectedActionIds.length > 1 ? `${selectedActionIds.length} Features Selected` : act.name}</span>
-          <span style="font-size: 10px; color: ${isAfterMarker ? '#a1a1aa' : '#38bdf8'}; font-weight: normal;">Step ${currentCol}${isAfterMarker ? ' (Inactive)' : ''}</span>
+          <span style="font-size: 10px; color: ${isAfterMarker ? '#a1a1aa' : '#38bdf8'}; font-weight: normal;">Step ${actStepStr}${isAfterMarker ? ' (Inactive)' : ''}</span>
         </div>
       `;
 

@@ -135,7 +135,7 @@ To support organizing complex feature trees into manageable sub-assemblies or lo
        - **Header Cap**: Integrated into the second header row ($y = 26\dots 44\text{px}$) with folder icon `${FOLDER_ICON_SVG_SMALL}` and expansion chevron `▶`.
        - **Body & Badge**: Feature count badge (`<N>`) and vertical 90°-rotated title (`Group 1`).
        - **Component Track Occupancy Dots**: 5 vertical indicator dots at the bottom of the card corresponding to the 5 component tracks (Root, Housing, Shaft, Bearing, Fastener). A lit dot (blue or silver-grey) indicates that the group contains features on that specific component track; dim dots indicate untouched tracks.
-     - **Topmost Step Numbers Row**: The step number is hidden in this column, leaving the cell clean with only the tick mark. The group card never extends into the step numbers row, giving the timeline marker complete clearance.
+     - **Topmost Step Numbers Row & Continuous Step Indexing**: When folding/closing a group, feature numbers after the group continue correctly based on their true timeline sequence index. In the folded group's column, a clean dash `-` is displayed, representing the condensed range of steps (e.g., folding steps 4, 5, and 6 produces `01, 02, 03, -, 07, 08...`). The group card never extends into the step numbers row, providing total clearance for the timeline marker.
      - **Interaction**: Single-click selects the group; double-click opens/unfolds it; right-click opens the dedicated **Group Context Menu**.
 
 3. **Group Context Menu Options**:

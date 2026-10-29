@@ -101,8 +101,8 @@ When an inactive feature is selected (or when an active feature references inact
   - **Contiguous Check**: If the selection consists of adjacent features ($\ge 2$ features without sequence gaps), right-clicking any selected chip reveals the context menu option `"Group Selection (<N> Actions)"`.
 - **Virtual Group Chip (Folded State)**:
   - When grouped, member features collapse into a single column.
-  - Across that column, the group starts on the second header row (with the step number hidden in the topmost row) and spans through all component track rows as a unified **Virtual Group Chip** ($204\,\text{px}$ height, rows 0 to 4) featuring an integrated header cap (folder icon + expansion chevron `▶`), vertical 90°-rotated title, feature count badge, and component track occupancy dots.
-  - The step number in the topmost row is hidden, preventing any visual overlap with the timeline marker head pin.
+  - Across that column, the group starts on the second header row and spans through all component track rows as a unified **Virtual Group Chip** ($204\,\text{px}$ height, rows 0 to 4) featuring an integrated header cap (folder icon + expansion chevron `▶`), vertical 90°-rotated title, feature count badge, and component track occupancy dots.
+  - **Continuous Step Numbering**: In the topmost step numbers row, the folded group column displays a dash `-`, and the features immediately after the group continue with their true sequence numbers (e.g. folding steps 4, 5, and 6 produces `01, 02, 03, -, 07, 08...`).
   - Single-click selects the group; double-click opens/unfolds it.
 - **Dedicated Group Context Menu**:
   - **Open Group / Close Group**: Toggles folding.
