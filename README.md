@@ -31,14 +31,17 @@ The **2D History Browser** provides a multi-track timeline inspired by video-edi
 
 ## 🚀 Key Features Demonstrated
 
-### 1. Dedicated Header Scrubber Row & Timeline Rollback Marker
-- A dedicated **$28\,\text{px}$ header track** positioned directly above the component tracks holds the scrubber head pin (`ui_kit::history_marker`) with generous vertical clearance, preventing it from overlapping the first component row.
-- **Full-Height Vertical Line**: Spans from the header track down across all component rows to clearly delineate active and inactive steps.
+### 1. Dedicated Two-Tier Header Track & Timeline Rollback Marker
+- A dedicated **$44\,\text{px}$ Two-Tier header track** positioned directly above the component tracks decouples group management from timeline scrubbing:
+  - **Tier 1 (Top Tier, $18\,\text{px}$)**: Folder management bar. Solid `#182234` group banners (`📁 Group Name (N) Close ▴`) span member columns when open, or compact pills when closed, with zero bleed-through of step numbers.
+  - **Tier 2 (Bottom Tier, $26\,\text{px}$)**: Step numbers (`01`, `02`, ... `24`, `G1`), tick marks, and Scrubber Pin Track. Step numbers remain 100% visible and readable under open groups.
+- **Rollback Marker Vertical Separation**: The draggable blue head pin (`ui_kit::history_marker`) starts at Tier 2 (`top: 18px`), centered vertically at $y = 23\dots 39\,\text{px}$. It never enters Tier 1, ensuring zero visual overlap with group titles or `Close ▴` buttons when scrubbing near open groups.
+- **Full-Height Vertical Line**: Spans from the step tier down across all component rows to clearly delineate active and inactive steps.
 - **Horizontal Scrubbing**: Drag the blue head pin across the header track to scrub forward and backward. Click any step column header to jump the marker immediately.
 - **100% Opacity Display**: All chips remain fully visible at 100% opacity. Inactive features after the marker appear in pure greyscale with desaturated icons and remain fully selectable, inspectable, and reorderable.
 
 ### 2. Leading Header Transport Controls
-- The leading ($160\,\text{px}$ pinned left) side of the timeline header row houses the transport controls (First `⏮`, Back `◀`, Play / Pause `▶`/`⏸`, Forward `▶`, Last `⏭`).
+- The leading ($160\,\text{px}$ pinned left) side of the timeline header row houses a top category label (`TIMELINE TRANSPORT`, $18\,\text{px}$) and transport controls (First `⏮`, Back `◀`, Play / Pause `▶`/`⏸`, Forward `▶`, Last `⏭`, $26\,\text{px}$).
 - Sits on the exact same layer as the component list, remaining fixed and stationary during horizontal timeline scrolling.
 
 ### 3. Full Timeline Length Population (Zero Empty Columns)
@@ -61,7 +64,7 @@ When an inactive feature is selected (or when an active feature references inact
 ### 6. Multi-Track Component Layout & Viewport Sizing
 - Each component occupies its own dedicated horizontal row ($38\,\text{px}$ pitch).
 - Component headers are pinned on the left ($160\,\text{px}$) with color-coded identifiers.
-- Viewport height accommodates the $28\,\text{px}$ header $+ 3.5$ component rows ($170\,\text{px}$ total height with scrollbar), leaving the 4th row half-visible as an immediate visual affordance that more tracks exist below.
+- Viewport height accommodates the $44\,\text{px}$ Two-Tier header $+ 3.5$ component rows ($186\,\text{px}$ total height with scrollbar), leaving the 4th row half-visible as an immediate visual affordance that more tracks exist below.
 - Continuous vertical scrolling with rubberband spring elasticity when overscrolling.
 
 ### 7. Synchronized 1:1 CAD Grid
@@ -107,10 +110,12 @@ When an inactive feature is selected (or when an active feature references inact
   - **Delete Group and content**: Removes the group and purges all member features from the timeline.
   - **Deactivate Group**: Suppresses all member actions from CAD solid-body evaluation (disabled/not clickable if all are already deactivated).
   - **Activate Group**: Unsuppresses all member actions (disabled/not clickable if all are already activated).
-- **Open Group Experience**:
+- **Open Group Experience & Two-Tier Header Separation**:
   - Unfolded groups display individual feature chips across their natural columns and component tracks.
-  - An **Open Group Header Pill** (`📁 Group Name (N) Close ▴`) in the scrubber track allows one-click collapse or group context menu access.
-  - An **Open Group Corridor** subtly tints the member columns with a dashed border.
+  - **Tier 1 ($18\,\text{px}$)**: Clean group banners (`📁 Group Name (N) Close ▴`) span member columns in solid `#182234` cards, isolated from step numbers. Double-click on the open banner or clicking `Close ▴` folds the group.
+  - **Tier 2 ($26\,\text{px}$)**: Step numbers (`01`, `02`, ... `24`), ticks, and the Scrubber Pin Track. All step numbers remain 100% visible and readable underneath open groups.
+  - **Rollback Marker Vertical Separation**: Rollback head pin is located in Tier 2 ($y = 23\dots 39\,\text{px}$), never intersecting Tier 1. Zero overlap with group titles or `Close ▴`.
+  - An **Open Group Corridor** subtly tints member columns with a dashed border.
   - Right-clicking any chip inside an open group displays the standard feature context menu as usual.
 
 ---

@@ -27,7 +27,9 @@
       --grey-corridor-bg: rgba(161, 161, 170, 0.08);
       --col-w: 52px;
       --row-h: 38px;
-      --header-h: 28px;
+      --header-h: 44px;
+      --header-group-h: 18px;
+      --header-step-h: 26px;
       --text: #e2e8f0;
       --text-muted: #94a3b8;
       --text-dim: #64748b;
@@ -148,11 +150,11 @@
       font-size: 14px;
     }
 
-    /* Rollback Timeline Marker */
+    /* Rollback Timeline Marker (Starts at Tier 2 boundary, never enters Tier 1) */
     .timeline-marker {
       position: absolute;
-      top: 0;
-      height: calc(var(--header-h) + var(--row-h) * 5);
+      top: var(--header-group-h);
+      height: calc(var(--header-step-h) + var(--row-h) * 5);
       width: 20px;
       margin-left: -10px;
       z-index: 50;
@@ -169,7 +171,7 @@
       cursor: grabbing !important;
     }
 
-    /* Scrubber Head Pin in dedicated Header Row */
+    /* Scrubber Head Pin centered vertically in Step Tier (Tier 2) */
     .marker-handle-top {
       width: 16px;
       height: 16px;
@@ -179,7 +181,7 @@
       box-shadow: 0 0 8px rgba(56, 189, 248, 0.7);
       flex-shrink: 0;
       cursor: col-resize;
-      margin-top: 6px;
+      margin-top: 5px;
       transition: transform 0.15s, background-color 0.15s;
       position: relative;
       display: flex;
@@ -335,10 +337,10 @@
       white-space: nowrap;
     }
 
-    /* Main Viewport Container: Exactly Header + 3.5 rows visible */
+    /* Main Viewport Container: Exactly Header (44px) + 3.5 rows visible */
     .viewport-container {
       position: relative;
-      height: 170px;
+      height: 186px;
       border: 1px solid var(--border);
       border-radius: 8px;
       overflow: hidden;
@@ -362,14 +364,27 @@
     /* Leading Side (Left) of the Timeline Header Row */
     .pinned-header-top {
       height: var(--header-h);
-      background: #151820;
+      background: #14171e;
       border-bottom: 1px solid #2a303d;
       display: flex;
-      align-items: center;
+      flex-direction: column;
       justify-content: center;
-      padding: 0 6px;
+      padding: 3px 8px;
       flex-shrink: 0;
       z-index: 35;
+      box-sizing: border-box;
+    }
+
+    .pinned-header-title {
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      color: #64748b;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .pinned-headers-viewport {
@@ -428,32 +443,60 @@
       min-width: 100%;
     }
 
-    /* Dedicated Timeline Header Row (Scrubber Pin Track) */
+    /* Dedicated Timeline Header Row (Two-Tier Layout: Groups Tier + Steps Tier) */
     .timeline-header-track {
       display: flex;
+      flex-direction: column;
       height: var(--header-h);
-      background: #14171d;
+      background: #12151c;
       border-bottom: 1px solid #2a303d;
       position: relative;
       user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* Tier 1: Group / Folder Banner Bar */
+    .header-tier-groups {
+      height: var(--header-group-h);
+      position: relative;
+      display: flex;
+      background: #0f1218;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      overflow: visible;
+    }
+
+    .header-group-cell {
+      width: var(--col-w);
+      height: 100%;
+      flex-shrink: 0;
+      border-right: 1px solid var(--grid-line);
+      box-sizing: border-box;
+    }
+
+    /* Tier 2: Step Numbers & Scrubber Track */
+    .header-tier-steps {
+      height: var(--header-step-h);
+      position: relative;
+      display: flex;
     }
 
     .header-step-cell {
       width: var(--col-w);
-      height: var(--header-h);
+      height: var(--header-step-h);
       flex-shrink: 0;
       border-right: 1px solid var(--grid-line);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-end;
-      padding-bottom: 3px;
+      padding-bottom: 4px;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       font-size: 10px;
       font-weight: 600;
       color: #64748b;
       cursor: pointer;
       position: relative;
+      box-sizing: border-box;
       transition: background-color 0.12s, color 0.12s;
     }
 
@@ -859,14 +902,15 @@
       background: #64748b;
     }
 
-    /* Open Group Header Pill (in Timeline Header Track) */
+    /* Open Group Header Pill (in Tier 1 of Timeline Header Track) */
     .open-group-header-pill {
       position: absolute;
-      top: 3px;
-      height: 22px;
+      top: 1px;
+      height: 16px;
       border-radius: 4px;
-      background: rgba(56, 189, 248, 0.12);
-      border: 1px solid rgba(56, 189, 248, 0.35);
+      background: #182234;
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -875,14 +919,101 @@
       font-weight: 600;
       color: #38bdf8;
       cursor: pointer;
-      z-index: 40;
+      z-index: 35;
       user-select: none;
-      transition: background 0.15s, border-color 0.15s;
+      box-sizing: border-box;
+      transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
     }
 
     .open-group-header-pill:hover {
-      background: rgba(56, 189, 248, 0.22);
+      background: #1f2c42;
       border-color: #38bdf8;
+      box-shadow: 0 2px 10px rgba(56, 189, 248, 0.25);
+    }
+
+    .open-group-title {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .open-group-icon {
+      width: 12px;
+      height: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .open-group-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 10px;
+      font-weight: 600;
+      color: #e0f2fe;
+    }
+
+    .open-group-count {
+      font-size: 9px;
+      font-weight: 700;
+      color: #38bdf8;
+      opacity: 0.85;
+    }
+
+    .open-group-close-btn {
+      font-size: 9px;
+      font-weight: 600;
+      padding: 1px 5px;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 3px;
+      margin-left: 6px;
+      flex-shrink: 0;
+      color: #7dd3fc;
+      transition: background 0.1s, color 0.1s;
+    }
+
+    .open-group-close-btn:hover {
+      background: rgba(56, 189, 248, 0.35);
+      color: #ffffff;
+    }
+
+    /* Closed Group Header Pill (in Tier 1 above virtual group chip) */
+    .closed-group-header-pill {
+      position: absolute;
+      top: 1px;
+      height: 16px;
+      border-radius: 4px;
+      background: #1a2334;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      font-size: 9px;
+      font-weight: 700;
+      color: #38bdf8;
+      cursor: pointer;
+      z-index: 35;
+      user-select: none;
+      box-sizing: border-box;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .closed-group-header-pill:hover {
+      background: #233048;
+      border-color: #38bdf8;
+    }
+
+    .closed-group-chevron {
+      font-size: 8px;
+      color: #38bdf8;
+      opacity: 0.8;
     }
 
     .open-group-corridor {
@@ -978,6 +1109,7 @@
       <div class="pinned-headers">
         <!-- Leading Side (Left) of Timeline Header Row: Transport Controls -->
         <div class="pinned-header-top">
+          <div class="pinned-header-title">TIMELINE TRANSPORT</div>
           <div class="transport-bar-header" title="Timeline Transport Controls (Scrub Active Steps)">
             <button id="hdrBtnFirst" class="btn-transport" title="Roll to First (Step 0)">⏮</button>
             <button id="hdrBtnBack" class="btn-transport" title="Step Back">◀</button>
@@ -1096,16 +1228,23 @@
       collapse: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="10" y1="14" x2="3" y2="21"/></svg>`
     };
 
-    // Vector Folder SVG for Virtual Group Chip
+    // Vector Folder SVG for Virtual Group Chip & Header Group Banners
     const FOLDER_ICON_SVG = `<svg viewBox="0 0 48 48" width="22" height="22" fill="none">
       <path d="M6 10C6 7.79 7.79 6 10 6H19L24 12H38C40.21 12 42 13.79 42 16V38C42 40.21 40.21 42 38 42H10C7.79 42 6 40.21 6 38V10Z" fill="#2563eb" fill-opacity="0.25" stroke="#38bdf8" stroke-width="3" stroke-linejoin="round"/>
       <rect x="14" y="20" width="20" height="14" rx="2" fill="#38bdf8" fill-opacity="0.35" stroke="#38bdf8" stroke-width="2"/>
       <line x1="18" y1="27" x2="30" y2="27" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
     </svg>`;
 
+    const FOLDER_ICON_SVG_SMALL = `<svg viewBox="0 0 48 48" width="12" height="12" fill="none">
+      <path d="M6 10C6 7.79 7.79 6 10 6H19L24 12H38C40.21 12 42 13.79 42 16V38C42 40.21 40.21 42 38 42H10C7.79 42 6 40.21 6 38V10Z" fill="#2563eb" fill-opacity="0.3" stroke="#38bdf8" stroke-width="3.5" stroke-linejoin="round"/>
+      <rect x="14" y="20" width="20" height="14" rx="2" fill="#38bdf8" fill-opacity="0.4" stroke="#38bdf8" stroke-width="2.5"/>
+    </svg>`;
+
     const COL_W = 52;
     const ROW_H = 38;
-    const HEADER_H = 28;
+    const HEADER_H = 44;
+    const HEADER_GROUP_H = 18;
+    const HEADER_STEP_H = 26;
     const NUM_ROWS = 5;
 
     // 24 Sequential Steps Populating the Entire Timeline Length (Zero Empty Columns)
@@ -1468,8 +1607,25 @@
       const displayItems = getDisplayItems();
       const totalCols = displayItems.length;
 
-      // 1. Render Header Scrubber Track Cells
+      // 1. Render Two-Tier Header: Tier 1 (Group Banners) & Tier 2 (Step Numbers & Scrubber Track)
       headerTrack.innerHTML = '';
+
+      // Tier 1: Group / Folder Banner Bar
+      const tierGroups = document.createElement('div');
+      tierGroups.className = 'header-tier-groups';
+
+      // Tier 2: Step Numbers & Scrubber Pin Track
+      const tierSteps = document.createElement('div');
+      tierSteps.className = 'header-tier-steps';
+
+      // Background cells for Tier 1 (columns)
+      for (let colIdx = 0; colIdx < totalCols; colIdx++) {
+        const gCell = document.createElement('div');
+        gCell.className = 'header-group-cell';
+        tierGroups.appendChild(gCell);
+      }
+
+      // Step cells for Tier 2
       for (let colIdx = 0; colIdx < totalCols; colIdx++) {
         const c = colIdx + 1;
         const item = displayItems[colIdx];
@@ -1478,11 +1634,20 @@
         hCell.dataset.col = c;
 
         if (item.isGroup) {
-          hCell.title = `Group: ${item.group.name} (${item.actions.length} features) [Click to roll marker here, Right-click for Group menu]`;
+          hCell.title = `Group: ${item.group.name} (${item.actions.length} features)\nClick to roll marker here\nDouble-click to Open Group\nRight-click for Group menu`;
           hCell.innerHTML = `
             <div class="header-step-tick"></div>
             <span style="color: #38bdf8; font-weight: 700;">G${item.group.id}</span>
           `;
+          // Double-click on group step cell opens/unfolds group
+          hCell.addEventListener('dblclick', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            closeContextMenu();
+            item.group.isOpen = true;
+            renderTimeline();
+            dragFeedback.innerHTML = `📂 <strong>Group Opened:</strong> Expanded <em>${item.group.name}</em>. Right-click individual chips for feature menu.`;
+          });
           hCell.addEventListener('contextmenu', (e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -1500,10 +1665,11 @@
           stopPlayback();
           setMarkerStep(c);
         });
-        headerTrack.appendChild(hCell);
+        tierSteps.appendChild(hCell);
       }
 
-      // 1b. Render Open Group Header Pills in Header Track
+      // Render Group Banners / Pills in Tier 1
+      // Open groups: Span across their columns
       groups.forEach(grp => {
         if (!grp.isOpen) return;
         const indices = [];
@@ -1519,26 +1685,94 @@
           pill.className = 'open-group-header-pill';
           pill.style.left = `${minIdx * COL_W + 3}px`;
           pill.style.width = `${(maxIdx - minIdx + 1) * COL_W - 6}px`;
-          pill.title = `${grp.name} (${grp.actionIds.length} features)\nClick Close to fold group, Right-click for Group menu`;
+          pill.title = `${grp.name} (${grp.actionIds.length} features)\nDouble-click to fold group, Right-click for Group menu`;
           pill.innerHTML = `
-            <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10px;">📁 ${grp.name} (${grp.actionIds.length})</span>
-            <span style="font-size: 9px; padding: 1px 4px; background: rgba(56, 189, 248, 0.2); border-radius: 3px; margin-left: 4px;">Close ▴</span>
+            <div class="open-group-title">
+              <span class="open-group-icon">${FOLDER_ICON_SVG_SMALL}</span>
+              <span class="open-group-name">${grp.name}</span>
+              <span class="open-group-count">(${grp.actionIds.length})</span>
+            </div>
+            <button class="open-group-close-btn" title="Fold group">Close ▴</button>
           `;
-          pill.addEventListener('click', (e) => {
+
+          // Double click on open group pill folds/closes it
+          pill.addEventListener('dblclick', (e) => {
+            e.preventDefault();
             e.stopPropagation();
             closeContextMenu();
             grp.isOpen = false;
             renderTimeline();
             dragFeedback.innerHTML = `📁 <strong>Group Closed:</strong> Folded <em>${grp.name}</em> into a virtual group chip.`;
           });
+
+          // Click on close button folds it
+          const closeBtn = pill.querySelector('.open-group-close-btn');
+          if (closeBtn) {
+            closeBtn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              closeContextMenu();
+              grp.isOpen = false;
+              renderTimeline();
+              dragFeedback.innerHTML = `📁 <strong>Group Closed:</strong> Folded <em>${grp.name}</em> into a virtual group chip.`;
+            });
+          }
+
           pill.addEventListener('contextmenu', (e) => {
             e.preventDefault();
             e.stopPropagation();
             openGroupContextMenu(e.clientX, e.clientY, grp);
           });
-          headerTrack.appendChild(pill);
+
+          tierGroups.appendChild(pill);
         }
       });
+
+      // Closed groups: Render a compact group pill in Tier 1 at the column index
+      displayItems.forEach((item, colIdx) => {
+        if (!item.isGroup) return;
+        const grp = item.group;
+        const pill = document.createElement('div');
+        pill.className = 'closed-group-header-pill';
+        pill.style.left = `${colIdx * COL_W + 6}px`;
+        pill.style.width = `${COL_W - 12}px`;
+        pill.title = `${grp.name} (${grp.actionIds.length} features)\nDouble-click to Open Group, Right-click for Group menu`;
+        pill.innerHTML = `
+          <span style="font-size: 10px; display: inline-flex; align-items: center;">${FOLDER_ICON_SVG_SMALL}</span>
+          <span class="closed-group-chevron">▾</span>
+        `;
+
+        // Double-click on closed group header pill opens/unfolds it
+        pill.addEventListener('dblclick', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          closeContextMenu();
+          grp.isOpen = true;
+          renderTimeline();
+          dragFeedback.innerHTML = `📂 <strong>Group Opened:</strong> Expanded <em>${grp.name}</em>. Right-click individual chips for feature menu.`;
+        });
+
+        // Single click selects the group
+        pill.addEventListener('click', (e) => {
+          e.stopPropagation();
+          closeContextMenu();
+          selectedGroupId = grp.id;
+          selectedActionIds = [...grp.actionIds];
+          anchorActionId = grp.actionIds[0];
+          applyHighlight();
+          dragFeedback.innerHTML = `📁 <strong>Group Selected:</strong> <em>${grp.name}</em>. Double-click to Open or Right-click for Group options.`;
+        });
+
+        pill.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          openGroupContextMenu(e.clientX, e.clientY, grp);
+        });
+
+        tierGroups.appendChild(pill);
+      });
+
+      headerTrack.appendChild(tierGroups);
+      headerTrack.appendChild(tierSteps);
 
       // 2. Render Component Track Rows
       trackContainer.innerHTML = '';

@@ -34,7 +34,7 @@ This document outlines the architecture, data structures, UI design, and impleme
   - Heavy solid-body CAD calculations are evaluated strictly up to `doc.marker`; inactive features downstream remain unbuilt in the 3D viewport until the marker is scrubbed past them.
 - **Dead-Centered Dotted Connectors**: Multi-component Actions are connected by a vertical dotted line (`t.secondary_dots`) positioned at the exact mathematical center of that column ($\text{col\_x} + \text{col\_w}/2$). Active multi-component lines highlight in Blue; inactive multi-component lines highlight in Grey.
 - **Ripple Push Reordering**: Moving an Action $k$ steps to the right pushes all jumped Actions $k$ steps to the left; moving $k$ steps to the left pushes jumped Actions $k$ steps to the right (strict array splice reordering).
-- **Header + 3.5 Row Height & Rubberband Overscroll**: Height auto-expands to $28\text{px}$ header $+ 3.5$ component rows ($170\text{px}$ total height with scrollbar) with elastic spring damping on overscroll.
+- **Header + 3.5 Row Height & Rubberband Overscroll**: Height auto-expands to $44\text{px}$ Two-Tier header $+ 3.5$ component rows ($186\text{px}$ total height with scrollbar) with elastic spring damping on overscroll.
 - **Pinned Left Headers & Layered 2D Scrolling**: Left component headers and transport controls remain pinned while timeline tracks scroll horizontally behind them.
 - **Timeline Feature Grouping & Folding (Virtual Column Chips)**:
   - Multi-selection via **Shift+Click** (continuous range) and **Cmd/Ctrl+Click** (additive non-adjacent toggle).
@@ -42,6 +42,10 @@ This document outlines the architecture, data structures, UI design, and impleme
   - Closed groups collapse into a single-column **virtual group chip** spanning all component tracks (height $182\text{px}$, rows 0 to 4) with folder icon, count badge, rotated title, and component indicator dots.
   - Dedicated group context menu: `Open Group` / `Close Group`, `Delete Group but expand content`, `Delete Group and content`, `Deactivate Group` (disabled if all deactivated), `Activate Group` (disabled if all activated).
   - Open groups expand into individual columns and tracks with an open group header pill (`📁 Group Name (N) Close ▴`) and corridor background tint, with standard feature context menus on individual chips.
+- **Two-Tier Header Separation & Zero Overlap**:
+  - **Tier 1 (Top Tier, $18\text{px}$)**: Folder management bar. Solid `#182234` group banner spanning member columns when open, or compact group pill when closed. Zero bleed-through of step numbers. Double-click on open banner folds group; double-click on closed pill unfolds group.
+  - **Tier 2 (Bottom Tier, $26\text{px}$)**: Step numbers (`01`, `02`, ... `24`, `G1`), ticks, and Scrubber Track. Step numbers remain 100% visible and readable under open groups. Double-click on group step cell unfolds group.
+  - **Scrubber Pin Separation**: Draggable rollback head pin starts at Tier 2 (`top: 18px`), centered vertically in Tier 2 ($y = 23\dots 39\text{px}$). It never crosses into Tier 1, ensuring zero visual overlap with group titles or `Close ▴` buttons.
 - **Anchored Bottom Dock**: Strictly docked at the bottom of the viewport; not dockable to side panels.
 
 ---
@@ -137,9 +141,11 @@ To support organizing complex feature trees into manageable sub-assemblies or lo
    - `Deactivate Group`: Deactivates/suppresses all actions within the group from CAD solid-body evaluation (disabled/not clickable if all actions are already deactivated).
    - `Activate Group`: Activates/unsuppresses all actions within the group (disabled/not clickable if all actions are already activated).
 
-4. **Open Group Behavior**:
+4. **Open Group Behavior & Two-Tier Header Separation**:
    - Expanding a group reveals its individual feature chips in their natural columns and component rows.
-   - An **Open Group Header Pill** (`📁 Group Name (N) Close ▴`) appears in the scrubber track, providing one-click collapse and group menu access.
+   - **Tier 1 ($18\text{px}$)**: Group banners (`📁 Group Name (N) Close ▴`) span member columns with solid `#182234` styling and shadow, completely isolated from step numbers. Double-click on open banner folds the group; clicking `Close ▴` folds the group.
+   - **Tier 2 ($26\text{px}$)**: Step numbers (`01`, `02`, ... `24`, `G1`), ticks, and the Scrubber Pin Track. All step numbers remain 100% visible and readable underneath open groups.
+   - **Scrubber Pin Vertical Separation**: The draggable rollback marker head pin is positioned in Tier 2 (`top: 18px`), centered vertically at $y = 23\dots 39\text{px}$. It never enters Tier 1, eliminating any overlap with group titles or the `Close ▴` button when scrubbing near open groups.
    - An **Open Group Corridor** subtly tints the member columns with a dashed border.
    - Right-clicking any chip inside an open group displays the standard feature context menu as usual.
 
@@ -162,14 +168,14 @@ To support organizing complex feature trees into manageable sub-assemblies or lo
 
 1. **Pinned Left Headers ($160\text{px}$)**:
    - Component titles, color badges, and icons remain locked on the left.
-   - Header transport controls sit fixed at the top-left corner.
+   - Top label `TIMELINE TRANSPORT` ($18\text{px}$) sits cleanly above header transport controls ($26\text{px}$) at the top-left corner.
    - Timeline grid and chips scroll horizontally underneath.
 2. **Synchronized Vertical Scrolling with Rubberband**:
    - Shared vertical scroll offset $y$ for headers and tracks.
    - Boundary overscroll damping: $\Delta y_{\text{overscroll}} = -\Delta y \times 0.35$.
    - Elastic spring release restoring boundary cleanly.
 3. **Header + 3.5 Row Sizing**:
-   - Total dock height clamped to $170\text{px}$ ($28\text{px}$ header $+ 3.5 \times 38\text{px} + \text{scrollbar}$).
+   - Total dock height clamped to $186\text{px}$ ($44\text{px}$ Two-Tier header $+ 3.5 \times 38\text{px} + \text{scrollbar}$).
    - 4th component row is half-visible ($19\text{px}$), providing an immediate scroll affordance.
 
 ---
@@ -178,7 +184,7 @@ To support organizing complex feature trees into manageable sub-assemblies or lo
 
 - **Phase 1**: Dependency Graph Engine & Ripple Reorder Mapping (`crates/ui-egui/src/timeline_2d/deps.rs`).
 - **Phase 2**: Preference setting in `prefs.rs` and `prefs/interface.rs` + Pending locale strings.
-- **Phase 3**: Uniform 2D Grid Canvas, header scrubber track ($28\text{px}$), leading transport controls, 3.5-row auto-expansion, pinned left headers, rollback marker vertical rendering (`ui_kit::history_marker`), 100% opacity greyscale inactive rendering, and rubberband vertical scrolling.
+- **Phase 3**: Uniform 2D Grid Canvas, Two-Tier header scrubber track ($44\text{px}$: Tier 1 groups $18\text{px}$ + Tier 2 steps $26\text{px}$), leading transport controls, 3.5-row auto-expansion, pinned left headers, rollback marker vertical separation, 100% opacity greyscale inactive rendering, and rubberband vertical scrolling.
 - **Phase 4**: Dependency visualization (Active: Orange prereqs, Blue downstream, Green movable brackets; Inactive: Light Grey prereqs, Mid Grey downstream, Greyish movable brackets).
 - **Phase 5**: Multi-component dead-centered dotted connectors, marker drag scrubbing (`cmd.timeline_roll`), `HistoryTransport` controls, chip double-click editing, `Menu::context` menu integration (`crates/ui-egui/src/timeline.rs#L790-L835`), and drag-and-drop ripple push reordering across active and inactive zones.
 - **Phase 6**: Multi-selection (Shift+Click, Cmd/Ctrl+Click), adjacent grouping logic, virtual group chips spanning tracks, open group header pills, and group context menu (`timeline_2d/group.rs`).
