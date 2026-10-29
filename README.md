@@ -77,6 +77,21 @@ When an inactive feature is selected (or when an active feature references inact
 - Features pure vector SVG artwork matching SolidCraft's official UI design system (`assets/icons/ui/design/svg/model/`):
   - Sketch, Extrude, Revolve, Fillet, Chamfer, Shell, Combine, Thread, Hole, and Mirror.
 
+### 10. SolidCraft Context Menu & Double-Click Editing (1-D Timeline Parity)
+- Right-clicking any action chip opens the official SolidCraft context menu (`crate::ui_kit::Menu::context`), styled to match SolidCraft's dark egui theme:
+  - **Edit Feature**: Opens parameter sheet (also directly accessible via **double-click** on any chip).
+  - **Redefine Sketch Plane**: Context-sensitive for sketch operations.
+  - **Edit Profile Sketch**: Context-sensitive for features driven by an input profile sketch (Extrude, Revolve).
+  - **Rename**: Prompts for new name and updates timeline immediately.
+  - **Suppress / Unsuppress**: Toggles feature suppression (`act.suppressed`) with diagonal dashed appearance on suppressed chips.
+  - **Roll History Marker Here**: Moves the rollback marker directly to that step (`timeline.roll_to`).
+  - **Find in Browser**: Locates feature in model tree browser.
+  - **Copy & Paste**: Copies feature to session clipboard and pastes clone at the rollback marker position (`timeline.paste`).
+  - **Copy Diagnostic Message**: Context-sensitive for features with errors or warnings (e.g., Step 17 warning).
+  - **Delete Feature**: Deletes feature and safely cleans up dependency references.
+  - **Delete Features After History Marker**: Offered on rolled-back features (`index >= marker`) to delete all features after the marker in one step.
+- Full context menu functionality is active across both **active and inactive** features. Modifying inactive features updates the document structure without triggering 3D solid-body rebuilds.
+
 ---
 
 ## 💻 How to Run the Demonstration
@@ -113,6 +128,7 @@ When integrated into the SolidCraft Rust codebase:
 | **Component Rows** | Extracted from `doc.tree.components()` and `f.component` |
 | **Dependency Graph** | Direct DAG traversal via `f.kind.walk_refs()` and `f.kind.input_sketches()` |
 | **Reorder Engine Command** | Dispatches heavy command `timeline.reorder` in `crates/engine/src/cmd/edit.rs` |
+| **Context Menu & Double-Click** | `crate::ui_kit::Menu::context` and `resp.double_clicked()` (`crates/ui-egui/src/timeline.rs`) |
 | **Configuration Preference** | `Settings → Interface → Enable 2D History Browser` (`prefs.history_2d: bool = false`) |
 | **Theme & Tokens** | Direct consumption of `theme::Tokens` (`t.warning`, `t.accent`, `t.form_success`, `t.border`) |
 

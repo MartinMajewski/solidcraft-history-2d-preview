@@ -81,6 +81,33 @@ SolidCraft's document model stores the active evaluation point as `doc.marker: O
    - Releasing or dragging dispatches `dialogs::roll_marker(&mut app, target_slot)` / `cmd.timeline_roll`.
    - **Transport Buttons** (`HistoryTransport`): First (`⏮`), Back (`◀`), Play (`▶`/`⏸`), Forward (`▶`), Last (`⏭`) to step through features or trigger automatic sequential playback.
 
+### 2.4 Context Menu & Double-Click Support (1-D Timeline Parity)
+SolidCraft's 1-D timeline (`crates/ui-egui/src/timeline.rs#L790-L835`) attaches a comprehensive context menu and double-click handler to every feature chip. The 2D History Browser replicates this interaction model identically:
+
+1. **Integration Pattern**:
+   - Each chip's `egui::Response` connects to `crate::ui_kit::Menu::context(&resp, |ui| { ... })`.
+   - `resp.double_clicked()` sets `edit = Some(*id)` to open the feature's edit sheet immediately.
+2. **Context Menu Entries & Dispatch**:
+   - `Edit Feature` (`"edit"`): Opens feature parameter sheet (`edit = Some(*id)`).
+   - `Redefine Sketch Plane` (`sketch_plane_button`): Offered for `FeatureKind::Sketch` (`"ui.redefineSketch"`).
+   - `Edit Profile Sketch` (`kind.profile_sketch()`): Offered for operations driven by a profile sketch (Extrude, Revolve; calls `app.edit_sketch(sk.0)`).
+   - `Rename` (`"rename"`): Opens `Dialog::rename(*id, name)`.
+   - `Suppress Feature` / `Unsuppress Feature` (`"suppress"`): Dispatches `app.run_heavy("timeline.suppress", json!({"feature": id}))`. Suppressed chips render with a dashed border and diagonal slash pattern at 55% opacity.
+   - `Roll History Marker Here` (`"rollback"`): Dispatches `app.run_heavy("timeline.roll_to", json!({"feature": id}))`.
+   - `Find in Browser` (`"list"`): Highlights and selects feature in the model tree browser (`find_in_browser(app, id)`).
+   - *Separator*
+   - `Copy` (`"copy"`): Copies `menu_targets(app, id)` to session clipboard via `timeline.copy`.
+   - `Paste` (`"paste"`): Enabled if clipboard is not empty; inserts clones at `doc.marker` via `timeline.paste`.
+   - `Copy Error Message` / `Copy Warning Message` (`message_button`): Copies diagnostic text from `app.session.model.result(id)`.
+   - *Separator*
+   - `Delete` (`"delete"`): Deletes targeted feature(s) via `delete_features(app, targets)`.
+   - `Delete N Features After History Marker` (`delete_after_marker_button`): Active when right-clicked feature `index >= marker`, deleting all features downstream of the marker in one batch.
+3. **Inactive Feature Semantics**:
+   - Right-clicking an inactive chip (to the right of `doc.marker`) provides full context menu support.
+   - Modifying an inactive feature (delete, rename, suppress, copy, paste, reorder) directly updates the document feature sequence `doc.features`.
+   - Heavy solid B-rep evaluation (`s.model.evaluate`) stops strictly at `doc.marker`. Inactive features remain unbuilt in the 3D viewport until the marker rolls over them.
+   - Choosing "Roll History Marker Here" on an inactive feature advances the marker to that position and evaluates all features up to that step.
+
 ---
 
 ## 3. Visual Styling & Uniform CAD Grid
@@ -118,7 +145,7 @@ SolidCraft's document model stores the active evaluation point as `doc.marker: O
 - **Phase 2**: Preference setting in `prefs.rs` and `prefs/interface.rs` + Pending locale strings.
 - **Phase 3**: Uniform 2D Grid Canvas, header scrubber track ($28\text{px}$), leading transport controls, 3.5-row auto-expansion, pinned left headers, rollback marker vertical rendering (`ui_kit::history_marker`), 100% opacity greyscale inactive rendering, and rubberband vertical scrolling.
 - **Phase 4**: Dependency visualization (Active: Orange prereqs, Blue downstream, Green movable brackets; Inactive: Light Grey prereqs, Mid Grey downstream, Greyish movable brackets).
-- **Phase 5**: Multi-component dead-centered dotted connectors, marker drag scrubbing (`cmd.timeline_roll`), `HistoryTransport` controls, and drag-and-drop ripple push reordering across active and inactive zones.
+- **Phase 5**: Multi-component dead-centered dotted connectors, marker drag scrubbing (`cmd.timeline_roll`), `HistoryTransport` controls, chip double-click editing, `Menu::context` menu integration (`crates/ui-egui/src/timeline.rs#L790-L835`), and drag-and-drop ripple push reordering across active and inactive zones.
 - **Phase 6**: Unit tests, UI scenario integration, and `cargo xtask ci` verification.
 
 ---
@@ -132,7 +159,8 @@ The standalone demonstration repository and interactive preview artifact feature
 4. **100% Opacity Display Across All States**: Unselected and inactive chips remain fully visible.
 5. **Greyscale Inactive Highlights with Matched Luminance**: Inactive prereqs (Light Grey), downstream (Mid Grey), and brackets (Greyish).
 6. **Reordering Everywhere**: Full ripple reordering supported on both active and inactive features.
-7. **Dead-Centered Multi-Component Connectors**: Centered dotted lines with clean pass-through.
-8. **1:1 Synchronized Scrolling CAD Grid**: Physical DOM cells moving synchronously with chips and overscroll.
+7. **Full SolidCraft Context Menu & Double-Click Support**: 1:1 simulation of the 1-D timeline's right-click context menu (Edit, Redefine Sketch Plane, Edit Profile Sketch, Rename, Suppress/Unsuppress, Roll Marker Here, Find in Browser, Copy/Paste, Copy Diagnostic Message, Delete, Delete After Marker).
+8. **Dead-Centered Multi-Component Connectors**: Centered dotted lines with clean pass-through.
+9. **1:1 Synchronized Scrolling CAD Grid**: Physical DOM cells moving synchronously with chips and overscroll.
 
 - **Standalone Repo**: [`../solidcraft-history-2d-preview/index.html`](file:///Users/martinmajewski/Developer/CAD/solidcraft-history-2d-preview/index.html)

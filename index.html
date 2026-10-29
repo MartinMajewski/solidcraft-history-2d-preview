@@ -647,6 +647,99 @@
       transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
+    /* Suppressed Feature Chip */
+    .chip.suppressed {
+      opacity: 0.55 !important;
+      border-style: dashed !important;
+      background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(0, 0, 0, 0.35) 5px, rgba(0, 0, 0, 0.35) 10px) !important;
+    }
+
+    /* SolidCraft Egui-Styled Context Menu */
+    .context-menu {
+      position: fixed;
+      z-index: 1000;
+      background: #181b22;
+      border: 1px solid #333a48;
+      border-radius: 6px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.75), 0 0 1px rgba(255, 255, 255, 0.1);
+      padding: 4px;
+      min-width: 220px;
+      display: none;
+      font-size: 12px;
+      user-select: none;
+      -webkit-user-select: none;
+      animation: contextMenuFadeIn 0.1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes contextMenuFadeIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .context-menu-header {
+      padding: 5px 8px 3px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #232833;
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .context-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 6px 10px;
+      border-radius: 4px;
+      color: #cbd5e1;
+      cursor: pointer;
+      transition: background 0.1s, color 0.1s;
+    }
+
+    .context-menu-item:hover:not(.disabled) {
+      background: #252b38;
+      color: #fff;
+    }
+
+    .context-menu-item.danger:hover:not(.disabled) {
+      background: rgba(239, 68, 68, 0.18);
+      color: #f87171;
+    }
+
+    .context-menu-item.disabled {
+      color: #475569;
+      cursor: not-allowed;
+    }
+
+    .context-menu-icon {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #94a3b8;
+    }
+
+    .context-menu-item:hover:not(.disabled) .context-menu-icon {
+      color: #38bdf8;
+    }
+
+    .context-menu-item.danger:hover:not(.disabled) .context-menu-icon {
+      color: #f87171;
+    }
+
+    .context-menu-sep {
+      height: 1px;
+      background: #262c37;
+      margin: 4px 0;
+    }
+
     /* Scrollbars */
     ::-webkit-scrollbar {
       width: 8px;
@@ -800,13 +893,16 @@
     <!-- Live Interaction Log & Instructions -->
     <div class="footer-bar">
       <div id="dragFeedback">
-        💡 <strong>Try this:</strong> Drag the blue <strong>head pin</strong> to roll back the active CAD solid evaluation. Notice that inactive features remain <strong>100% visible</strong>, fully selectable, and movable in greyscale!
+        💡 <strong>Try this:</strong> Right-click any chip to open the <strong>SolidCraft Context Menu</strong> (Edit, Suppress, Roll Marker, Copy/Paste, Delete). Drag the blue <strong>head pin</strong> to roll back CAD solid-body evaluation!
       </div>
       <div style="font-family: monospace; font-size: 11px; color: var(--text-dim);">
         ↔ Scroll horizontally &nbsp;|&nbsp; ↕ Scroll vertically
       </div>
     </div>
   </div>
+
+  <!-- SolidCraft Timeline Context Menu (egui theme) -->
+  <div id="timelineContextMenu" class="context-menu"></div>
 
   <!-- Script Logic & Vector Icons -->
   <script>
@@ -822,6 +918,22 @@
       thread: `<svg viewBox="0 0 64 64" width="20" height="20"><path d="M18 12L18 54A14 8.08 0 0 0 46 54L46 12Z" fill="#b8c3cf" stroke="#34465b" stroke-width="2.55"/><path d="M18 12A14 8.08 0 1 0 46 12A14 8.08 0 1 0 18 12Z" fill="#e2e8ef" stroke="#34465b" stroke-width="2.55"/><path d="M48.4 22L15.6 27.75" stroke="#328bd3" stroke-width="3.2" stroke-linecap="round"/><path d="M48.4 33.5L15.6 39.25" stroke="#328bd3" stroke-width="3.2" stroke-linecap="round"/><path d="M48.4 45L15.6 50.75" stroke="#328bd3" stroke-width="3.2" stroke-linecap="round"/></svg>`,
       hole: `<svg viewBox="0 0 64 64" width="20" height="20"><path d="M3 20.35L32 37.1L32 48.74L3 32Z" fill="#b8c3cf"/><path d="M61 20.35L32 37.1L32 48.74L61 32Z" fill="#8e9faf"/><path d="M32 3.61L61 20.35L32 37.1L3 20.35Z" fill="#e2e8ef" stroke="#34465b" stroke-width="2.55"/><path d="M22.19 20.35A9.81 5.66 0 1 0 41.81 20.35A9.81 5.66 0 1 0 22.19 20.35Z" fill="#236ead" stroke="#34465b" stroke-width="2.55"/></svg>`,
       mirror: `<svg viewBox="0 0 64 64" width="20" height="20"><path d="M32 6L32 54" fill="none" stroke="#6f879c" stroke-width="2" stroke-dasharray="4 4"/><path d="M8 50L28 50L28 16Z" fill="#b8c3cf" stroke="#34465b" stroke-width="2.55"/><path d="M56 50L36 50L36 16Z" fill="#328bd3" stroke="#34465b" stroke-width="2.55"/></svg>`
+    };
+
+    // SolidCraft Context Menu SVG Icons (matches crates/ui-egui/src/context_menu.rs)
+    const MENU_ICONS = {
+      edit: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>`,
+      redefine: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>`,
+      sketch: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M4 4h16M4 12h16"/></svg>`,
+      rename: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>`,
+      suppress: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>`,
+      unsuppress: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor"/></svg>`,
+      rollback: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"/><line x1="12" y1="8" x2="12" y2="21"/><path d="M8 21h8"/></svg>`,
+      find: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
+      copy: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`,
+      paste: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>`,
+      message: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+      delete: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>`
     };
 
     const COL_W = 52;
@@ -848,7 +960,7 @@
       { id: 14, name: "Fastener Combine (Housing+Fastener)", type: "combine", rows: [1, 4], prereqs: [9,11,12], downstream: [16,17,21,23] }, // Multi-component (1 & 4)
       { id: 15, name: "Bearing Shell", type: "shell", rows: [3], prereqs: [13], downstream: [16,20,22] },
       { id: 16, name: "Assembly Mirror", type: "mirror", rows: [0], prereqs: [13,14,15], downstream: [24] },
-      { id: 17, name: "Flange Mounting Holes", type: "hole", rows: [1], prereqs: [14], downstream: [21,24] },
+      { id: 17, name: "Flange Mounting Holes", type: "hole", rows: [1], prereqs: [14], downstream: [21,24], warning: "Hole diameter exceeds recommended edge margin (0.8mm clearance)." },
       { id: 18, name: "Shaft Keyway Sketch", type: "sketch", rows: [2], prereqs: [11], downstream: [19,22] },
       { id: 19, name: "Shaft Coupling Extrude", type: "extrude", rows: [2], prereqs: [18], downstream: [22,24] },
       { id: 20, name: "Retaining Ring Groove", type: "chamfer", rows: [3], prereqs: [15], downstream: [22,24] },
@@ -863,6 +975,7 @@
     let markerStep = 16;            // Default: 16 active steps, 8 inactive steps to demonstrate greyscale highlights!
     let isPlaying = false;
     let playbackTimer = null;
+    let clipboardFeature = null;    // SolidCraft Session Clipboard simulation
 
     const trackContainer = document.getElementById('trackRowsContainer');
     const headerTrack = document.getElementById('timelineHeaderTrack');
@@ -1068,12 +1181,12 @@
           const act = actions[colIdx];
           if (act.rows.includes(r)) {
             const chip = document.createElement('div');
-            chip.className = 'chip';
+            chip.className = `chip${act.suppressed ? ' suppressed' : ''}`;
             chip.dataset.id = act.id;
             chip.dataset.col = c;
             chip.dataset.row = r;
             chip.innerHTML = ICONS[act.type] || ICONS.extrude;
-            chip.title = `${act.name} (Step ${c})`;
+            chip.title = `${act.name} (Step ${c})${act.suppressed ? ' [Suppressed]' : ''}`;
 
             attachDragHandlers(chip, act);
             cell.appendChild(chip);
@@ -1174,6 +1287,10 @@
             chip.title = `${actName} (Step ${col}) - Active (100% Opacity Full Color)`;
           }
         }
+
+        if (chipAct && chipAct.suppressed) {
+          chip.classList.add('suppressed');
+        }
       });
 
       // 2. Multi-Component Connectors
@@ -1247,7 +1364,7 @@
       const downstreamText = act.downstream.length > 0 ? act.downstream.map(d => '#' + d).join(', ') : 'None';
 
       statusDetails.innerHTML = `
-        <strong style="color: #fff;">${act.name}</strong> (Step ${currentCol} · ${isSelectedInactive ? '<span style="color: #cbd5e1;">Inactive Step</span>' : '<span style="color: #38bdf8;">Active Step</span>'}):
+        <strong style="color: #fff;">${act.name}</strong> (Step ${currentCol} · ${act.suppressed ? '<span style="color: #f87171; font-weight: bold;">Suppressed</span> · ' : ''}${isSelectedInactive ? '<span style="color: #cbd5e1;">Inactive Step</span>' : '<span style="color: #38bdf8;">Active Step</span>'}):
         <span style="color: ${isSelectedInactive ? 'var(--grey-prereq)' : 'var(--orange)'}; font-weight: 600; margin-left: 8px;">
           Prerequisites: [${prereqsText}]
         </span> ·
@@ -1257,6 +1374,7 @@
         <span style="color: ${isSelectedInactive ? 'var(--grey-corridor)' : 'var(--green)'}; font-weight: bold; margin-left: 8px;">
           [ Movable Corridor: Steps ${minCol} to ${maxCol} ]
         </span>
+        ${act.warning ? `<span style="color: #f59e0b; font-size: 11px; margin-left: 6px;">⚠️ ${act.warning}</span>` : ''}
         ${isSelectedInactive ? `<span style="color: #94a3b8; font-size: 11px; margin-left: 6px;">(Solid-body evaluated up to Step ${markerStep})</span>` : ''}
       `;
 
@@ -1277,7 +1395,10 @@
       let startX = 0;
       let currentDeltaX = 0;
 
+      // Primary left-click: select & initiate drag
       chip.addEventListener('mousedown', (e) => {
+        if (e.button !== 0) return; // Only drag on primary left click!
+        closeContextMenu();
         applyHighlight(act.id);
         isDragging = true;
         startX = e.clientX;
@@ -1346,6 +1467,330 @@
         window.addEventListener('mousemove', onMouseMove);
         window.addEventListener('mouseup', onMouseUp);
       });
+
+      // Context menu on right-click (SolidCraft Menu::context)
+      chip.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        applyHighlight(act.id);
+        openContextMenu(e.clientX, e.clientY, act);
+      });
+
+      // Double-click to Edit Feature (matches SolidCraft resp.double_clicked())
+      chip.addEventListener('dblclick', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeContextMenu();
+        editFeature(act);
+      });
+    }
+
+    // Open SolidCraft Timeline Context Menu (egui Menu::context simulation)
+    function openContextMenu(clientX, clientY, act) {
+      const menu = document.getElementById('timelineContextMenu');
+      if (!menu) return;
+
+      const currentCol = getActionCol(act.id);
+      const isAfterMarker = currentCol > markerStep;
+      const isAtOrAfterMarker = currentCol >= markerStep;
+      const itemsAfterMarkerCount = actions.length - markerStep;
+
+      let html = `
+        <div class="context-menu-header">
+          <span>${act.name}</span>
+          <span style="font-size: 10px; color: ${isAfterMarker ? '#a1a1aa' : '#38bdf8'}; font-weight: normal;">Step ${currentCol}${isAfterMarker ? ' (Inactive)' : ''}</span>
+        </div>
+        <div class="context-menu-item" id="cmenuEdit">
+          <span class="context-menu-icon">${MENU_ICONS.edit}</span>
+          <span>Edit Feature</span>
+        </div>
+      `;
+
+      // Redefine Sketch Plane (only sketch features)
+      if (act.type === 'sketch') {
+        html += `
+          <div class="context-menu-item" id="cmenuRedefine">
+            <span class="context-menu-icon">${MENU_ICONS.redefine}</span>
+            <span>Redefine Sketch Plane</span>
+          </div>
+        `;
+      }
+
+      // Edit Profile Sketch (extrude/revolve features)
+      if (['extrude', 'revolve'].includes(act.type)) {
+        html += `
+          <div class="context-menu-item" id="cmenuProfileSketch">
+            <span class="context-menu-icon">${MENU_ICONS.sketch}</span>
+            <span>Edit Profile Sketch</span>
+          </div>
+        `;
+      }
+
+      // Rename
+      html += `
+        <div class="context-menu-item" id="cmenuRename">
+          <span class="context-menu-icon">${MENU_ICONS.rename}</span>
+          <span>Rename</span>
+        </div>
+      `;
+
+      // Suppress / Unsuppress
+      if (act.suppressed) {
+        html += `
+          <div class="context-menu-item" id="cmenuSuppress">
+            <span class="context-menu-icon">${MENU_ICONS.unsuppress}</span>
+            <span>Unsuppress Feature</span>
+          </div>
+        `;
+      } else {
+        html += `
+          <div class="context-menu-item" id="cmenuSuppress">
+            <span class="context-menu-icon">${MENU_ICONS.suppress}</span>
+            <span>Suppress Feature</span>
+          </div>
+        `;
+      }
+
+      // Roll History Marker Here
+      html += `
+        <div class="context-menu-item" id="cmenuRollHere">
+          <span class="context-menu-icon">${MENU_ICONS.rollback}</span>
+          <span>Roll History Marker Here</span>
+        </div>
+      `;
+
+      // Find in Browser
+      html += `
+        <div class="context-menu-item" id="cmenuFind">
+          <span class="context-menu-icon">${MENU_ICONS.find}</span>
+          <span>Find in Browser</span>
+        </div>
+        <div class="context-menu-sep"></div>
+      `;
+
+      // Copy
+      html += `
+        <div class="context-menu-item" id="cmenuCopy">
+          <span class="context-menu-icon">${MENU_ICONS.copy}</span>
+          <span>Copy</span>
+        </div>
+      `;
+
+      // Paste
+      const canPaste = clipboardFeature !== null;
+      html += `
+        <div class="context-menu-item ${canPaste ? '' : 'disabled'}" id="cmenuPaste" title="${canPaste ? 'Paste clone at timeline marker' : 'Clipboard is empty'}">
+          <span class="context-menu-icon">${MENU_ICONS.paste}</span>
+          <span>Paste${clipboardFeature ? ` (${clipboardFeature.name})` : ''}</span>
+        </div>
+      `;
+
+      // Message button (Error or Warning)
+      if (act.error) {
+        html += `
+          <div class="context-menu-item" id="cmenuMsg">
+            <span class="context-menu-icon" style="color: #ef4444;">${MENU_ICONS.message}</span>
+            <span>Copy Error Message</span>
+          </div>
+        `;
+      } else if (act.warning) {
+        html += `
+          <div class="context-menu-item" id="cmenuMsg">
+            <span class="context-menu-icon" style="color: #f59e0b;">${MENU_ICONS.message}</span>
+            <span>Copy Warning Message</span>
+          </div>
+        `;
+      }
+
+      html += `<div class="context-menu-sep"></div>`;
+
+      // Delete
+      html += `
+        <div class="context-menu-item danger" id="cmenuDelete">
+          <span class="context-menu-icon">${MENU_ICONS.delete}</span>
+          <span>Delete</span>
+        </div>
+      `;
+
+      // Delete N Features After History Marker
+      if (isAtOrAfterMarker && itemsAfterMarkerCount > 0) {
+        html += `
+          <div class="context-menu-item danger" id="cmenuDeleteAfter">
+            <span class="context-menu-icon">${MENU_ICONS.delete}</span>
+            <span>Delete ${itemsAfterMarkerCount} Feature${itemsAfterMarkerCount > 1 ? 's' : ''} After History Marker</span>
+          </div>
+        `;
+      }
+
+      menu.innerHTML = html;
+      menu.style.display = 'block';
+
+      // Clamp position to window viewport boundaries
+      const menuWidth = menu.offsetWidth || 230;
+      const menuHeight = menu.offsetHeight || 320;
+      let posX = clientX;
+      let posY = clientY;
+      if (posX + menuWidth > window.innerWidth - 10) {
+        posX = window.innerWidth - menuWidth - 10;
+      }
+      if (posY + menuHeight > window.innerHeight - 10) {
+        posY = window.innerHeight - menuHeight - 10;
+      }
+      menu.style.left = `${Math.max(10, posX)}px`;
+      menu.style.top = `${Math.max(10, posY)}px`;
+
+      // Item handlers
+      document.getElementById('cmenuEdit')?.addEventListener('click', () => {
+        closeContextMenu();
+        editFeature(act);
+      });
+
+      document.getElementById('cmenuRedefine')?.addEventListener('click', () => {
+        closeContextMenu();
+        dragFeedback.innerHTML = `📐 <strong>Redefine Sketch Plane:</strong> Opened plane selection overlay for sketch <em>${act.name}</em> (Step ${currentCol}).`;
+      });
+
+      document.getElementById('cmenuProfileSketch')?.addEventListener('click', () => {
+        closeContextMenu();
+        dragFeedback.innerHTML = `✏️ <strong>Edit Profile Sketch:</strong> Activated 2D sketching environment for <em>${act.name}</em>'s input profile.`;
+      });
+
+      document.getElementById('cmenuRename')?.addEventListener('click', () => {
+        closeContextMenu();
+        const newName = prompt(`Rename feature "${act.name}":`, act.name);
+        if (newName && newName.trim() && newName.trim() !== act.name) {
+          act.name = newName.trim();
+          renderTimeline();
+          dragFeedback.innerHTML = `✏️ <strong>Renamed:</strong> Feature renamed to <em>${act.name}</em>.`;
+        }
+      });
+
+      document.getElementById('cmenuSuppress')?.addEventListener('click', () => {
+        closeContextMenu();
+        act.suppressed = !act.suppressed;
+        renderTimeline();
+        dragFeedback.innerHTML = act.suppressed
+          ? `⏸️ <strong>Suppressed:</strong> <em>${act.name}</em> is suppressed from 3D solid geometry evaluation (dashed appearance).`
+          : `▶️ <strong>Unsuppressed:</strong> <em>${act.name}</em> restored and included in solid-body rebuild.`;
+      });
+
+      document.getElementById('cmenuRollHere')?.addEventListener('click', () => {
+        closeContextMenu();
+        stopPlayback();
+        setMarkerStep(currentCol);
+        dragFeedback.innerHTML = `⏪ <strong>Rolled Marker Here:</strong> History marker positioned at Step ${currentCol} (<em>${act.name}</em>). Solid-body evaluated up to this step.`;
+      });
+
+      document.getElementById('cmenuFind')?.addEventListener('click', () => {
+        closeContextMenu();
+        dragFeedback.innerHTML = `🔍 <strong>Find in Browser:</strong> Scrolled to and selected <em>${act.name}</em> in the Model Tree Browser.`;
+      });
+
+      document.getElementById('cmenuCopy')?.addEventListener('click', () => {
+        closeContextMenu();
+        clipboardFeature = JSON.parse(JSON.stringify(act));
+        dragFeedback.innerHTML = `📋 <strong>Copied to Clipboard:</strong> Feature <em>${act.name}</em> copied. Click Paste on any feature menu to insert copy at marker!`;
+      });
+
+      document.getElementById('cmenuPaste')?.addEventListener('click', () => {
+        if (!clipboardFeature) return;
+        closeContextMenu();
+        pasteFeatureAtMarker();
+      });
+
+      document.getElementById('cmenuMsg')?.addEventListener('click', () => {
+        closeContextMenu();
+        const msg = act.error || act.warning || '';
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(`${act.name} (${act.type}): ${msg}`);
+        }
+        dragFeedback.innerHTML = `📋 <strong>Copied Diagnostic Message:</strong> "${msg}" copied to clipboard.`;
+      });
+
+      document.getElementById('cmenuDelete')?.addEventListener('click', () => {
+        closeContextMenu();
+        deleteFeature(act.id);
+      });
+
+      document.getElementById('cmenuDeleteAfter')?.addEventListener('click', () => {
+        closeContextMenu();
+        deleteFeaturesAfterMarker();
+      });
+    }
+
+    function closeContextMenu() {
+      const menu = document.getElementById('timelineContextMenu');
+      if (menu) {
+        menu.style.display = 'none';
+      }
+    }
+
+    function editFeature(act) {
+      const col = getActionCol(act.id);
+      dragFeedback.innerHTML = `✏️ <strong>Edit Feature:</strong> Opened parameter sheet for <em>${act.name}</em> (Step ${col}, Type: ${act.type}). Double-click or context menu triggers this.`;
+    }
+
+    function deleteFeature(id) {
+      const index = actions.findIndex(a => a.id === id);
+      if (index === -1) return;
+      const deletedName = actions[index].name;
+
+      actions.splice(index, 1);
+
+      // Clean up dependency references
+      actions.forEach(a => {
+        a.prereqs = a.prereqs.filter(pid => pid !== id);
+        a.downstream = a.downstream.filter(did => did !== id);
+      });
+
+      if (markerStep > actions.length) {
+        markerStep = actions.length;
+      }
+
+      if (selectedActionId === id) {
+        selectedActionId = actions.length > 0 ? actions[Math.min(index, actions.length - 1)].id : null;
+      }
+
+      renderTimeline();
+      dragFeedback.innerHTML = `🗑️ <strong>Feature Deleted:</strong> Removed <em>${deletedName}</em> from timeline. Dependent references updated.`;
+    }
+
+    function deleteFeaturesAfterMarker() {
+      if (actions.length <= markerStep) return;
+      const count = actions.length - markerStep;
+      const deletedIds = actions.slice(markerStep).map(a => a.id);
+      actions = actions.slice(0, markerStep);
+
+      actions.forEach(a => {
+        a.prereqs = a.prereqs.filter(pid => !deletedIds.includes(pid));
+        a.downstream = a.downstream.filter(did => !deletedIds.includes(did));
+      });
+
+      if (deletedIds.includes(selectedActionId)) {
+        selectedActionId = actions.length > 0 ? actions[actions.length - 1].id : null;
+      }
+
+      renderTimeline();
+      dragFeedback.innerHTML = `🗑️ <strong>Deleted ${count} Rolled-Back Feature(s):</strong> Removed all features after Step ${markerStep}.`;
+    }
+
+    function pasteFeatureAtMarker() {
+      if (!clipboardFeature) return;
+      const newId = Math.max(...actions.map(a => a.id), 0) + 1;
+      const newAct = JSON.parse(JSON.stringify(clipboardFeature));
+      newAct.id = newId;
+      newAct.name = `${clipboardFeature.name} (Copy)`;
+      newAct.prereqs = [];
+      newAct.downstream = [];
+      delete newAct.suppressed;
+
+      const insertIndex = markerStep;
+      actions.splice(insertIndex, 0, newAct);
+      markerStep++;
+      selectedActionId = newId;
+
+      renderTimeline();
+      dragFeedback.innerHTML = `📋 <strong>Pasted Feature:</strong> Inserted <em>${newAct.name}</em> at Step ${insertIndex + 1}. Marker rolled to Step ${markerStep}.`;
     }
 
     // Attach Marker Scrubbing Logic via Head Pin & Scrubber Track
@@ -1356,6 +1801,7 @@
       timelineMarker.addEventListener('mousedown', (e) => {
         e.preventDefault();
         e.stopPropagation();
+        closeContextMenu();
         stopPlayback();
         isScrubbing = true;
         timelineMarker.classList.add('scrubbing');
@@ -1417,6 +1863,7 @@
     let isRubberbanding = false;
 
     scrollArea.addEventListener('scroll', () => {
+      closeContextMenu();
       // Pinned component list moves vertically in lockstep with the timeline content
       pinnedContent.style.transform = `translate3d(0, -${scrollArea.scrollTop}px, 0)`;
     });
@@ -1447,9 +1894,26 @@
       }
     }, { passive: false });
 
+    // Dismiss Context Menu on outside click
+    window.addEventListener('mousedown', (e) => {
+      const menu = document.getElementById('timelineContextMenu');
+      if (menu && menu.style.display === 'block' && !menu.contains(e.target)) {
+        closeContextMenu();
+      }
+    });
+
+    // Dismiss Context Menu on Escape
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeContextMenu();
+      }
+    });
+
     // Reset button
     document.getElementById('btnReset').addEventListener('click', () => {
       stopPlayback();
+      closeContextMenu();
+      clipboardFeature = null;
       actions = JSON.parse(JSON.stringify(initialActions));
       selectedActionId = 5;
       markerStep = 16;
