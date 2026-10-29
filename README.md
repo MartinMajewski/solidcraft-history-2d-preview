@@ -50,7 +50,7 @@ When an inactive feature is selected (or when an active feature references inact
 - **Prerequisites (Light Grey `#d4d4d8`)**: Matches the perceived luminance of Orange.
 - **Downstream (Mid Grey `#71717a`)**: Matches the perceived luminance of Blue.
 - **Selected Inactive (Silver-White `#e4e4e7`)**: Clearly distinguished with high contrast.
-- **Movable Corridor Brackets `[ ... ]` (Grey `#a1a1aa`)**: Never disappear; encloses the valid dependency corridor for inactive features.
+- **Movable Corridor Brackets `[ ... ]` & Background Split**: Brackets and corridor background to the right of the timeline marker appear in greyscale (`#a1a1aa` / `rgba(161, 161, 170, 0.08)`); elements to the left appear in green (`#22c55e` / `rgba(34, 197, 94, 0.08)`). Spanning corridors split cleanly across `doc.marker`.
 
 ### 5. Reordering Across the Entire Timeline Data Structure
 - Reordering left and right is fully supported on both active and inactive features.

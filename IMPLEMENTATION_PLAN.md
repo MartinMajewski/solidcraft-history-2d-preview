@@ -22,9 +22,12 @@ This document outlines the architecture, data structures, UI design, and impleme
     - **Prerequisites**: High-luminance Light Grey (`#d4d4d8`, matching the luminance of Orange `#f59e0b`).
     - **Downstream Dependents**: Mid-luminance Slate Grey (`#71717a`, matching the luminance of Blue `#38bdf8`).
     - **Selected Inactive**: Silver-white (`#e4e4e7` border on `#27272a`).
-- **Movable Range Brackets `[ ... ]` Never Disappear**:
+- **Movable Range Brackets `[ ... ]` & Corridor Greyscale to Right of Marker**:
   - Movable range brackets enclose the valid dependency-free insertion corridor $[p_{\max} + 1, d_{\min} - 1]$ for both active and inactive features.
-  - Rendered in Green (`#22c55e`) when an active feature is selected, and in Grey (`#a1a1aa`, corridor fill `rgba(161, 161, 170, 0.08)`) when an inactive feature is selected.
+  - Brackets and corridor background dynamically respond to the timeline marker's boundary:
+    - Any bracket located to the right of the timeline marker is rendered in greyscale (`#a1a1aa`); any bracket to the left is rendered in green (`#22c55e`).
+    - Any portion of the movable corridor background to the right of the timeline marker is rendered in greyscale (`rgba(161, 161, 170, 0.08)`); any portion to the left is rendered in green (`rgba(34, 197, 94, 0.08)`).
+    - If a feature's corridor spans across the timeline marker, the background is split cleanly at `doc.marker` into green (active) and greyscale (inactive).
 - **Full Reordering on Inactive Features**:
   - Dragging and reordering left and right is fully supported on inactive features.
   - The timeline operates on the document's underlying feature sequence.
@@ -47,7 +50,7 @@ When an Action $A$ is selected or dragged:
 2. **Bracket Placement**:
    - **Opening Bracket `[`**: Placed immediately before column $p_{\max} + 1$.
    - **Closing Bracket `]`**: Placed immediately after column $d_{\min} - 1$.
-   - **Styling**: Green (`#22c55e`) for active features; Grey (`#a1a1aa`) for inactive features.
+   - **Styling**: Dynamically responds to marker boundary: brackets and corridor fill to the right of the timeline marker are rendered in greyscale (`#a1a1aa` / `rgba(161, 161, 170, 0.08)`); brackets and corridor fill to the left of the timeline marker are rendered in green (`#22c55e` / `rgba(34, 197, 94, 0.08)`). Spanning corridors split cleanly at `doc.marker`.
    - **Invariant**: *There are strictly zero dependent Actions within the brackets `[ ... ]`.*
 
 ### 2.2 Ripple Push Reordering Mechanics
