@@ -19,6 +19,12 @@
       --blue-bg: rgba(56, 189, 248, 0.18);
       --green: #22c55e;
       --green-bg: rgba(34, 197, 94, 0.12);
+      --grey-prereq: #d4d4d8;
+      --grey-prereq-bg: rgba(212, 212, 216, 0.22);
+      --grey-downstream: #71717a;
+      --grey-downstream-bg: rgba(113, 113, 122, 0.22);
+      --grey-corridor: #a1a1aa;
+      --grey-corridor-bg: rgba(161, 161, 170, 0.08);
       --col-w: 52px;
       --row-h: 38px;
       --header-h: 28px;
@@ -120,9 +126,19 @@
       border: 1px solid var(--orange);
     }
 
+    .swatch-grey-light {
+      background: var(--grey-prereq-bg);
+      border: 1px solid var(--grey-prereq);
+    }
+
     .swatch-blue {
       background: var(--blue-bg);
       border: 1px solid var(--blue);
+    }
+
+    .swatch-grey-mid {
+      background: var(--grey-downstream-bg);
+      border: 1px solid var(--grey-downstream);
     }
 
     .swatch-green {
@@ -211,20 +227,6 @@
       background: var(--blue);
       border-radius: 1px;
       box-shadow: 0 0 6px rgba(56, 189, 248, 0.6);
-    }
-
-    /* Deactivated / Rolled-back state */
-    .chip.rolled-back {
-      opacity: 0.35 !important;
-      filter: grayscale(85%) brightness(0.85);
-      border: 1.5px dashed #475569 !important;
-      cursor: not-allowed !important;
-      box-shadow: none !important;
-    }
-
-    .connector-dots.rolled-back-line {
-      opacity: 0.2;
-      stroke: #475569 !important;
     }
 
     /* Transport Controls */
@@ -334,7 +336,6 @@
     }
 
     /* Main Viewport Container: Exactly Header + 3.5 rows visible */
-    /* 28px header + 3.5 rows * 38px (133px) + horizontal scrollbar (9px) = 170px total view */
     .viewport-container {
       position: relative;
       height: 170px;
@@ -466,7 +467,7 @@
     }
 
     .header-step-cell.rolled-back-step {
-      color: #334155;
+      color: #4b5563;
     }
 
     .header-step-tick {
@@ -476,7 +477,7 @@
       margin-bottom: 2px;
     }
 
-    /* SVG Overlay for Connections and Movable Brackets (Placed right below header row) */
+    /* SVG Overlay for Connections and Movable Brackets */
     .svg-overlay {
       position: absolute;
       top: var(--header-h);
@@ -492,11 +493,22 @@
       stroke-width: 2;
       stroke-linecap: round;
       stroke-dasharray: 2 4;
+      opacity: 1.0;
       transition: stroke 0.15s, stroke-width 0.15s;
     }
 
     .connector-dots.active {
       stroke: #38bdf8;
+      stroke-width: 2.5;
+    }
+
+    .connector-dots.inactive {
+      stroke: #475569;
+      opacity: 0.8;
+    }
+
+    .connector-dots.active-inactive {
+      stroke: #a1a1aa;
       stroke-width: 2.5;
     }
 
@@ -525,7 +537,7 @@
       font-size: 10px;
     }
 
-    /* Action Chip */
+    /* Action Chip - Always 100% Opacity */
     .chip {
       width: 32px;
       height: 32px;
@@ -539,7 +551,8 @@
       cursor: grab;
       position: relative;
       z-index: 20;
-      transition: border-color 0.15s, background-color 0.15s, transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+      opacity: 1.0;
+      transition: border-color 0.15s, background-color 0.15s, transform 0.15s, box-shadow 0.15s;
     }
 
     .chip:hover {
@@ -547,35 +560,73 @@
     }
 
     .chip.dragging {
-      opacity: 0.95;
+      opacity: 0.98;
       z-index: 100 !important;
       cursor: grabbing !important;
       box-shadow: 0 12px 28px rgba(0, 0, 0, 0.75), 0 0 0 2px #ffffff;
       transform: scale(1.08);
     }
 
+    /* Active Highlight States (Color, 100% Opacity) */
     .chip.selected {
       border: 2px solid #ffffff;
       background: #334155;
       box-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
       z-index: 30;
       transform: scale(1.04);
+      opacity: 1.0;
     }
 
     .chip.prereq {
       border: 2px solid var(--orange);
       background: var(--orange-bg);
+      opacity: 1.0;
     }
 
     .chip.downstream {
       border: 2px solid var(--blue);
       background: var(--blue-bg);
+      opacity: 1.0;
     }
 
-    .chip.dimmed {
-      opacity: 0.35;
-      border-color: #2c3340;
-      background: #1c2028;
+    .chip.unselected-active {
+      border: 1px solid var(--chip-border);
+      background: var(--chip-bg);
+      opacity: 1.0;
+    }
+
+    /* Inactive Highlight States (Pure Greyscale with Distinct Luminance Contrast, 100% Opacity) */
+    .chip.unselected-inactive {
+      border: 1px solid #3f3f46;
+      background: #1c1f26;
+      filter: grayscale(100%);
+      opacity: 1.0;
+    }
+
+    .chip.selected-inactive {
+      border: 2px solid #e4e4e7;
+      background: #27272a;
+      box-shadow: 0 0 10px rgba(228, 228, 231, 0.25);
+      z-index: 30;
+      transform: scale(1.04);
+      filter: grayscale(100%);
+      opacity: 1.0;
+    }
+
+    .chip.prereq-inactive {
+      /* High-luminance light silver-grey matching Orange */
+      border: 2px solid var(--grey-prereq);
+      background: var(--grey-prereq-bg);
+      filter: grayscale(100%);
+      opacity: 1.0;
+    }
+
+    .chip.downstream-inactive {
+      /* Mid-luminance slate-zinc grey matching Blue */
+      border: 2px solid var(--grey-downstream);
+      background: var(--grey-downstream-bg);
+      filter: grayscale(100%);
+      opacity: 1.0;
     }
 
     /* Footer / Interaction Hint */
@@ -631,15 +682,17 @@
       <div class="legend">
         <div class="legend-item">
           <div class="legend-swatch swatch-orange"></div>
-          <span style="color: var(--orange); font-weight: 500;">Prerequisite (Orange)</span>
+          <div class="legend-swatch swatch-grey-light" style="margin-left: -3px;" title="Inactive Prereq (Light Grey)"></div>
+          <span style="color: var(--orange); font-weight: 500;">Prerequisite (Orange / Inactive: Light Grey)</span>
         </div>
         <div class="legend-item">
           <div class="legend-swatch swatch-blue"></div>
-          <span style="color: var(--blue); font-weight: 500;">Downstream (Blue)</span>
+          <div class="legend-swatch swatch-grey-mid" style="margin-left: -3px;" title="Inactive Downstream (Mid Grey)"></div>
+          <span style="color: var(--blue); font-weight: 500;">Downstream (Blue / Inactive: Mid Grey)</span>
         </div>
         <div class="legend-item">
           <span class="swatch-green">[ &nbsp; ]</span>
-          <span style="color: var(--green); font-weight: 500;">Movable Corridor (Green)</span>
+          <span style="color: var(--green); font-weight: 500;">Movable Corridor (Green / Inactive: Grey)</span>
         </div>
         <div class="legend-item">
           <div class="marker-swatch"></div>
@@ -666,7 +719,7 @@
       <div class="status-meta">
         <span id="activeMarkerBadge" class="badge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">Active: 24 / 24 Steps</span> ·
         <span>Header + 3.5 Rows Visible</span> ·
-        <span style="color: var(--green);">1:1 Synchronized Grid</span>
+        <span style="color: var(--green);">100% Opacity Display</span>
       </div>
     </div>
 
@@ -746,7 +799,7 @@
     <!-- Live Interaction Log & Instructions -->
     <div class="footer-bar">
       <div id="dragFeedback">
-        💡 <strong>Try this:</strong> Drag the blue <strong>head pin</strong> in the header row to scrub active steps! Click any chip to view prerequisites (orange) and downstream dependents (blue), or drag <strong>Fillet</strong> within the green brackets `[ ... ]` to watch intermediate steps ripple!
+        💡 <strong>Try this:</strong> Drag the blue <strong>head pin</strong> to roll back the active CAD solid evaluation. Notice that inactive features remain <strong>100% visible</strong>, fully selectable, and movable in greyscale!
       </div>
       <div style="font-family: monospace; font-size: 11px; color: var(--text-dim);">
         ↔ Scroll horizontally &nbsp;|&nbsp; ↕ Scroll vertically
@@ -806,7 +859,7 @@
 
     const initialActions = JSON.parse(JSON.stringify(actions));
     let selectedActionId = 5;       // Default: Fillet Edge
-    let markerStep = actions.length; // All 24 steps active by default (SolidCraft doc.marker = None)
+    let markerStep = 16;            // Default: 16 active steps, 8 inactive steps to demonstrate greyscale highlights!
     let isPlaying = false;
     let playbackTimer = null;
 
@@ -909,16 +962,16 @@
         }
       });
 
-      // Re-apply Highlight to reflect rolled back chips and lines
+      // Re-apply Highlight to reflect current active / inactive positions
       applyHighlight(selectedActionId);
 
       // Feedback description
       if (updateFeedback && !isPlaying) {
         if (markerStep < actions.length) {
           const rolledCount = actions.length - markerStep;
-          dragFeedback.innerHTML = `⏪ <strong>Timeline Rolled Back:</strong> Steps 1 to ${markerStep} are active. ${rolledCount} downstream feature(s) after the marker are deactivated (rolled back).`;
+          dragFeedback.innerHTML = `⏪ <strong>Timeline Rolled Back:</strong> Steps 1 to ${markerStep} are active in CAD solid model. ${rolledCount} step(s) after the marker are inactive in 3D solid-body evaluation, but remain fully editable and selectable in 100% opacity greyscale!`;
         } else {
-          dragFeedback.innerHTML = `✨ <strong>All Steps Active:</strong> The timeline marker is at the end. Drag the blue head pin left to scrub backward!`;
+          dragFeedback.innerHTML = `✨ <strong>All Steps Active:</strong> The timeline marker is at the end. Drag the blue head pin left to roll back solid-body evaluation!`;
         }
       }
     }
@@ -952,7 +1005,7 @@
           setMarkerStep(markerStep + 1, false);
         } else {
           stopPlayback();
-          dragFeedback.innerHTML = `🏁 <strong>Playback Complete:</strong> All ${actions.length} features evaluated.`;
+          dragFeedback.innerHTML = `🏁 <strong>Playback Complete:</strong> All ${actions.length} features evaluated in CAD model.`;
         }
       }, 380);
     }
@@ -973,7 +1026,7 @@
       }
     }
 
-    // Render Timeline: Header Track & Component Tracks (Zero Empty Columns)
+    // Render Timeline: Header Track & Component Tracks (Zero Empty Columns, 100% Opacity)
     function renderTimeline() {
       const totalCols = actions.length;
 
@@ -1055,8 +1108,8 @@
           line.setAttribute('y1', y1);
           line.setAttribute('x2', cx);
           line.setAttribute('y2', y2);
-          const isRolled = c > markerStep;
-          line.setAttribute('class', `connector-dots ${act.id === selectedActionId ? 'active' : ''} ${isRolled ? 'rolled-back-line' : ''}`);
+          const isInactive = c > markerStep;
+          line.setAttribute('class', `connector-dots ${act.id === selectedActionId ? (isInactive ? 'active-inactive' : 'active') : (isInactive ? 'inactive' : '')}`);
           line.dataset.actionId = act.id;
 
           connectorsGroup.appendChild(line);
@@ -1064,7 +1117,7 @@
       });
     }
 
-    // Apply Highlighting and Green Brackets
+    // Apply Highlighting, Greyscale Inactive States, and Movable Brackets
     function applyHighlight(actionId) {
       selectedActionId = actionId;
       const act = actions.find(a => a.id === actionId);
@@ -1074,56 +1127,69 @@
       }
 
       const { minCol, maxCol, currentCol } = computeMovableRange(act);
-      const isSelectedRolledBack = currentCol > markerStep;
+      const isSelectedInactive = currentCol > markerStep;
 
-      // 1. Highlight Chips
+      // 1. Highlight All Chips with 100% Opacity (Active in color, Inactive in greyscale)
       document.querySelectorAll('.chip').forEach(chip => {
         const id = parseInt(chip.dataset.id);
         const col = parseInt(chip.dataset.col);
+        const chipAct = actions.find(a => a.id === id);
+        const actName = chipAct ? chipAct.name : 'Feature';
+        const isChipInactive = col > markerStep;
+
         chip.style.transform = '';
 
-        const isRolledBack = col > markerStep;
-
-        if (isRolledBack) {
-          chip.className = 'chip rolled-back';
-          chip.title = `${act.name} (Step ${col}) - Inactive (Rolled back)`;
-        } else if (id === actionId) {
-          chip.className = 'chip selected';
-          chip.title = `${act.name} (Step ${col}) - Selected`;
+        if (id === actionId) {
+          if (isChipInactive) {
+            chip.className = 'chip selected-inactive';
+            chip.title = `${actName} (Step ${col}) - Selected [Inactive / Unbuilt Solid]`;
+          } else {
+            chip.className = 'chip selected';
+            chip.title = `${actName} (Step ${col}) - Selected [Active / Evaluated Solid]`;
+          }
         } else if (act.prereqs.includes(id)) {
-          chip.className = 'chip prereq';
-          chip.title = `${act.name} (Step ${col}) - Prerequisite`;
+          if (isChipInactive) {
+            chip.className = 'chip prereq-inactive';
+            chip.title = `${actName} (Step ${col}) - Prerequisite [Inactive: Light Grey]`;
+          } else {
+            chip.className = 'chip prereq';
+            chip.title = `${actName} (Step ${col}) - Prerequisite [Active: Orange]`;
+          }
         } else if (act.downstream.includes(id)) {
-          chip.className = 'chip downstream';
-          chip.title = `${act.name} (Step ${col}) - Downstream dependent`;
+          if (isChipInactive) {
+            chip.className = 'chip downstream-inactive';
+            chip.title = `${actName} (Step ${col}) - Downstream Dependent [Inactive: Mid Grey]`;
+          } else {
+            chip.className = 'chip downstream';
+            chip.title = `${actName} (Step ${col}) - Downstream Dependent [Active: Blue]`;
+          }
         } else {
-          chip.className = 'chip dimmed';
-          chip.title = `${act.name} (Step ${col})`;
+          if (isChipInactive) {
+            chip.className = 'chip unselected-inactive';
+            chip.title = `${actName} (Step ${col}) - Inactive (100% Opacity Greyscale)`;
+          } else {
+            chip.className = 'chip unselected-active';
+            chip.title = `${actName} (Step ${col}) - Active (100% Opacity Full Color)`;
+          }
         }
       });
 
-      // 2. Connectors
+      // 2. Multi-Component Connectors
       document.querySelectorAll('.connector-dots').forEach(line => {
         const actId = parseInt(line.dataset.actionId);
         const lineAct = actions.find(a => a.id === actId);
         const col = lineAct ? getActionCol(lineAct.id) : 0;
-        const isRolled = col > markerStep;
+        const isLineInactive = col > markerStep;
 
-        if (actId === actionId && !isRolled) {
-          line.classList.add('active');
+        if (actId === actionId) {
+          line.className = `connector-dots ${isLineInactive ? 'active-inactive' : 'active'}`;
         } else {
-          line.classList.remove('active');
-        }
-
-        if (isRolled) {
-          line.classList.add('rolled-back-line');
-        } else {
-          line.classList.remove('rolled-back-line');
+          line.className = `connector-dots ${isLineInactive ? 'inactive' : ''}`;
         }
       });
 
-      // 3. Green Brackets [ ... ] (Only shown when selected action is active)
-      if (minCol <= maxCol && !isSelectedRolledBack) {
+      // 3. Movable Corridor Brackets [ ... ] (NEVER disappear; greyish when inactive)
+      if (minCol <= maxCol) {
         bracketGroup.style.display = 'block';
         const xLeft = (minCol - 1) * COL_W;
         const xRight = maxCol * COL_W;
@@ -1133,6 +1199,13 @@
         bracketCorridor.setAttribute('width', Math.max(0, xRight - xLeft));
         bracketCorridor.setAttribute('height', totalHeight);
 
+        const corridorColor = isSelectedInactive ? 'var(--grey-corridor)' : '#22c55e';
+        const corridorFill = isSelectedInactive ? 'var(--grey-corridor-bg)' : 'rgba(34, 197, 94, 0.08)';
+
+        bracketCorridor.setAttribute('fill', corridorFill);
+        pathBracketLeft.setAttribute('stroke', corridorColor);
+        pathBracketRight.setAttribute('stroke', corridorColor);
+
         // Opening [
         pathBracketLeft.setAttribute('d', `M ${xLeft + 7} 4 L ${xLeft} 4 L ${xLeft} ${totalHeight - 4} L ${xLeft + 7} ${totalHeight - 4}`);
         // Closing ]
@@ -1141,20 +1214,28 @@
         bracketGroup.style.display = 'none';
       }
 
-      // 4. Status Update
-      const isMovable = minCol < maxCol && !isSelectedRolledBack;
+      // 4. Status Bar Details
+      const isMovable = minCol < maxCol;
+      const prereqsText = act.prereqs.length > 0 ? act.prereqs.map(p => '#' + p).join(', ') : 'None';
+      const downstreamText = act.downstream.length > 0 ? act.downstream.map(d => '#' + d).join(', ') : 'None';
+
       statusDetails.innerHTML = `
-        <strong style="color: #fff;">${act.name}</strong> (Step ${currentCol}):
-        <span style="color: var(--orange); font-weight: 600; margin-left: 8px;">Prerequisites: [${act.prereqs.map(p => '#' + p).join(', ') || 'None'}]</span> ·
-        <span style="color: var(--blue); font-weight: 600; margin-left: 8px;">Downstream: [${act.downstream.map(d => '#' + d).join(', ') || 'None'}]</span> ·
-        ${isSelectedRolledBack 
-          ? `<span style="color: #f59e0b; font-weight: bold; margin-left: 8px;">[ Deactivated: Rolled Back by Marker ]</span>`
-          : `<span style="color: var(--green); font-weight: bold; margin-left: 8px;">[ Movable Corridor: Steps ${minCol} to ${maxCol} ]</span>`}
+        <strong style="color: #fff;">${act.name}</strong> (Step ${currentCol} · ${isSelectedInactive ? '<span style="color: #cbd5e1;">Inactive Step</span>' : '<span style="color: #38bdf8;">Active Step</span>'}):
+        <span style="color: ${isSelectedInactive ? 'var(--grey-prereq)' : 'var(--orange)'}; font-weight: 600; margin-left: 8px;">
+          Prerequisites: [${prereqsText}]
+        </span> ·
+        <span style="color: ${isSelectedInactive ? 'var(--grey-downstream)' : 'var(--blue)'}; font-weight: 600; margin-left: 8px;">
+          Downstream: [${downstreamText}]
+        </span> ·
+        <span style="color: ${isSelectedInactive ? 'var(--grey-corridor)' : 'var(--green)'}; font-weight: bold; margin-left: 8px;">
+          [ Movable Corridor: Steps ${minCol} to ${maxCol} ]
+        </span>
+        ${isSelectedInactive ? `<span style="color: #94a3b8; font-size: 11px; margin-left: 6px;">(Solid-body evaluated up to Step ${markerStep})</span>` : ''}
       `;
 
       if (!isPlaying) {
-        if (isSelectedRolledBack) {
-          dragFeedback.innerHTML = `⏸️ <strong>Rolled Back:</strong> <em>${act.name}</em> is inactive. Drag the blue head pin past Step ${currentCol} or click 'Step Forward' to activate it.`;
+        if (isSelectedInactive) {
+          dragFeedback.innerHTML = `⚙️ <strong>Inactive Step Selected:</strong> <em>${act.name}</em> is inactive in CAD solid model, but fully modifiable! Drag anywhere between Step ${minCol} and ${maxCol}.`;
         } else {
           dragFeedback.innerHTML = isMovable
             ? `✅ <strong>Movable Corridor:</strong> Drag <em>${act.name}</em> anywhere between Step ${minCol} and ${maxCol}. All jumped actions ripple automatically!`
@@ -1163,20 +1244,13 @@
       }
     }
 
-    // Attach Interactive Drag & Ripple Reorder Handlers
+    // Attach Interactive Drag & Ripple Reorder Handlers (Fully Functional on Both Active & Inactive Chips)
     function attachDragHandlers(chip, act) {
       let isDragging = false;
       let startX = 0;
       let currentDeltaX = 0;
 
       chip.addEventListener('mousedown', (e) => {
-        const col = parseInt(chip.dataset.col);
-        if (col > markerStep) {
-          applyHighlight(act.id);
-          dragFeedback.innerHTML = `⚠️ <strong>Cannot reorder rolled-back step:</strong> <em>${act.name}</em> is deactivated. Drag the rollback head pin past Step ${col} to activate it first.`;
-          return;
-        }
-
         applyHighlight(act.id);
         isDragging = true;
         startX = e.clientX;
@@ -1195,14 +1269,15 @@
 
           const colShift = Math.round(deltaX / COL_W);
           const targetCol = currentCol + colShift;
+          const isTargetInactive = targetCol > markerStep;
 
           if (targetCol >= minCol && targetCol <= maxCol) {
-            chip.style.borderColor = '#22c55e';
+            chip.style.borderColor = isTargetInactive ? '#a1a1aa' : '#22c55e';
             const jumped = Math.abs(colShift);
             const direction = colShift > 0 ? "left" : "right";
             dragFeedback.innerHTML = colShift === 0 
               ? `↔️ Holding at Step ${currentCol}.`
-              : `🟢 <strong>Valid Step ${targetCol}:</strong> ${jumped} action(s) will ripple ${direction}! Release to apply.`;
+              : `🟢 <strong>Valid Step ${targetCol} ${isTargetInactive ? '(Inactive)' : '(Active)'}:</strong> ${jumped} action(s) will ripple ${direction}! Release to apply.`;
           } else {
             chip.style.borderColor = '#ef4444';
             dragFeedback.innerHTML = `🚫 <strong>Step ${targetCol} Invalid:</strong> Violates dependency constraints. Will snap back!`;
@@ -1221,7 +1296,7 @@
           const targetCol = currentCol + colShift;
 
           if (targetCol >= minCol && targetCol <= maxCol && targetCol !== currentCol) {
-            // Ripple array push (splice semantics)
+            // Ripple array push (splice semantics on underlying data structure)
             const toIndex = targetCol - 1;
             const [movedAction] = actions.splice(fromIndex, 1);
             actions.splice(toIndex, 0, movedAction);
@@ -1229,7 +1304,8 @@
             renderTimeline();
             const shiftCount = Math.abs(colShift);
             const pushDir = colShift > 0 ? "left" : "right";
-            dragFeedback.innerHTML = `🎉 <strong>Reordered:</strong> <em>${act.name}</em> moved to Step ${targetCol}! The ${shiftCount} action(s) jumped over rippled ${shiftCount} step(s) to the ${pushDir}.`;
+            const isTargetInactive = targetCol > markerStep;
+            dragFeedback.innerHTML = `🎉 <strong>Reordered:</strong> <em>${act.name}</em> moved to Step ${targetCol}! Jumped actions rippled ${shiftCount} step(s) to the ${pushDir}. ${isTargetInactive ? '(Underlying sequence updated; solid-body remains evaluated up to Step ' + markerStep + ')' : '(Solid-body geometry re-evaluated in active view)'}`;
           } else {
             chip.style.transition = 'transform 0.2s ease-out';
             chip.style.transform = 'translate3d(0, 0, 0)';
@@ -1349,7 +1425,7 @@
       stopPlayback();
       actions = JSON.parse(JSON.stringify(initialActions));
       selectedActionId = 5;
-      markerStep = actions.length;
+      markerStep = 16;
       renderTimeline();
     });
 

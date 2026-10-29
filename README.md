@@ -24,8 +24,8 @@ The **2D History Browser** provides a multi-track timeline inspired by video-edi
 
 - **Step**: A discrete point in time along the timeline (represented by columns).
 - **Action**: A modeling function executed at a step (e.g., Sketch, Extrude, Revolve, Fillet, Combine).
-- **Chip**: The visual representation of an Action on the timeline at a specific component row and column.
-- **Marker**: The vertical rollback line and head pin indicating the boundary between active and deactivated (rolled-back) modeling steps.
+- **Chip**: The visual representation of an Action on the timeline at a specific component row and column. Displayed at **100% opacity**.
+- **Marker**: The vertical rollback line and head pin indicating the boundary between active and inactive (rolled-back) modeling steps.
 
 ---
 
@@ -33,9 +33,9 @@ The **2D History Browser** provides a multi-track timeline inspired by video-edi
 
 ### 1. Dedicated Header Scrubber Row & Timeline Rollback Marker
 - A dedicated **$28\,\text{px}$ header track** positioned directly above the component tracks holds the scrubber head pin (`ui_kit::history_marker`) with generous vertical clearance, preventing it from overlapping the first component row.
-- **Full-Height Vertical Line**: Spans from the header track down across all component rows to clearly delineate active and deactivated steps.
+- **Full-Height Vertical Line**: Spans from the header track down across all component rows to clearly delineate active and inactive steps.
 - **Horizontal Scrubbing**: Drag the blue head pin across the header track to scrub forward and backward. Click any step column header to jump the marker immediately.
-- **Deactivated State**: Steps positioned past the marker are automatically rendered inactive (dimmed to $0.35$ opacity, dashed borders, desaturated icons, and skipped from viewport solid evaluation).
+- **100% Opacity Display**: All chips remain fully visible at 100% opacity. Inactive features after the marker appear in pure greyscale with desaturated icons and remain fully selectable, inspectable, and reorderable.
 
 ### 2. Leading Header Transport Controls
 - The leading ($160\,\text{px}$ pinned left) side of the timeline header row houses the transport controls (First `⏮`, Back `◀`, Play / Pause `▶`/`⏸`, Forward `▶`, Last `⏭`).
@@ -45,26 +45,28 @@ The **2D History Browser** provides a multi-track timeline inspired by video-edi
 - All 24 timeline steps are fully populated with realistic parametric CAD operations across 5 component tracks (Root Design, Housing, Shaft, Bearing, Fastener).
 - The timeline length matches active feature steps without artificial empty trailing placeholder columns, reflecting real CAD design expansion.
 
-### 4. Multi-Track Component Layout & Viewport Sizing
+### 4. Greyscale Inactive Highlights with Matched Luminance
+When an inactive feature is selected (or when an active feature references inactive ones):
+- **Prerequisites (Light Grey `#d4d4d8`)**: Matches the perceived luminance of Orange.
+- **Downstream (Mid Grey `#71717a`)**: Matches the perceived luminance of Blue.
+- **Selected Inactive (Silver-White `#e4e4e7`)**: Clearly distinguished with high contrast.
+- **Movable Corridor Brackets `[ ... ]` (Grey `#a1a1aa`)**: Never disappear; encloses the valid dependency corridor for inactive features.
+
+### 5. Reordering Across the Entire Timeline Data Structure
+- Reordering left and right is fully supported on both active and inactive features.
+- Dragging an action chip horizontally highlights valid drop slots within the movable corridor.
+- Moving an action pushes/ripples intermediate jumped actions in the opposite direction (splice semantics).
+- Heavy solid-body calculations are evaluated strictly up to `doc.marker`; inactive features downstream remain unbuilt in the 3D viewport until the marker is scrubbed forward.
+
+### 6. Multi-Track Component Layout & Viewport Sizing
 - Each component occupies its own dedicated horizontal row ($38\,\text{px}$ pitch).
 - Component headers are pinned on the left ($160\,\text{px}$) with color-coded identifiers.
 - Viewport height accommodates the $28\,\text{px}$ header $+ 3.5$ component rows ($170\,\text{px}$ total height with scrollbar), leaving the 4th row half-visible as an immediate visual affordance that more tracks exist below.
 - Continuous vertical scrolling with rubberband spring elasticity when overscrolling.
 
-### 5. Synchronized 1:1 CAD Grid
+### 7. Synchronized 1:1 CAD Grid
 - The CAD grid background is driven by individual DOM cells with explicit border lines.
 - The background moves in 1:1 physical synchronization with the chips across both horizontal and vertical scrolling, preventing visual lag or detachment.
-
-### 6. Parametric Dependency Visualization
-Clicking or hovering over any Action Chip instantly highlights:
-- 🟧 **Prerequisites (Orange)**: All upstream features that the selected action depends on.
-- 🟦 **Downstream (Blue)**: All downstream features that depend on the selected action.
-- 🟩 **Movable Corridor (Green Brackets `[ ... ]`)**: Visual brackets enclosing the exact chronological window $[p_{\max} + 1, d_{\min} - 1]$ where the selected action can be reordered without invalidating dependencies.
-
-### 7. Ripple Push Reordering (Splice Semantics)
-- Dragging an action chip horizontally highlights valid drop slots in green.
-- Moving an action pushes/ripples intermediate jumped actions in the opposite direction (e.g., moving an action 2 steps to the right shifts intermediate actions 2 steps to the left).
-- Releasing outside the valid green corridor triggers an animated spring snap-back.
 
 ### 8. Multi-Component Step Synchronization
 - Complex operations affecting multiple components (such as *Boolean Combine* or *Assembly Constraints*) display chips across all involved component rows.
@@ -107,6 +109,7 @@ When integrated into the SolidCraft Rust codebase:
 | **Header Scrubber Track** | Dedicated top row in `timeline_2d.rs` holding `ui_kit::history_marker` |
 | **Leading Transport Controls** | `ui_kit::HistoryTransport` embedded in pinned left header (`cmd.timeline_roll`, `cmd.timeline_play`) |
 | **Rollback Marker & Scrubbing** | `app.session.doc.marker: Option<usize>` and `ui_kit::history_marker` |
+| **100% Opacity Display & Greyscale Inactive** | Greyscale theme tokens for inactive features, 100% alpha everywhere |
 | **Component Rows** | Extracted from `doc.tree.components()` and `f.component` |
 | **Dependency Graph** | Direct DAG traversal via `f.kind.walk_refs()` and `f.kind.input_sketches()` |
 | **Reorder Engine Command** | Dispatches heavy command `timeline.reorder` in `crates/engine/src/cmd/edit.rs` |
