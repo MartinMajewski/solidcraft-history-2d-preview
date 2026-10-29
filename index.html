@@ -131,6 +131,122 @@
       font-size: 14px;
     }
 
+    /* Rollback Timeline Marker */
+    .timeline-marker {
+      position: absolute;
+      top: 0;
+      height: 190px;
+      width: 18px;
+      margin-left: -9px;
+      z-index: 50;
+      cursor: col-resize;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      pointer-events: auto;
+      transition: left 0.1s ease-out;
+    }
+
+    .timeline-marker.scrubbing {
+      transition: none;
+      cursor: grabbing !important;
+    }
+
+    .marker-handle-top {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #14161a;
+      border: 2.5px solid var(--blue);
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.7);
+      flex-shrink: 0;
+      cursor: col-resize;
+      margin-top: 1px;
+      transition: transform 0.15s, background-color 0.15s;
+    }
+
+    .timeline-marker:hover .marker-handle-top,
+    .timeline-marker.scrubbing .marker-handle-top {
+      transform: scale(1.3);
+      background: #38bdf8;
+    }
+
+    .marker-line {
+      width: 2.5px;
+      flex: 1;
+      background: var(--blue);
+      box-shadow: 0 0 6px rgba(56, 189, 248, 0.4);
+    }
+
+    .marker-handle-bottom {
+      width: 10px;
+      height: 5px;
+      border-radius: 2px 2px 0 0;
+      background: var(--blue);
+      flex-shrink: 0;
+    }
+
+    .marker-swatch {
+      width: 3px;
+      height: 14px;
+      background: var(--blue);
+      border-radius: 1px;
+      box-shadow: 0 0 6px rgba(56, 189, 248, 0.6);
+    }
+
+    /* Deactivated / Rolled-back state */
+    .chip.rolled-back {
+      opacity: 0.35 !important;
+      filter: grayscale(85%) brightness(0.85);
+      border: 1.5px dashed #475569 !important;
+      cursor: not-allowed !important;
+      box-shadow: none !important;
+    }
+
+    .connector-dots.rolled-back-line {
+      opacity: 0.2;
+      stroke: #475569 !important;
+    }
+
+    /* Transport Controls */
+    .transport-bar {
+      display: inline-flex;
+      align-items: center;
+      background: #151820;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-left: 6px;
+    }
+
+    .btn-transport {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      padding: 5px 9px;
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.12s, color 0.12s;
+    }
+
+    .btn-transport:hover:not(:disabled) {
+      background: #252b38;
+      color: #fff;
+    }
+
+    .btn-transport:active:not(:disabled) {
+      background: #38bdf8;
+      color: #000;
+    }
+
+    .btn-transport:disabled {
+      color: #334155;
+      cursor: not-allowed;
+    }
+
     .btn-reset {
       background: #2a303c;
       border: 1px solid #3e4657;
@@ -417,7 +533,19 @@
           <span class="swatch-green">[ &nbsp; ]</span>
           <span style="color: var(--green); font-weight: 500;">Movable Corridor (Green)</span>
         </div>
-        <button id="btnReset" class="btn-reset">Reset Timeline</button>
+        <div class="legend-item">
+          <div class="marker-swatch"></div>
+          <span style="color: var(--blue); font-weight: 500;">Rollback Marker</span>
+        </div>
+        <!-- SolidCraft History Transport Controls -->
+        <div class="transport-bar" title="SolidCraft History Transport (Scrub Timeline)">
+          <button id="btnFirst" class="btn-transport" title="Roll to First (Step 0)">⏮</button>
+          <button id="btnBack" class="btn-transport" title="Step Back">◀</button>
+          <button id="btnPlay" class="btn-transport" title="Play / Pause Timeline">▶</button>
+          <button id="btnForward" class="btn-transport" title="Step Forward">▶</button>
+          <button id="btnLast" class="btn-transport" title="Roll to Last (End)">⏭</button>
+        </div>
+        <button id="btnReset" class="btn-reset">Reset</button>
       </div>
     </div>
 
@@ -428,8 +556,9 @@
         <span id="statusDetails" style="color: var(--text-muted); margin-left: 4px;">Loading...</span>
       </div>
       <div class="status-meta">
+        <span id="activeMarkerBadge" class="badge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">Active: 16 / 16 Steps</span> ·
         <span>3.5 Rows Visible</span> ·
-        <span style="color: var(--green);">1:1 Synchronized Scrolling Grid</span>
+        <span style="color: var(--green);">1:1 Synchronized Grid</span>
       </div>
     </div>
 
@@ -473,6 +602,13 @@
             </g>
             <g id="connectorsGroup"></g>
           </svg>
+
+          <!-- History Rollback Marker (Draggable Scrubber across all component tracks) -->
+          <div id="timelineMarker" class="timeline-marker" style="left: 832px;" title="History Rollback Marker: Drag handle to scrub active steps">
+            <div class="marker-handle-top" title="Drag to scrub timeline"></div>
+            <div class="marker-line"></div>
+            <div class="marker-handle-bottom"></div>
+          </div>
 
           <!-- DOM Grid Cells -->
           <div id="trackRowsContainer"></div>
@@ -535,6 +671,9 @@
 
     const initialActions = JSON.parse(JSON.stringify(actions));
     let selectedActionId = 5; // Default: Fillet Edge
+    let markerStep = 16;      // All 16 steps active by default (SolidCraft doc.marker = None)
+    let isPlaying = false;
+    let playbackTimer = null;
 
     const trackContainer = document.getElementById('trackRowsContainer');
     const svgOverlay = document.getElementById('svgOverlay');
@@ -545,6 +684,14 @@
     const connectorsGroup = document.getElementById('connectorsGroup');
     const statusDetails = document.getElementById('statusDetails');
     const dragFeedback = document.getElementById('dragFeedback');
+    const timelineMarker = document.getElementById('timelineMarker');
+    const activeMarkerBadge = document.getElementById('activeMarkerBadge');
+
+    const btnFirst = document.getElementById('btnFirst');
+    const btnBack = document.getElementById('btnBack');
+    const btnPlay = document.getElementById('btnPlay');
+    const btnForward = document.getElementById('btnForward');
+    const btnLast = document.getElementById('btnLast');
 
     function getActionCol(actionId) {
       return actions.findIndex(a => a.id === actionId) + 1;
@@ -570,6 +717,86 @@
         maxCol: minDownstreamCol - 1,
         currentCol: currentCol
       };
+    }
+
+    // Set Timeline Rollback Marker Step
+    function setMarkerStep(step, updateFeedback = true) {
+      markerStep = Math.max(0, Math.min(actions.length, step));
+      
+      if (timelineMarker) {
+        timelineMarker.style.left = `${markerStep * COL_W}px`;
+      }
+
+      // Update Transport Buttons
+      if (btnFirst) btnFirst.disabled = markerStep === 0;
+      if (btnBack) btnBack.disabled = markerStep === 0;
+      if (btnForward) btnForward.disabled = markerStep === actions.length;
+      if (btnLast) btnLast.disabled = markerStep === actions.length;
+
+      // Update Active Badge
+      if (activeMarkerBadge) {
+        activeMarkerBadge.textContent = `Active: ${markerStep} / ${actions.length} Steps`;
+        if (markerStep < actions.length) {
+          activeMarkerBadge.style.color = '#f59e0b';
+          activeMarkerBadge.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+          activeMarkerBadge.style.background = 'rgba(245, 158, 11, 0.15)';
+        } else {
+          activeMarkerBadge.style.color = '#38bdf8';
+          activeMarkerBadge.style.borderColor = 'rgba(56, 189, 248, 0.3)';
+          activeMarkerBadge.style.background = 'rgba(56, 189, 248, 0.15)';
+        }
+      }
+
+      // Re-apply Highlight to reflect rolled back chips and lines
+      applyHighlight(selectedActionId);
+
+      // Feedback description
+      if (updateFeedback && !isPlaying) {
+        if (markerStep < actions.length) {
+          const rolledCount = actions.length - markerStep;
+          dragFeedback.innerHTML = `⏪ <strong>Timeline Rolled Back:</strong> Steps 1 to ${markerStep} are active. ${rolledCount} downstream feature(s) after the marker are deactivated (rolled back).`;
+        } else {
+          dragFeedback.innerHTML = `✨ <strong>All Steps Active:</strong> The timeline marker is at the end. Drag the blue marker handle left to scrub backward!`;
+        }
+      }
+    }
+
+    // Playback sequence (SolidCraft cmd.timeline_play / timeline_stop)
+    function togglePlayback() {
+      if (isPlaying) {
+        stopPlayback();
+      } else {
+        startPlayback();
+      }
+    }
+
+    function startPlayback() {
+      if (markerStep >= actions.length) {
+        setMarkerStep(0, false);
+      }
+      isPlaying = true;
+      btnPlay.innerHTML = '⏸';
+      btnPlay.title = 'Pause timeline playback';
+      dragFeedback.innerHTML = `▶️ <strong>Playing History Sequence:</strong> Re-evaluating features step by step...`;
+
+      playbackTimer = setInterval(() => {
+        if (markerStep < actions.length) {
+          setMarkerStep(markerStep + 1, false);
+        } else {
+          stopPlayback();
+          dragFeedback.innerHTML = `🏁 <strong>Playback Complete:</strong> All ${actions.length} features evaluated.`;
+        }
+      }, 420);
+    }
+
+    function stopPlayback() {
+      isPlaying = false;
+      if (playbackTimer) {
+        clearInterval(playbackTimer);
+        playbackTimer = null;
+      }
+      btnPlay.innerHTML = '▶';
+      btnPlay.title = 'Play timeline sequence';
     }
 
     // Render Timeline Tracks & Chips (Grid of actual DOM cells)
@@ -614,6 +841,7 @@
       }
 
       renderConnectors();
+      setMarkerStep(markerStep, false);
       applyHighlight(selectedActionId);
     }
 
@@ -637,7 +865,8 @@
           line.setAttribute('y1', y1);
           line.setAttribute('x2', cx);
           line.setAttribute('y2', y2);
-          line.setAttribute('class', `connector-dots ${act.id === selectedActionId ? 'active' : ''}`);
+          const isRolled = c > markerStep;
+          line.setAttribute('class', `connector-dots ${act.id === selectedActionId ? 'active' : ''} ${isRolled ? 'rolled-back-line' : ''}`);
           line.dataset.actionId = act.id;
 
           connectorsGroup.appendChild(line);
@@ -655,34 +884,56 @@
       }
 
       const { minCol, maxCol, currentCol } = computeMovableRange(act);
+      const isSelectedRolledBack = currentCol > markerStep;
 
       // 1. Highlight Chips
       document.querySelectorAll('.chip').forEach(chip => {
         const id = parseInt(chip.dataset.id);
+        const col = parseInt(chip.dataset.col);
         chip.style.transform = '';
 
-        if (id === actionId) {
+        const isRolledBack = col > markerStep;
+
+        if (isRolledBack) {
+          chip.className = 'chip rolled-back';
+          chip.title = `${act.name} (Step ${col}) - Inactive (Rolled back)`;
+        } else if (id === actionId) {
           chip.className = 'chip selected';
+          chip.title = `${act.name} (Step ${col}) - Selected`;
         } else if (act.prereqs.includes(id)) {
           chip.className = 'chip prereq';
+          chip.title = `${act.name} (Step ${col}) - Prerequisite`;
         } else if (act.downstream.includes(id)) {
           chip.className = 'chip downstream';
+          chip.title = `${act.name} (Step ${col}) - Downstream dependent`;
         } else {
           chip.className = 'chip dimmed';
+          chip.title = `${act.name} (Step ${col})`;
         }
       });
 
       // 2. Connectors
       document.querySelectorAll('.connector-dots').forEach(line => {
-        if (parseInt(line.dataset.actionId) === actionId) {
+        const actId = parseInt(line.dataset.actionId);
+        const lineAct = actions.find(a => a.id === actId);
+        const col = lineAct ? getActionCol(lineAct.id) : 0;
+        const isRolled = col > markerStep;
+
+        if (actId === actionId && !isRolled) {
           line.classList.add('active');
         } else {
           line.classList.remove('active');
         }
+
+        if (isRolled) {
+          line.classList.add('rolled-back-line');
+        } else {
+          line.classList.remove('rolled-back-line');
+        }
       });
 
-      // 3. Green Brackets [ ... ]
-      if (minCol <= maxCol) {
+      // 3. Green Brackets [ ... ] (Only shown when selected action is active)
+      if (minCol <= maxCol && !isSelectedRolledBack) {
         bracketGroup.style.display = 'block';
         const xLeft = (minCol - 1) * COL_W;
         const xRight = maxCol * COL_W;
@@ -701,17 +952,25 @@
       }
 
       // 4. Status Update
-      const isMovable = minCol < maxCol;
+      const isMovable = minCol < maxCol && !isSelectedRolledBack;
       statusDetails.innerHTML = `
         <strong style="color: #fff;">${act.name}</strong> (Step ${currentCol}):
         <span style="color: var(--orange); font-weight: 600; margin-left: 8px;">Prerequisites: [${act.prereqs.map(p => '#' + p).join(', ') || 'None'}]</span> ·
         <span style="color: var(--blue); font-weight: 600; margin-left: 8px;">Downstream: [${act.downstream.map(d => '#' + d).join(', ') || 'None'}]</span> ·
-        <span style="color: var(--green); font-weight: bold; margin-left: 8px;">[ Movable Corridor: Steps ${minCol} to ${maxCol} ]</span>
+        ${isSelectedRolledBack 
+          ? `<span style="color: #f59e0b; font-weight: bold; margin-left: 8px;">[ Deactivated: Rolled Back by Marker ]</span>`
+          : `<span style="color: var(--green); font-weight: bold; margin-left: 8px;">[ Movable Corridor: Steps ${minCol} to ${maxCol} ]</span>`}
       `;
 
-      dragFeedback.innerHTML = isMovable
-        ? `✅ <strong>Movable Corridor:</strong> Drag <em>${act.name}</em> anywhere between Step ${minCol} and ${maxCol}. All jumped actions ripple automatically!`
-        : `🔒 <strong>Constraint Locked:</strong> <em>${act.name}</em> is bounded directly by its immediate dependencies.`;
+      if (!isPlaying) {
+        if (isSelectedRolledBack) {
+          dragFeedback.innerHTML = `⏸️ <strong>Rolled Back:</strong> <em>${act.name}</em> is inactive. Drag the blue marker handle past Step ${currentCol} or click 'Step Forward' to activate it.`;
+        } else {
+          dragFeedback.innerHTML = isMovable
+            ? `✅ <strong>Movable Corridor:</strong> Drag <em>${act.name}</em> anywhere between Step ${minCol} and ${maxCol}. All jumped actions ripple automatically!`
+            : `🔒 <strong>Constraint Locked:</strong> <em>${act.name}</em> is bounded directly by its immediate dependencies.`;
+        }
+      }
     }
 
     // Attach Interactive Drag & Ripple Reorder Handlers
@@ -721,6 +980,13 @@
       let currentDeltaX = 0;
 
       chip.addEventListener('mousedown', (e) => {
+        const col = parseInt(chip.dataset.col);
+        if (col > markerStep) {
+          applyHighlight(act.id);
+          dragFeedback.innerHTML = `⚠️ <strong>Cannot reorder rolled-back step:</strong> <em>${act.name}</em> is deactivated. Drag the rollback marker past Step ${col} to activate it first.`;
+          return;
+        }
+
         applyHighlight(act.id);
         isDragging = true;
         startX = e.clientX;
@@ -789,6 +1055,49 @@
       });
     }
 
+    // Attach Marker Scrubbing Logic
+    function attachMarkerScrubbing() {
+      if (!timelineMarker) return;
+      let isScrubbing = false;
+
+      timelineMarker.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        stopPlayback();
+        isScrubbing = true;
+        timelineMarker.classList.add('scrubbing');
+        document.body.style.cursor = 'col-resize';
+
+        function onMouseMove(e) {
+          if (!isScrubbing) return;
+          const scrollArea = document.getElementById('timelineScrollArea');
+          const tracksRect = tracksContent.getBoundingClientRect();
+          const relX = e.clientX - tracksRect.left;
+          const targetStep = Math.max(0, Math.min(actions.length, Math.round(relX / COL_W)));
+          setMarkerStep(targetStep);
+        }
+
+        function onMouseUp() {
+          if (!isScrubbing) return;
+          isScrubbing = false;
+          timelineMarker.classList.remove('scrubbing');
+          document.body.style.cursor = 'default';
+          window.removeEventListener('mousemove', onMouseMove);
+          window.removeEventListener('mouseup', onMouseUp);
+        }
+
+        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('mouseup', onMouseUp);
+      });
+    }
+
+    // Transport Button Listeners
+    if (btnFirst) btnFirst.addEventListener('click', () => { stopPlayback(); setMarkerStep(0); });
+    if (btnBack) btnBack.addEventListener('click', () => { stopPlayback(); setMarkerStep(markerStep - 1); });
+    if (btnPlay) btnPlay.addEventListener('click', togglePlayback);
+    if (btnForward) btnForward.addEventListener('click', () => { stopPlayback(); setMarkerStep(markerStep + 1); });
+    if (btnLast) btnLast.addEventListener('click', () => { stopPlayback(); setMarkerStep(actions.length); });
+
     // -------------------------------------------------------------
     // Rubber Band Physics for Vertical Overscroll & Scroll Syncing
     // -------------------------------------------------------------
@@ -832,12 +1141,15 @@
 
     // Reset button
     document.getElementById('btnReset').addEventListener('click', () => {
+      stopPlayback();
       actions = JSON.parse(JSON.stringify(initialActions));
       selectedActionId = 5;
+      markerStep = actions.length;
       renderTimeline();
     });
 
-    // Initial Render
+    // Initialize marker scrubbing and render
+    attachMarkerScrubbing();
     renderTimeline();
   </script>
 </body>
