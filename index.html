@@ -120,9 +120,16 @@
     .legend-transport-item {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       flex-basis: 100%;
-      margin-top: 2px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+
+    .legend-transport-text {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       flex-wrap: wrap;
     }
 
@@ -313,14 +320,17 @@
     }
 
     .btn-reset {
-      background: #2a303c;
+      background: #252b38;
       border: 1px solid #3e4657;
       color: #cbd5e1;
       padding: 5px 12px;
-      font-size: 12px;
+      font-size: 11px;
       border-radius: 6px;
       cursor: pointer;
-      font-weight: 500;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
       transition: all 0.15s;
     }
 
@@ -328,6 +338,7 @@
       background: #373f50;
       color: #fff;
       border-color: #556075;
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.2);
     }
 
     /* Status Bar */
@@ -708,8 +719,16 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 14px;
       font-size: 12px;
       color: var(--text-muted);
+    }
+
+    .footer-right-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
     }
 
     .spring-return {
@@ -1250,7 +1269,6 @@
         </div>
         <!-- SolidCraft History Transport Controls (Overview Mirror) -->
         <div class="legend-item legend-transport-item">
-          <span class="legend-transport-title">Timeline Controls:</span>
           <div class="transport-bar" title="SolidCraft History Transport (Scrub Timeline)">
             <button id="btnFirst" class="btn-transport" title="Roll to First (Step 0)">⏮</button>
             <button id="btnBack" class="btn-transport" title="Step Back">◀</button>
@@ -1258,8 +1276,10 @@
             <button id="btnForward" class="btn-transport" title="Step Forward">▶</button>
             <button id="btnLast" class="btn-transport" title="Roll to Last (End)">⏭</button>
           </div>
-          <button id="btnReset" class="btn-reset" title="Reset Timeline to initial demo state">Reset</button>
-          <span class="legend-transport-desc">— Step backward/forward, auto-play history sequence, or roll to start/end</span>
+          <div class="legend-transport-text">
+            <span class="legend-transport-title">Timeline Controls:</span>
+            <span class="legend-transport-desc">Scrub steps &amp; simulate CAD playback (⏮ First · ◀ Step Back · ▶ Play/Pause · ▶ Step Forward · ⏭ Last)</span>
+          </div>
         </div>
       </div>
     </div>
@@ -1356,8 +1376,13 @@
       <div id="dragFeedback">
         💡 <strong>Try this:</strong> Multi-select chips with <strong>Shift+Click</strong> (range) or <strong>Cmd/Ctrl+Click</strong>. Right-click adjacent selection to <strong>Group Selection</strong>! Right-click virtual group chip for Group menu. Drag head pin to roll back.
       </div>
-      <div style="font-family: monospace; font-size: 11px; color: var(--text-dim);">
-        ↔ Scroll horizontally &nbsp;|&nbsp; ↕ Scroll vertically
+      <div class="footer-right-area">
+        <span style="font-family: monospace; font-size: 11px; color: var(--text-dim);">
+          ↔ Scroll horizontally &nbsp;|&nbsp; ↕ Scroll vertically
+        </span>
+        <button id="btnReset" class="btn-reset" title="Reset Timeline to initial demo state">
+          <span style="font-size: 13px;">↺</span> Reset
+        </button>
       </div>
     </div>
 
