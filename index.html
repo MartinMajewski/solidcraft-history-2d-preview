@@ -117,6 +117,26 @@
       gap: 6px;
     }
 
+    .legend-transport-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-basis: 100%;
+      margin-top: 2px;
+      flex-wrap: wrap;
+    }
+
+    .legend-transport-title {
+      font-weight: 600;
+      color: #e2e8f0;
+      white-space: nowrap;
+    }
+
+    .legend-transport-desc {
+      color: var(--text-muted);
+      font-size: 11px;
+    }
+
     .legend-swatch {
       width: 12px;
       height: 12px;
@@ -1229,14 +1249,18 @@
           <span style="color: var(--blue); font-weight: 500;">Rollback Marker</span>
         </div>
         <!-- SolidCraft History Transport Controls (Overview Mirror) -->
-        <div class="transport-bar" title="SolidCraft History Transport (Scrub Timeline)">
-          <button id="btnFirst" class="btn-transport" title="Roll to First (Step 0)">⏮</button>
-          <button id="btnBack" class="btn-transport" title="Step Back">◀</button>
-          <button id="btnPlay" class="btn-transport" title="Play / Pause Timeline">▶</button>
-          <button id="btnForward" class="btn-transport" title="Step Forward">▶</button>
-          <button id="btnLast" class="btn-transport" title="Roll to Last (End)">⏭</button>
+        <div class="legend-item legend-transport-item">
+          <span class="legend-transport-title">Timeline Controls:</span>
+          <div class="transport-bar" title="SolidCraft History Transport (Scrub Timeline)">
+            <button id="btnFirst" class="btn-transport" title="Roll to First (Step 0)">⏮</button>
+            <button id="btnBack" class="btn-transport" title="Step Back">◀</button>
+            <button id="btnPlay" class="btn-transport" title="Play / Pause Timeline">▶</button>
+            <button id="btnForward" class="btn-transport" title="Step Forward">▶</button>
+            <button id="btnLast" class="btn-transport" title="Roll to Last (End)">⏭</button>
+          </div>
+          <button id="btnReset" class="btn-reset" title="Reset Timeline to initial demo state">Reset</button>
+          <span class="legend-transport-desc">— Step backward/forward, auto-play history sequence, or roll to start/end</span>
         </div>
-        <button id="btnReset" class="btn-reset">Reset</button>
       </div>
     </div>
 
