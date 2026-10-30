@@ -1031,6 +1031,7 @@
       z-index: 35;
       user-select: none;
       box-sizing: border-box;
+      overflow: hidden;
       transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
     }
 
@@ -1044,6 +1045,8 @@
       display: flex;
       align-items: center;
       gap: 5px;
+      min-width: 0;
+      flex: 1;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
