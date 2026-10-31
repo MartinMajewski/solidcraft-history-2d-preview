@@ -427,15 +427,72 @@
 
     .header-row {
       height: var(--row-h);
-      padding: 0 12px;
+      padding: 0 10px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       border-bottom: 1px solid var(--grid-line);
       font-size: 12px;
       font-weight: 500;
       color: #cbd5e1;
       background: #181b22;
+      border-left: 3px solid transparent;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s, border-left-color 0.15s, color 0.15s;
+    }
+
+    .header-row:hover {
+      background: #1f2533;
+      color: #ffffff;
+    }
+
+    .header-row.active-component-row {
+      background: #1b263b;
+      border-left: 3px solid #38bdf8;
+      color: #ffffff;
+    }
+
+    .header-row.active-component-row .truncate {
+      font-weight: 600;
+      color: #f0f9ff;
+    }
+
+    .comp-radio-target {
+      font-size: 11px;
+      color: #64748b;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      transition: color 0.15s;
+    }
+
+    .header-row:hover .comp-radio-target {
+      color: #94a3b8;
+    }
+
+    .header-row.active-component-row .comp-radio-target {
+      color: #38bdf8;
+      text-shadow: 0 0 6px rgba(56, 189, 248, 0.8);
+    }
+
+    .active-comp-pill {
+      font-size: 8px;
+      font-weight: 700;
+      background: rgba(56, 189, 248, 0.2);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      border-radius: 3px;
+      padding: 1px 4px;
+      margin-left: auto;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      box-shadow: 0 0 6px rgba(56, 189, 248, 0.2);
     }
 
     .comp-dot {
@@ -597,6 +654,11 @@
       display: flex;
       height: var(--row-h);
       position: relative;
+      transition: background-color 0.15s ease;
+    }
+
+    .track-row.active-track-row {
+      background: rgba(56, 189, 248, 0.045);
     }
 
     .track-cell {
@@ -612,9 +674,19 @@
       background-color: var(--bg);
     }
 
+    .track-row.active-track-row .track-cell {
+      background-color: transparent;
+      border-bottom: 1px solid rgba(56, 189, 248, 0.22);
+    }
+
     .track-cell.empty-hint {
       color: #242933;
       font-size: 10px;
+    }
+
+    .track-row.active-track-row .track-cell.empty-hint {
+      color: rgba(56, 189, 248, 0.45);
+      font-weight: 700;
     }
 
     /* Action Chip - Always 100% Opacity */
@@ -1262,6 +1334,210 @@
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
     }
 
+    /* External Model Browser Panel (Outside Timeline Demonstrator) */
+    .browser-panel {
+      background: #11141b;
+      border: 1px solid #2a303d;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+    }
+
+    .browser-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #1f2532;
+    }
+
+    .browser-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .browser-badge {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .browser-heading {
+      font-size: 13px;
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+
+    .browser-subtext {
+      font-size: 11px;
+      color: #94a3b8;
+    }
+
+    .browser-active-summary {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #94a3b8;
+    }
+
+    .active-comp-summary-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      border-radius: 4px;
+      padding: 2px 8px;
+      color: #e0f2fe;
+      font-size: 11px;
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.2);
+    }
+
+    .browser-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .browser-components-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .browser-comp-card {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background: #181c25;
+      border: 1px solid #2a3140;
+      border-radius: 6px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+
+    .browser-comp-card:hover {
+      background: #202634;
+      border-color: #3e485c;
+      color: #ffffff;
+    }
+
+    .browser-comp-card.active {
+      background: #1a273e;
+      border-color: #38bdf8;
+      color: #ffffff;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
+    }
+
+    .browser-comp-card .card-radio {
+      font-size: 13px;
+      color: #64748b;
+      line-height: 1;
+    }
+
+    .browser-comp-card.active .card-radio {
+      color: #38bdf8;
+      text-shadow: 0 0 6px rgba(56, 189, 248, 0.8);
+    }
+
+    .browser-comp-card .card-name {
+      font-weight: 500;
+    }
+
+    .browser-comp-card.active .card-name {
+      font-weight: 600;
+      color: #f0f9ff;
+    }
+
+    .browser-comp-card .card-badge {
+      font-size: 8px;
+      font-weight: 700;
+      padding: 1px 4px;
+      border-radius: 3px;
+      background: rgba(56, 189, 248, 0.25);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      display: none;
+      letter-spacing: 0.5px;
+    }
+
+    .browser-comp-card.active .card-badge {
+      display: inline-block;
+    }
+
+    .browser-modeling-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-top: 8px;
+      border-top: 1px solid #1a202c;
+      font-size: 11px;
+      flex-wrap: wrap;
+    }
+
+    .modeling-label {
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    .modeling-btn-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-model-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #1e2638;
+      border: 1px solid #334155;
+      color: #7dd3fc;
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-model-action:hover {
+      background: #28354d;
+      border-color: #38bdf8;
+      color: #ffffff;
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.35);
+      transform: translateY(-1px);
+    }
+
+    .btn-model-action:active {
+      transform: translateY(0);
+    }
+
+    .modeling-note {
+      color: #64748b;
+      margin-left: auto;
+      font-size: 11px;
+    }
+
+    .modeling-note strong {
+      color: #38bdf8;
+    }
+
     /* Scrollbars */
     ::-webkit-scrollbar {
       width: 8px;
@@ -1319,6 +1595,12 @@
           </div>
           <span style="color: #94a3b8; font-weight: 500;">Suppressed (Slashed Eye 50% Overlay)</span>
         </div>
+        <div class="legend-item">
+          <div class="legend-swatch" style="border-left: 3px solid #38bdf8; background: rgba(56, 189, 248, 0.2); display: flex; align-items: center; justify-content: center;" title="Active Component Row">
+            <span style="font-size: 11px; color: #38bdf8; line-height: 1;">⊙</span>
+          </div>
+          <span style="color: #38bdf8; font-weight: 500;">Active Component Track (Cyan Highlight &amp; ⊙)</span>
+        </div>
         <!-- SolidCraft History Transport Controls (Overview Mirror) -->
         <div class="legend-item legend-transport-item">
           <div class="transport-bar" title="SolidCraft History Transport (Scrub Timeline)">
@@ -1349,6 +1631,53 @@
       </div>
     </div>
 
+    <!-- Model Browser & Active Component Selector (Mimics SolidCraft Browser Tree) -->
+    <div class="browser-panel">
+      <div class="browser-header">
+        <div class="browser-title-group">
+          <span class="browser-badge">CAD Browser</span>
+          <span class="browser-heading">Active Component Selector</span>
+          <span class="browser-subtext">— Click radio target ⊙ to set Active Component. Newly modeled features are created on the active track.</span>
+        </div>
+        <div class="browser-active-summary">
+          <span>Active in Browser:</span>
+          <span id="activeCompSummaryBadge" class="active-comp-summary-pill">
+            <span class="comp-dot" id="activeCompSummaryDot" style="background: #38bdf8;"></span>
+            <strong id="activeCompSummaryName">Housing</strong>
+          </span>
+        </div>
+      </div>
+
+      <div class="browser-body">
+        <!-- Component selector cards mimicking SolidCraft browser rows -->
+        <div class="browser-components-row" id="browserComponentsList"></div>
+
+        <!-- Modeling action simulation bar -->
+        <div class="browser-modeling-bar">
+          <span class="modeling-label">Simulate Action in Active Component:</span>
+          <div class="modeling-btn-group">
+            <button id="btnNewExtrude" class="btn-model-action" title="Create Extrude in active component track">
+              <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor"><path d="M8 1L1 4v8l7 3 7-3V4L8 1z"/></svg>
+              + Extrude
+            </button>
+            <button id="btnNewRevolve" class="btn-model-action" title="Create Revolve in active component track">
+              <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor"><path d="M8 2a6 6 0 1 0 6 6h-2a4 4 0 1 1-4-4V2z"/></svg>
+              + Revolve
+            </button>
+            <button id="btnNewHole" class="btn-model-action" title="Create Hole in active component track">
+              <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg>
+              + Hole
+            </button>
+            <button id="btnNewFillet" class="btn-model-action" title="Create Fillet in active component track">
+              <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor"><path d="M2 14h12v-2H6a2 2 0 0 1-2-2V2H2v12z"/></svg>
+              + Fillet
+            </button>
+          </div>
+          <span class="modeling-note">Creates next timeline feature in <strong id="modelingTargetCompName">Housing</strong></span>
+        </div>
+      </div>
+    </div>
+
     <!-- Main Viewport -->
     <div class="viewport-container" id="viewportContainer">
       <!-- Pinned Left Component Headers (160px wide, stays stationary horizontally) -->
@@ -1366,28 +1695,7 @@
 
         <!-- Pinned Component List (Scrolls vertically in sync with timeline tracks) -->
         <div class="pinned-headers-viewport">
-          <div class="pinned-headers-content" id="pinnedHeadersContent">
-            <div class="header-row">
-              <span class="comp-dot" style="background: #94a3b8;"></span>
-              <span class="truncate">Root (Design)</span>
-            </div>
-            <div class="header-row">
-              <span class="comp-dot" style="background: #38bdf8;"></span>
-              <span class="truncate">Housing</span>
-            </div>
-            <div class="header-row">
-              <span class="comp-dot" style="background: #22c55e;"></span>
-              <span class="truncate">Shaft</span>
-            </div>
-            <div class="header-row">
-              <span class="comp-dot" style="background: #f59e0b;"></span>
-              <span class="truncate">Bearing</span>
-            </div>
-            <div class="header-row">
-              <span class="comp-dot" style="background: #c084fc;"></span>
-              <span class="truncate">Fastener</span>
-            </div>
-          </div>
+          <div class="pinned-headers-content" id="pinnedHeadersContent"></div>
         </div>
       </div>
 
@@ -1647,6 +1955,22 @@
     let isPlaying = false;
     let playbackTimer = null;
     let clipboardFeature = null;    // SolidCraft Session Clipboard simulation
+
+    // Component Definitions for Model Browser & Pinned Left Headers
+    const componentDefs = [
+      { id: 0, name: "Root (Design)", color: "#94a3b8" },
+      { id: 1, name: "Housing", color: "#38bdf8" },
+      { id: 2, name: "Shaft", color: "#22c55e" },
+      { id: 3, name: "Bearing", color: "#f59e0b" },
+      { id: 4, name: "Fastener", color: "#c084fc" }
+    ];
+    let activeComponentRow = 1; // Default: Housing (Track Row 1)
+
+    const browserComponentsList = document.getElementById('browserComponentsList');
+    const pinnedHeadersContent = document.getElementById('pinnedHeadersContent');
+    const activeCompSummaryDot = document.getElementById('activeCompSummaryDot');
+    const activeCompSummaryName = document.getElementById('activeCompSummaryName');
+    const modelingTargetCompName = document.getElementById('modelingTargetCompName');
 
     const trackContainer = document.getElementById('trackRowsContainer');
     const headerTrack = document.getElementById('timelineHeaderTrack');
@@ -2054,6 +2378,145 @@
       }
     }
 
+    // Render External Model Browser Component Selector Cards
+    function renderBrowserComponents() {
+      if (!browserComponentsList) return;
+      browserComponentsList.innerHTML = '';
+      componentDefs.forEach(comp => {
+        const isActive = comp.id === activeComponentRow;
+        const card = document.createElement('div');
+        card.className = `browser-comp-card${isActive ? ' active' : ''}`;
+        card.dataset.id = comp.id;
+        card.title = `${comp.name}: Click to ${isActive ? 'keep active' : 'activate exclusively'} as active modeling target`;
+
+        card.innerHTML = `
+          <span class="comp-radio-target" title="Set Active Component">${isActive ? '⊙' : '○'}</span>
+          <span class="comp-dot" style="background: ${comp.color};"></span>
+          <span class="browser-comp-name">${comp.name}</span>
+          ${isActive ? '<span class="browser-active-tag">ACTIVE</span>' : ''}
+        `;
+
+        card.addEventListener('click', (e) => {
+          e.stopPropagation();
+          setActiveComponent(comp.id);
+        });
+
+        browserComponentsList.appendChild(card);
+      });
+    }
+
+    // Render Pinned Left Component Headers with Active Highlights & Radio Targets
+    function renderPinnedHeaders() {
+      if (!pinnedHeadersContent) return;
+      pinnedHeadersContent.innerHTML = '';
+      componentDefs.forEach(comp => {
+        const isActive = comp.id === activeComponentRow;
+        const row = document.createElement('div');
+        row.className = `header-row${isActive ? ' active-component-row' : ''}`;
+        row.dataset.row = comp.id;
+        row.title = `${comp.name} (Track Row ${comp.id}) — Click to activate exclusively as modeling target`;
+
+        row.innerHTML = `
+          <span class="comp-radio-target">${isActive ? '⊙' : '○'}</span>
+          <span class="comp-dot" style="background: ${comp.color};"></span>
+          <span class="truncate">${comp.name}</span>
+          ${isActive ? '<span class="active-comp-pill">ACTIVE</span>' : ''}
+        `;
+
+        row.addEventListener('click', (e) => {
+          e.stopPropagation();
+          setActiveComponent(comp.id);
+        });
+
+        pinnedHeadersContent.appendChild(row);
+      });
+    }
+
+    // Exclusively activate a component (mimics SolidCraft browser component activation)
+    function setActiveComponent(rowId) {
+      activeComponentRow = rowId;
+      const comp = componentDefs.find(c => c.id === rowId) || componentDefs[0];
+
+      // Update summary indicators
+      if (activeCompSummaryDot) activeCompSummaryDot.style.background = comp.color;
+      if (activeCompSummaryName) activeCompSummaryName.textContent = comp.name;
+      if (modelingTargetCompName) modelingTargetCompName.textContent = comp.name;
+
+      // Re-render browser components and pinned headers
+      renderBrowserComponents();
+      renderPinnedHeaders();
+
+      // Update grid track row classes in the DOM directly
+      document.querySelectorAll('.track-row').forEach(rowEl => {
+        const r = parseInt(rowEl.dataset.row);
+        if (r === activeComponentRow) {
+          rowEl.classList.add('active-track-row');
+        } else {
+          rowEl.classList.remove('active-track-row');
+        }
+      });
+
+      dragFeedback.innerHTML = `🎯 <strong>Active Component Set:</strong> <em>${comp.name}</em> is now the active modeling target. New features will be created on Track Row ${comp.id}.`;
+    }
+
+    // Simulate Modeling Action (Extrude, Revolve, Hole, Fillet) in Active Component
+    function addFeatureToActiveComponent(type) {
+      const comp = componentDefs.find(c => c.id === activeComponentRow) || componentDefs[0];
+      const newId = Math.max(...actions.map(a => a.id), 0) + 1;
+      const countOfType = actions.filter(a => a.type === type && a.rows.includes(activeComponentRow)).length + 1;
+      const typeLabel = type.charAt(0).toUpperCase() + type.slice(1);
+      const featureName = `${comp.name} ${typeLabel} ${countOfType}`;
+
+      // Connect prerequisites: find last feature in this component, or fallback to first action
+      const compFeatures = actions.filter(a => a.rows.includes(activeComponentRow));
+      const prereqs = compFeatures.length > 0 ? [compFeatures[compFeatures.length - 1].id] : (actions.length > 0 ? [actions[0].id] : []);
+
+      const newAction = {
+        id: newId,
+        name: featureName,
+        type: type,
+        rows: [activeComponentRow],
+        prereqs: prereqs,
+        downstream: []
+      };
+
+      // Register newAction as downstream for its prerequisites
+      prereqs.forEach(pid => {
+        const pAct = actions.find(a => a.id === pid);
+        if (pAct && Array.isArray(pAct.downstream) && !pAct.downstream.includes(newId)) {
+          pAct.downstream.push(newId);
+        }
+      });
+
+      actions.push(newAction);
+
+      // If marker was at end of sequence, keep it at the end to evaluate the new feature
+      if (markerStep >= actions.length - 1) {
+        markerStep = actions.length;
+      }
+
+      // Select newly created action
+      selectedActionIds = [newId];
+      anchorActionId = newId;
+      selectedGroupId = null;
+
+      renderTimeline();
+
+      // Scroll viewport smoothly to new feature
+      const newCol = getActionDisplayCol(newId);
+      if (newCol > 0) {
+        const viewport = document.getElementById('timelineViewport');
+        if (viewport) {
+          viewport.scrollTo({
+            left: (newCol - 1) * COL_W - 100,
+            behavior: 'smooth'
+          });
+        }
+      }
+
+      dragFeedback.innerHTML = `✨ <strong>New Feature Created:</strong> Added <em>${newAction.name}</em> to active component <strong>${comp.name}</strong> (Track Row ${activeComponentRow}).`;
+    }
+
     // Render Timeline: Header Track & Component Tracks (Supports Virtual Group Chips & Open Group Pills)
     function renderTimeline() {
       const displayItems = getDisplayItems();
@@ -2216,7 +2679,7 @@
       trackContainer.innerHTML = '';
       for (let r = 0; r < NUM_ROWS; r++) {
         const rowDiv = document.createElement('div');
-        rowDiv.className = 'track-row';
+        rowDiv.className = 'track-row' + (r === activeComponentRow ? ' active-track-row' : '');
         rowDiv.dataset.row = r;
 
         for (let colIdx = 0; colIdx < totalCols; colIdx++) {
@@ -2373,6 +2836,8 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       renderConnectors();
       setMarkerStep(markerStep, false);
       applyHighlight();
+      renderBrowserComponents();
+      renderPinnedHeaders();
     }
 
     // Render Dead-Centered Dotted Connectors
@@ -3457,9 +3922,19 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       selectedActionIds = [5];
       anchorActionId = 5;
       markerStep = 16;
+      activeComponentRow = 1;
+      if (activeCompSummaryDot) activeCompSummaryDot.style.background = '#38bdf8';
+      if (activeCompSummaryName) activeCompSummaryName.textContent = 'Housing';
+      if (modelingTargetCompName) modelingTargetCompName.textContent = 'Housing';
       renderTimeline();
-      dragFeedback.innerHTML = `🔄 <strong>Timeline Reset:</strong> Restored default sequence (16 active, 8 inactive steps). Ready to test!`;
+      dragFeedback.innerHTML = `🔄 <strong>Timeline Reset:</strong> Restored default sequence (16 active, 8 inactive steps, Housing component active). Ready to test!`;
     });
+
+    // Modeling action simulation buttons
+    document.getElementById('btnNewExtrude')?.addEventListener('click', () => addFeatureToActiveComponent('extrude'));
+    document.getElementById('btnNewRevolve')?.addEventListener('click', () => addFeatureToActiveComponent('revolve'));
+    document.getElementById('btnNewHole')?.addEventListener('click', () => addFeatureToActiveComponent('hole'));
+    document.getElementById('btnNewFillet')?.addEventListener('click', () => addFeatureToActiveComponent('fillet'));
 
     // Initialize transport handlers, marker scrubbing, and render
     attachTransportHandlers();
