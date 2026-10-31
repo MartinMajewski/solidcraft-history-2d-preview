@@ -369,6 +369,74 @@
       white-space: nowrap;
     }
 
+    /* Corridor Bracket & Marker Overlay Mode Switcher Bar */
+    .overlay-mode-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+      background: #181b22;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .overlay-mode-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .overlay-mode-label {
+      font-weight: 600;
+      color: #e2e8f0;
+      font-size: 12px;
+    }
+
+    .overlay-mode-btn-group {
+      display: inline-flex;
+      background: #0f1115;
+      padding: 2px;
+      border-radius: 6px;
+      border: 1px solid #2a303d;
+      gap: 2px;
+    }
+
+    .btn-mode {
+      padding: 4px 10px;
+      font-size: 11px;
+      font-family: inherit;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background: transparent;
+      color: #94a3b8;
+      font-weight: 500;
+      transition: all 0.15s ease;
+    }
+
+    .btn-mode:hover {
+      color: #f1f5f9;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .btn-mode.active {
+      background: #2563eb;
+      color: #ffffff;
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    .overlay-mode-desc {
+      color: #94a3b8;
+      font-size: 11px;
+      font-style: italic;
+    }
+
     /* Main Viewport Container: Exactly Header (44px) + 3.5 rows visible */
     .viewport-container {
       position: relative;
@@ -614,7 +682,7 @@
       width: 100%;
       height: calc(var(--row-h) * 5);
       pointer-events: none;
-      z-index: 10;
+      z-index: 60; /* Higher than timeline-marker (50) so corridor brackets render on top */
     }
 
     .connector-dots {
@@ -1670,6 +1738,22 @@
       </div>
     </div>
 
+    <!-- Corridor Bracket & Marker Overlay Mode Switcher -->
+    <div class="overlay-mode-bar">
+      <div class="overlay-mode-left">
+        <span class="overlay-mode-label">Coincidence Design:</span>
+        <div class="overlay-mode-btn-group" id="overlayModeBtnGroup">
+          <button id="btnModeSmartInset" class="btn-mode active" title="Smart Inset: insets bracket by 3px when coincident with marker so both remain 100% visible side-by-side">Smart Inset (Recommended)</button>
+          <button id="btnModeRawSwap" class="btn-mode" title="Direct Layer Swap: renders bracket directly on top of marker line at exact same column boundary">Direct Layer Swap</button>
+          <button id="btnModeHalo" class="btn-mode" title="Knockout Halo: renders bracket on top with dark background knockout outline">Knockout Halo</button>
+          <button id="btnModeOriginal" class="btn-mode" title="Original: marker line renders on top of bracket (hides vertical stem)">Original (Marker on Top)</button>
+        </div>
+      </div>
+      <div id="modeDescription" class="overlay-mode-desc">
+        Smart Inset: insets bracket by 3px when coincident so both bracket clasp and blue scrubber line remain 100% visible side-by-side.
+      </div>
+    </div>
+
     <!-- Main Viewport -->
     <div class="viewport-container" id="viewportContainer">
       <!-- Pinned Left Component Headers (160px wide, stays stationary horizontally) -->
@@ -1708,7 +1792,9 @@
             <g id="bracketGroup" style="display: none;">
               <rect id="bracketCorridorActive" x="0" y="0" width="0" height="190" fill="rgba(34, 197, 94, 0.08)"></rect>
               <rect id="bracketCorridorInactive" x="0" y="0" width="0" height="190" fill="rgba(161, 161, 170, 0.08)"></rect>
+              <path id="pathBracketLeftHalo" d="" fill="none" stroke="#14161a" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"></path>
               <path id="pathBracketLeft" d="" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path id="pathBracketRightHalo" d="" fill="none" stroke="#14161a" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"></path>
               <path id="pathBracketRight" d="" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
             </g>
             <g id="connectorsGroup"></g>
@@ -1943,10 +2029,41 @@
     let selectedGroupId = null;     // Selected virtual group
     let groups = [];                // Timeline Groups / Folders
     let nextGroupId = 1;
-    let markerStep = 16;            // Default: 16 active steps, 8 inactive steps to demonstrate greyscale highlights!
+    let markerStep = 8;             // Set to 8 to test when markerStep === maxCol (Step 08)
     let isPlaying = false;
     let playbackTimer = null;
     let clipboardFeature = null;    // SolidCraft Session Clipboard simulation
+
+    let overlayMode = 'smart-inset'; // 'smart-inset' | 'raw-swap' | 'halo' | 'original'
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialMode = urlParams.get('mode');
+    if (initialMode && ['smart-inset', 'raw-swap', 'halo', 'original'].includes(initialMode)) {
+      overlayMode = initialMode;
+    }
+
+    const modeDescriptions = {
+      'smart-inset': 'Smart Inset (Recommended): insets bracket by 3px when coincident with marker so both bracket clasp and blue scrubber line remain 100% visible side-by-side.',
+      'raw-swap': 'Direct Layer Swap: renders bracket directly on top of marker line at exact same coordinate (marker line is covered by green stem).',
+      'halo': 'Knockout Halo: renders bracket on top of marker with dark outline halo, cleanly severing the marker line behind the bracket.',
+      'original': 'Original: marker scrubber renders on top of bracket (marker line covers and hides the bracket vertical stem).'
+    };
+
+    function setOverlayMode(mode) {
+      overlayMode = mode;
+      document.querySelectorAll('.btn-mode').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = {
+        'smart-inset': document.getElementById('btnModeSmartInset'),
+        'raw-swap': document.getElementById('btnModeRawSwap'),
+        'halo': document.getElementById('btnModeHalo'),
+        'original': document.getElementById('btnModeOriginal')
+      }[mode];
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const descEl = document.getElementById('modeDescription');
+      if (descEl) descEl.textContent = modeDescriptions[mode] || '';
+
+      renderTimeline();
+    }
 
     // Component Definitions for Model Browser & Pinned Left Headers
     const componentDefs = [
@@ -1971,7 +2088,9 @@
     const bracketCorridorActive = document.getElementById('bracketCorridorActive');
     const bracketCorridorInactive = document.getElementById('bracketCorridorInactive');
     const pathBracketLeft = document.getElementById('pathBracketLeft');
+    const pathBracketLeftHalo = document.getElementById('pathBracketLeftHalo');
     const pathBracketRight = document.getElementById('pathBracketRight');
+    const pathBracketRightHalo = document.getElementById('pathBracketRightHalo');
     const connectorsGroup = document.getElementById('connectorsGroup');
     const statusDetails = document.getElementById('statusDetails');
     const dragFeedback = document.getElementById('dragFeedback');
@@ -3061,15 +3180,42 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
               bracketCorridorInactive.style.display = 'none';
             }
 
+            // Calculate Draw X coordinates according to overlayMode
+            let leftDrawX = xLeft;
+            let rightDrawX = xRight;
+
+            const isCoincidentLeft = Math.abs(xLeft - markerX) < 2;
+            const isCoincidentRight = Math.abs(xRight - markerX) < 2;
+
+            if (overlayMode === 'smart-inset') {
+              svgOverlay.style.zIndex = '60';
+              if (isCoincidentLeft) leftDrawX = xLeft + 3;
+              if (isCoincidentRight) rightDrawX = xRight - 3;
+            } else if (overlayMode === 'raw-swap') {
+              svgOverlay.style.zIndex = '60';
+            } else if (overlayMode === 'halo') {
+              svgOverlay.style.zIndex = '60';
+            } else if (overlayMode === 'original') {
+              svgOverlay.style.zIndex = '10';
+            }
+
+            const showHalo = (overlayMode === 'halo');
+            if (pathBracketLeftHalo) pathBracketLeftHalo.style.display = showHalo ? 'inline' : 'none';
+            if (pathBracketRightHalo) pathBracketRightHalo.style.display = showHalo ? 'inline' : 'none';
+
             // Opening Bracket [
             const leftBracketColor = xLeft < markerX ? '#22c55e' : 'var(--grey-corridor)';
+            const leftD = `M ${leftDrawX + 7} 4 L ${leftDrawX} 4 L ${leftDrawX} ${totalHeight - 4} L ${leftDrawX + 7} ${totalHeight - 4}`;
+            if (pathBracketLeftHalo && showHalo) pathBracketLeftHalo.setAttribute('d', leftD);
             pathBracketLeft.setAttribute('stroke', leftBracketColor);
-            pathBracketLeft.setAttribute('d', `M ${xLeft + 7} 4 L ${xLeft} 4 L ${xLeft} ${totalHeight - 4} L ${xLeft + 7} ${totalHeight - 4}`);
+            pathBracketLeft.setAttribute('d', leftD);
 
             // Closing Bracket ]
             const rightBracketColor = xRight <= markerX ? '#22c55e' : 'var(--grey-corridor)';
+            const rightD = `M ${rightDrawX - 7} 4 L ${rightDrawX} 4 L ${rightDrawX} ${totalHeight - 4} L ${rightDrawX - 7} ${totalHeight - 4}`;
+            if (pathBracketRightHalo && showHalo) pathBracketRightHalo.setAttribute('d', rightD);
             pathBracketRight.setAttribute('stroke', rightBracketColor);
-            pathBracketRight.setAttribute('d', `M ${xRight - 7} 4 L ${xRight} 4 L ${xRight} ${totalHeight - 4} L ${xRight - 7} ${totalHeight - 4}`);
+            pathBracketRight.setAttribute('d', rightD);
           } else {
             bracketGroup.style.display = 'none';
           }
@@ -3921,6 +4067,29 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
     document.getElementById('btnNewRevolve')?.addEventListener('click', () => addFeatureToActiveComponent('revolve'));
     document.getElementById('btnNewHole')?.addEventListener('click', () => addFeatureToActiveComponent('hole'));
     document.getElementById('btnNewFillet')?.addEventListener('click', () => addFeatureToActiveComponent('fillet'));
+
+    // Overlay Mode Switcher Buttons
+    const btnModeSmartInset = document.getElementById('btnModeSmartInset');
+    const btnModeRawSwap = document.getElementById('btnModeRawSwap');
+    const btnModeHalo = document.getElementById('btnModeHalo');
+    const btnModeOriginal = document.getElementById('btnModeOriginal');
+
+    if (btnModeSmartInset) btnModeSmartInset.addEventListener('click', () => setOverlayMode('smart-inset'));
+    if (btnModeRawSwap) btnModeRawSwap.addEventListener('click', () => setOverlayMode('raw-swap'));
+    if (btnModeHalo) btnModeHalo.addEventListener('click', () => setOverlayMode('halo'));
+    if (btnModeOriginal) btnModeOriginal.addEventListener('click', () => setOverlayMode('original'));
+
+    // Initialize active button state from overlayMode
+    document.querySelectorAll('.btn-mode').forEach(btn => btn.classList.remove('active'));
+    const initialActiveBtn = {
+      'smart-inset': document.getElementById('btnModeSmartInset'),
+      'raw-swap': document.getElementById('btnModeRawSwap'),
+      'halo': document.getElementById('btnModeHalo'),
+      'original': document.getElementById('btnModeOriginal')
+    }[overlayMode];
+    if (initialActiveBtn) initialActiveBtn.classList.add('active');
+    const initialDescEl = document.getElementById('modeDescription');
+    if (initialDescEl) initialDescEl.textContent = modeDescriptions[overlayMode] || '';
 
     // Initialize transport handlers, marker scrubbing, and render
     attachTransportHandlers();
