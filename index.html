@@ -458,27 +458,40 @@
       color: #f0f9ff;
     }
 
-    .comp-radio-target {
-      font-size: 11px;
-      color: #64748b;
-      line-height: 1;
+    /* Activation Radio Indicator (mirrors SolidCraft browser component root checkboxes) */
+    .comp-radio-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 1.5px solid #64748b;
+      box-sizing: border-box;
+      flex-shrink: 0;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 14px;
-      height: 14px;
+      position: relative;
+      background: transparent;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      cursor: pointer;
+    }
+
+    .header-row:hover .comp-radio-indicator,
+    .browser-comp-card:hover .comp-radio-indicator {
+      border-color: #94a3b8;
+    }
+
+    .comp-radio-indicator.active {
+      border-color: #38bdf8;
+      box-shadow: 0 0 6px rgba(56, 189, 248, 0.4);
+    }
+
+    .comp-radio-indicator.active::after {
+      content: '';
+      width: 5px;
+      height: 5px;
       border-radius: 50%;
-      flex-shrink: 0;
-      transition: color 0.15s;
-    }
-
-    .header-row:hover .comp-radio-target {
-      color: #94a3b8;
-    }
-
-    .header-row.active-component-row .comp-radio-target {
-      color: #38bdf8;
-      text-shadow: 0 0 6px rgba(56, 189, 248, 0.8);
+      background: #38bdf8;
+      box-shadow: 0 0 4px rgba(56, 189, 248, 0.8);
     }
 
     .active-comp-pill {
@@ -493,13 +506,6 @@
       letter-spacing: 0.5px;
       text-transform: uppercase;
       box-shadow: 0 0 6px rgba(56, 189, 248, 0.2);
-    }
-
-    .comp-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
     }
 
     /* Timeline Scroll Area: Dual Axis Scroll */
@@ -1597,9 +1603,9 @@
         </div>
         <div class="legend-item">
           <div class="legend-swatch" style="border-left: 3px solid #38bdf8; background: rgba(56, 189, 248, 0.2); display: flex; align-items: center; justify-content: center;" title="Active Component Row">
-            <span style="font-size: 11px; color: #38bdf8; line-height: 1;">⊙</span>
+            <span class="comp-radio-indicator active" style="width: 10px; height: 10px;"></span>
           </div>
-          <span style="color: #38bdf8; font-weight: 500;">Active Component Track (Cyan Highlight &amp; ⊙)</span>
+          <span style="color: #38bdf8; font-weight: 500;">Active Component Track (Cyan Highlight &amp; Radio Indicator)</span>
         </div>
         <!-- SolidCraft History Transport Controls (Overview Mirror) -->
         <div class="legend-item legend-transport-item">
@@ -1637,12 +1643,12 @@
         <div class="browser-title-group">
           <span class="browser-badge">CAD Browser</span>
           <span class="browser-heading">Active Component Selector</span>
-          <span class="browser-subtext">— Click radio target ⊙ to set Active Component. Newly modeled features are created on the active track.</span>
+          <span class="browser-subtext">— Radio indicators (empty circle: inactive, dot: active) mirror the browser activation controls. Newly modeled features are created on the active track.</span>
         </div>
         <div class="browser-active-summary">
           <span>Active in Browser:</span>
           <span id="activeCompSummaryBadge" class="active-comp-summary-pill">
-            <span class="comp-dot" id="activeCompSummaryDot" style="background: #38bdf8;"></span>
+            <span class="comp-radio-indicator active" style="width: 10px; height: 10px;"></span>
             <strong id="activeCompSummaryName">Housing</strong>
           </span>
         </div>
@@ -1958,11 +1964,11 @@
 
     // Component Definitions for Model Browser & Pinned Left Headers
     const componentDefs = [
-      { id: 0, name: "Root (Design)", color: "#94a3b8" },
-      { id: 1, name: "Housing", color: "#38bdf8" },
-      { id: 2, name: "Shaft", color: "#22c55e" },
-      { id: 3, name: "Bearing", color: "#f59e0b" },
-      { id: 4, name: "Fastener", color: "#c084fc" }
+      { id: 0, name: "Root (Design)" },
+      { id: 1, name: "Housing" },
+      { id: 2, name: "Shaft" },
+      { id: 3, name: "Bearing" },
+      { id: 4, name: "Fastener" }
     ];
     let activeComponentRow = 1; // Default: Housing (Track Row 1)
 
@@ -2390,8 +2396,7 @@
         card.title = `${comp.name}: Click to ${isActive ? 'keep active' : 'activate exclusively'} as active modeling target`;
 
         card.innerHTML = `
-          <span class="comp-radio-target" title="Set Active Component">${isActive ? '⊙' : '○'}</span>
-          <span class="comp-dot" style="background: ${comp.color};"></span>
+          <span class="comp-radio-indicator${isActive ? ' active' : ''}" title="${isActive ? 'Active Component' : 'Click to Activate'}"></span>
           <span class="browser-comp-name">${comp.name}</span>
           ${isActive ? '<span class="browser-active-tag">ACTIVE</span>' : ''}
         `;
@@ -2417,8 +2422,7 @@
         row.title = `${comp.name} (Track Row ${comp.id}) — Click to activate exclusively as modeling target`;
 
         row.innerHTML = `
-          <span class="comp-radio-target">${isActive ? '⊙' : '○'}</span>
-          <span class="comp-dot" style="background: ${comp.color};"></span>
+          <span class="comp-radio-indicator${isActive ? ' active' : ''}" title="${isActive ? 'Active Component' : 'Click to Activate'}"></span>
           <span class="truncate">${comp.name}</span>
           ${isActive ? '<span class="active-comp-pill">ACTIVE</span>' : ''}
         `;
@@ -2438,7 +2442,6 @@
       const comp = componentDefs.find(c => c.id === rowId) || componentDefs[0];
 
       // Update summary indicators
-      if (activeCompSummaryDot) activeCompSummaryDot.style.background = comp.color;
       if (activeCompSummaryName) activeCompSummaryName.textContent = comp.name;
       if (modelingTargetCompName) modelingTargetCompName.textContent = comp.name;
 
@@ -3923,7 +3926,6 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       anchorActionId = 5;
       markerStep = 16;
       activeComponentRow = 1;
-      if (activeCompSummaryDot) activeCompSummaryDot.style.background = '#38bdf8';
       if (activeCompSummaryName) activeCompSummaryName.textContent = 'Housing';
       if (modelingTargetCompName) modelingTargetCompName.textContent = 'Housing';
       renderTimeline();
