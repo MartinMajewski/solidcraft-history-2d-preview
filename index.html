@@ -494,20 +494,6 @@
       box-shadow: 0 0 4px rgba(56, 189, 248, 0.8);
     }
 
-    .active-comp-pill {
-      font-size: 8px;
-      font-weight: 700;
-      background: rgba(56, 189, 248, 0.2);
-      color: #38bdf8;
-      border: 1px solid rgba(56, 189, 248, 0.45);
-      border-radius: 3px;
-      padding: 1px 4px;
-      margin-left: auto;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      box-shadow: 0 0 6px rgba(56, 189, 248, 0.2);
-    }
-
     /* Timeline Scroll Area: Dual Axis Scroll */
     .timeline-scroll-area {
       flex: 1;
@@ -2398,7 +2384,6 @@
         card.innerHTML = `
           <span class="comp-radio-indicator${isActive ? ' active' : ''}" title="${isActive ? 'Active Component' : 'Click to Activate'}"></span>
           <span class="browser-comp-name">${comp.name}</span>
-          ${isActive ? '<span class="browser-active-tag">ACTIVE</span>' : ''}
         `;
 
         card.addEventListener('click', (e) => {
@@ -2424,7 +2409,6 @@
         row.innerHTML = `
           <span class="comp-radio-indicator${isActive ? ' active' : ''}" title="${isActive ? 'Active Component' : 'Click to Activate'}"></span>
           <span class="truncate">${comp.name}</span>
-          ${isActive ? '<span class="active-comp-pill">ACTIVE</span>' : ''}
         `;
 
         row.addEventListener('click', (e) => {
