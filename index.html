@@ -440,7 +440,7 @@
     /* Main Viewport Container: Exactly Header (44px) + 3.5 rows visible */
     .viewport-container {
       position: relative;
-      height: 186px;
+      height: 264px;
       border: 1px solid var(--border);
       border-radius: 8px;
       overflow: hidden;
@@ -449,6 +449,22 @@
     }
 
     /* Pinned Left Component Column (160px) */
+    
+    .pinned-header-banner {
+      height: 28px;
+      background: #141720;
+      border-bottom: 1px solid #2a313d;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      box-sizing: border-box;
+      flex-shrink: 0;
+    }
+
     .pinned-headers {
       width: 160px;
       flex-shrink: 0;
@@ -587,7 +603,9 @@
       height: var(--header-h);
       background: #12151c;
       border-bottom: 1px solid #2a303d;
-      position: relative;
+      position: sticky;
+      top: 0;
+      z-index: 25;
       user-select: none;
       -webkit-user-select: none;
     }
@@ -1696,7 +1714,7 @@
     /* Split Viewport Layout */
     .viewport-container {
       position: relative;
-      height: 226px !important; /* Section Header Banner (28px) + Timeline Header (44px) + 4 rows visible (152px) + scrollbar */
+      height: 264px !important; /* Section Header Banner (28px) + Timeline Header (44px) + 4 rows visible (152px) + scrollbar */
       border: 1px solid var(--border);
       border-radius: 8px;
       overflow: hidden;
@@ -2128,6 +2146,23 @@
       color: #000;
     }
 
+        /* Splitter Button Reopen State */
+    .splitter-btn.reopen-btn {
+      color: #38bdf8 !important;
+      background: #1a2333 !important;
+      border: 1px solid rgba(56, 189, 248, 0.5) !important;
+      box-shadow: 0 0 6px rgba(56, 189, 248, 0.25) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+
+    .splitter-btn.reopen-btn:hover {
+      background: #38bdf8 !important;
+      color: #000000 !important;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.6) !important;
+    }
+
     .splitter-btn.undo-btn {
       color: #38bdf8 !important;
       font-size: 14px !important;
@@ -2303,6 +2338,15 @@
             <button id="btnSplit65" class="btn-mode active" style="padding: 2px 6px; font-size: 10px;" title="65% Modeling, 35% Assembly">65/35</button>
             <button id="btnSplit50" class="btn-mode" style="padding: 2px 6px; font-size: 10px;" title="50% Modeling, 50% Assembly">50/50</button>
           </div>
+
+          <!-- 4. Reopen Splitter Icon Style -->
+          <div style="display: inline-flex; align-items: center; gap: 4px; margin-left: 8px; padding-left: 8px; border-left: 1px solid #2a313d;">
+            <span style="color: #94a3b8;" title="Icon used on the splitter to reopen a contracted track view">Reopen Icon:</span>
+            <button id="btnIconChevrons" class="btn-mode active" style="padding: 2px 6px; font-size: 10px;" title="Double Chevrons (» / «) — Classic CAD/IDE dock expand pattern">» Chevrons</button>
+            <button id="btnIconSplit" class="btn-mode" style="padding: 2px 6px; font-size: 10px;" title="Dual Split Panes (◫) — Represents restoring two-pane split">◫ Dual Pane</button>
+            <button id="btnIconUnfold" class="btn-mode" style="padding: 2px 6px; font-size: 10px;" title="Dock Unfold (⇥ / ⇤) — Wall with outward arrow">⇥ Unfold</button>
+            <button id="btnIconArrows" class="btn-mode" style="padding: 2px 6px; font-size: 10px;" title="Bidirectional Split Arrows (↔)">↔ Split</button>
+          </div>
         </div>
 
         <!-- Coincidence mode switcher & Highlight Colors in one row -->
@@ -2336,7 +2380,16 @@
     <div class="viewport-container" id="viewportContainer">
       <!-- Pinned Left Component Headers (160px wide, stays stationary horizontally) -->
       <div class="pinned-headers">
-        <!-- Leading Side (Left) of Timeline Header Row: Transport Controls -->
+        <!-- Top Banner Row (28px height, perfectly aligned with Modeling & Assembly Section Banners) -->
+        <div class="pinned-header-banner">
+          <div class="section-header-title">
+            <span>📂</span>
+            <span>COMPONENTS</span>
+          </div>
+          <span class="section-header-badge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">5</span>
+        </div>
+
+        <!-- Leading Side (Left) of Timeline Header Row: Transport Controls (44px height, matching step numbers track) -->
         <div class="pinned-header-top">
           <div class="transport-bar-header" title="Timeline Transport Controls (Scrub Active Steps)">
             <button id="hdrBtnFirst" class="btn-transport" title="Roll to First (Step 0)">⏮</button>
@@ -5675,6 +5728,51 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
         });
       }
 
+      // Reopen Icon switcher listeners
+      document.getElementById('btnIconChevrons')?.addEventListener('click', () => setReopenIconStyle('chevrons'));
+      document.getElementById('btnIconSplit')?.addEventListener('click', () => setReopenIconStyle('split'));
+      document.getElementById('btnIconUnfold')?.addEventListener('click', () => setReopenIconStyle('unfold'));
+      document.getElementById('btnIconArrows')?.addEventListener('click', () => setReopenIconStyle('arrows'));
+
+      updateSplitterUI();
+    }
+
+    let reopenIconStyle = 'chevrons'; // 'chevrons' | 'split' | 'unfold' | 'arrows'
+
+    // Crisp Vector Icons for Reopening / Expanding Contracted Tracks
+    const REOPEN_ICONS = {
+      chevrons: {
+        left: '<svg width="9" height="11" viewBox="0 0 9 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1.5L5 5.5L1 9.5"/><path d="M4.5 1.5L8.5 5.5L4.5 9.5"/></svg>',
+        right: '<svg width="9" height="11" viewBox="0 0 9 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.5L4 5.5L8 9.5"/><path d="M4.5 1.5L0.5 5.5L4.5 9.5"/></svg>'
+      },
+      split: {
+        left: '<svg width="10" height="11" viewBox="0 0 10 11" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="0.7" y="0.7" width="8.6" height="9.6" rx="1.2"/><line x1="5" y1="0.7" x2="5" y2="10.3"/></svg>',
+        right: '<svg width="10" height="11" viewBox="0 0 10 11" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="0.7" y="0.7" width="8.6" height="9.6" rx="1.2"/><line x1="5" y1="0.7" x2="5" y2="10.3"/></svg>'
+      },
+      unfold: {
+        left: '<svg width="10" height="11" viewBox="0 0 10 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="1.5" y1="1" x2="1.5" y2="10"/><path d="M4.5 2.5L8 5.5L4.5 8.5"/></svg>',
+        right: '<svg width="10" height="11" viewBox="0 0 10 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="8.5" y1="1" x2="8.5" y2="10"/><path d="M5.5 2.5L2 5.5L5.5 8.5"/></svg>'
+      },
+      arrows: {
+        left: '<svg width="11" height="9" viewBox="0 0 11 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 1.5L0.5 4.5L3 7.5"/><path d="M8 1.5L10.5 4.5L8 7.5"/><line x1="0.5" y1="4.5" x2="10.5" y2="4.5"/></svg>',
+        right: '<svg width="11" height="9" viewBox="0 0 11 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 1.5L0.5 4.5L3 7.5"/><path d="M8 1.5L10.5 4.5L8 7.5"/><line x1="0.5" y1="4.5" x2="10.5" y2="4.5"/></svg>'
+      }
+    };
+
+    function setReopenIconStyle(style) {
+      reopenIconStyle = style;
+      const btns = {
+        chevrons: document.getElementById('btnIconChevrons'),
+        split: document.getElementById('btnIconSplit'),
+        unfold: document.getElementById('btnIconUnfold'),
+        arrows: document.getElementById('btnIconArrows')
+      };
+      Object.keys(btns).forEach(k => {
+        if (btns[k]) {
+          if (k === style) btns[k].classList.add('active');
+          else btns[k].classList.remove('active');
+        }
+      });
       updateSplitterUI();
     }
 
@@ -5682,32 +5780,32 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       if (!btnCollapseLeft || !btnCollapseRight) return;
 
       if (isModelingCollapsed && !isAssemblyCollapsed) {
-        // Modeling contracted, Assembly visible
-        btnCollapseLeft.innerHTML = '↺';
-        btnCollapseLeft.className = 'splitter-btn undo-btn';
-        btnCollapseLeft.title = 'Restore Split View (Expand Geometric Modeling)';
+        // Modeling contracted (left dock shown), Assembly visible
+        btnCollapseLeft.innerHTML = REOPEN_ICONS[reopenIconStyle].left;
+        btnCollapseLeft.className = 'splitter-btn reopen-btn';
+        btnCollapseLeft.title = 'Reopen Geometric Modeling Track (Expand to Split View)';
 
         btnCollapseRight.innerHTML = '▶';
         btnCollapseRight.className = 'splitter-btn';
         btnCollapseRight.title = 'Contract Assembly Section & Expand Modeling';
       } else if (isAssemblyCollapsed && !isModelingCollapsed) {
-        // Assembly contracted, Modeling visible
+        // Assembly contracted (right dock shown), Modeling visible
         btnCollapseLeft.innerHTML = '◀';
         btnCollapseLeft.className = 'splitter-btn';
         btnCollapseLeft.title = 'Contract Geometric Modeling & Expand Assembly';
 
-        btnCollapseRight.innerHTML = '↺';
-        btnCollapseRight.className = 'splitter-btn undo-btn';
-        btnCollapseRight.title = 'Restore Split View (Expand Assembly & Joints)';
+        btnCollapseRight.innerHTML = REOPEN_ICONS[reopenIconStyle].right;
+        btnCollapseRight.className = 'splitter-btn reopen-btn';
+        btnCollapseRight.title = 'Reopen Assembly Track (Expand to Split View)';
       } else {
         // Both visible (Split View)
         btnCollapseLeft.innerHTML = '◀';
         btnCollapseLeft.className = 'splitter-btn';
-        btnCollapseLeft.title = 'Contract Geometric Modeling Section';
+        btnCollapseLeft.title = 'Contract Geometric Modeling Section into Left Dock Tab';
 
         btnCollapseRight.innerHTML = '▶';
         btnCollapseRight.className = 'splitter-btn';
-        btnCollapseRight.title = 'Contract Assembly Section';
+        btnCollapseRight.title = 'Contract Assembly Section into Right Dock Tab';
       }
     }
 
@@ -5722,7 +5820,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       stripModelingBadge.textContent = actions.length;
       sectionAssembly.style.flex = '1 1 auto';
       updateSplitterUI();
-      dragFeedback.innerHTML = `🟣 <strong>Assembly Full View:</strong> Geometric modeling section contracted. Click [↺] on the splitter to restore split view.`;
+      dragFeedback.innerHTML = `🟣 <strong>Assembly Full View:</strong> Geometric modeling section contracted. Click the splitter button to reopen.`;
     }
 
     function collapseAssemblySection() {
@@ -5736,7 +5834,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       stripAssemblyBadge.textContent = assemblyJoints.length;
       sectionModeling.style.flex = '1 1 auto';
       updateSplitterUI();
-      dragFeedback.innerHTML = `🔷 <strong>Modeling Full View:</strong> Assembly section contracted. Click [↺] on the splitter to restore split view.`;
+      dragFeedback.innerHTML = `🔷 <strong>Modeling Full View:</strong> Assembly section contracted. Click the splitter button to reopen.`;
     }
 
     function restoreBothSections() {
