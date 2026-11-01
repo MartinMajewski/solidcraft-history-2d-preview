@@ -1624,6 +1624,442 @@
     ::-webkit-scrollbar-thumb:hover {
       background: #475164;
     }
+  
+    /* Full Screen Width & Responsive Enhancements */
+    body {
+      background-color: #0c0e12;
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding: 14px 18px !important;
+      user-select: none;
+      -webkit-user-select: none;
+      min-height: 100vh;
+      box-sizing: border-box;
+      width: 100vw;
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 100% !important;
+      width: 100% !important;
+      margin: 0 auto !important;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px !important;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      box-sizing: border-box;
+    }
+
+    /* Modern 2-Column Control Deck */
+    .control-deck {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 1100px) {
+      .control-deck {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .deck-card {
+      background: #181b22;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .deck-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #252b37;
+      padding-bottom: 6px;
+    }
+
+    .deck-card-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Split Viewport Layout */
+    .viewport-container {
+      position: relative;
+      height: 226px !important; /* Section Header Banner (28px) + Timeline Header (44px) + 4 rows visible (152px) + scrollbar */
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      background: var(--bg);
+    }
+
+    .split-viewport-wrapper {
+      flex: 1;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+      min-width: 0;
+      height: 100%;
+    }
+
+    .track-section {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      min-width: 0;
+      height: 100%;
+    }
+
+    .track-section.collapsed {
+      display: none !important;
+    }
+
+    .section-header-banner {
+      height: 28px;
+      background: #141720;
+      border-bottom: 1px solid #2a313d;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      user-select: none;
+      flex-shrink: 0;
+      box-sizing: border-box;
+      z-index: 30;
+    }
+
+    .section-header-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #e2e8f0;
+    }
+
+    .section-header-badge {
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+
+    .badge-modeling {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .badge-assembly {
+      background: rgba(168, 85, 247, 0.15);
+      color: #c084fc;
+      border: 1px solid rgba(168, 85, 247, 0.3);
+    }
+
+    /* Splitter Bar */
+    .track-splitter {
+      width: 16px;
+      background: #101319;
+      border-left: 1px solid #252b38;
+      border-right: 1px solid #252b38;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: col-resize;
+      z-index: 45;
+      user-select: none;
+      flex-shrink: 0;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .track-splitter:hover, .track-splitter.dragging {
+      background: #181d28;
+      border-color: #38bdf8;
+    }
+
+    .splitter-grip {
+      width: 4px;
+      height: 32px;
+      border-radius: 2px;
+      background: #3b4556;
+      transition: background 0.15s;
+    }
+
+    .track-splitter:hover .splitter-grip, .track-splitter.dragging .splitter-grip {
+      background: #38bdf8;
+    }
+
+    .splitter-btn {
+      width: 14px;
+      height: 22px;
+      border: none;
+      background: #1e2433;
+      color: #94a3b8;
+      border-radius: 3px;
+      font-size: 9px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+      transition: all 0.12s;
+    }
+
+    .splitter-btn:hover {
+      background: #38bdf8;
+      color: #000;
+    }
+
+    /* Collapsed Dock Strip */
+    .collapsed-strip {
+      width: 32px;
+      background: #12151c;
+      border-right: 1px solid #2a313d;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 8px 2px;
+      cursor: pointer;
+      user-select: none;
+      flex-shrink: 0;
+      z-index: 40;
+      transition: background 0.15s;
+    }
+
+    .collapsed-strip:hover {
+      background: #1a202d;
+    }
+
+    .collapsed-strip-btn {
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
+      background: #232938;
+      border: 1px solid #3b4559;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      margin-bottom: 12px;
+      transition: all 0.15s;
+    }
+
+    .collapsed-strip:hover .collapsed-strip-btn {
+      background: #38bdf8;
+      color: #000;
+    }
+
+    .collapsed-strip.assembly-strip:hover .collapsed-strip-btn {
+      background: #a855f7;
+      color: #fff;
+    }
+
+    .collapsed-strip-content {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: #94a3b8;
+      white-space: nowrap;
+    }
+
+    .collapsed-strip-badge {
+      border-radius: 8px;
+      padding: 2px 5px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .collapsed-strip.modeling-strip .collapsed-strip-badge {
+      background: rgba(56, 189, 248, 0.2);
+      color: #38bdf8;
+    }
+
+    .collapsed-strip.assembly-strip .collapsed-strip-badge {
+      background: rgba(168, 85, 247, 0.2);
+      color: #c084fc;
+    }
+
+    /* Assembly Rollback Marker (Purple / Violet #a855f7) */
+    .assembly-marker {
+      position: absolute;
+      top: 0;
+      height: calc(var(--header-h) + var(--row-h) * 5);
+      width: 20px;
+      margin-left: -10px;
+      z-index: 50;
+      cursor: col-resize;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      pointer-events: auto;
+      transition: left 0.1s ease-out;
+    }
+
+    .assembly-marker.scrubbing {
+      transition: none;
+      cursor: grabbing !important;
+    }
+
+    .assembly-marker .marker-handle-top {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #14161a;
+      border: 2.5px solid #a855f7;
+      box-shadow: 0 0 8px rgba(168, 85, 247, 0.7);
+      flex-shrink: 0;
+      cursor: col-resize;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.15s, background-color 0.15s;
+    }
+
+    .assembly-marker .marker-pin-inner {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #a855f7;
+    }
+
+    .assembly-marker:hover .marker-handle-top,
+    .assembly-marker.scrubbing .marker-handle-top {
+      transform: scale(1.25);
+      background: #a855f7;
+    }
+
+    .assembly-marker:hover .marker-pin-inner,
+    .assembly-marker.scrubbing .marker-pin-inner {
+      background: #000;
+    }
+
+    .assembly-marker .marker-line {
+      width: 2.5px;
+      flex: 1;
+      background: #a855f7;
+      box-shadow: 0 0 6px rgba(168, 85, 247, 0.4);
+    }
+
+    .assembly-marker .marker-handle-bottom {
+      width: 10px;
+      height: 5px;
+      border-radius: 2px 2px 0 0;
+      background: #a855f7;
+      flex-shrink: 0;
+    }
+
+    /* Assembly Joint Chips & Target Nodes */
+    .chip.joint-chip {
+      background: #1e1b2e;
+      border-color: #6d28d9;
+    }
+
+    .chip.joint-chip.active-joint {
+      border-color: #a855f7;
+      background: rgba(168, 85, 247, 0.18);
+    }
+
+    .chip.joint-chip.selected {
+      border: 2px solid #ffffff !important;
+      box-shadow: 0 0 12px rgba(168, 85, 247, 0.65) !important;
+    }
+
+    .chip.joint-chip.prereq {
+      border: 2px solid var(--orange) !important;
+      background: var(--orange-bg) !important;
+    }
+
+    .chip.joint-chip.downstream {
+      border: 2px solid #c084fc !important;
+      background: rgba(192, 132, 252, 0.2) !important;
+    }
+
+    .chip.joint-chip.unselected-inactive {
+      border: 1px solid #3f3f46;
+      background: #1c1f26;
+      filter: grayscale(100%);
+    }
+
+    .chip.joint-chip.selected-inactive {
+      border: 2px solid #e4e4e7;
+      background: #27272a;
+      filter: grayscale(100%);
+    }
+
+    .joint-target-node {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid #a855f7;
+      background: #14161a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 22;
+      box-shadow: 0 0 6px rgba(168, 85, 247, 0.4);
+      transition: all 0.15s ease;
+      cursor: pointer;
+    }
+
+    .joint-target-node.inactive {
+      border-color: #71717a;
+      box-shadow: none;
+    }
+
+    .joint-target-inner {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #a855f7;
+    }
+
+    .joint-target-node.inactive .joint-target-inner {
+      background: #71717a;
+    }
+
+    .joint-connector-dots {
+      stroke: #a855f7;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-dasharray: 2 4;
+      opacity: 1.0;
+      transition: stroke 0.15s, stroke-width 0.15s;
+    }
+
+    .joint-connector-dots.inactive {
+      stroke: #64748b;
+      opacity: 0.7;
+    }
+
+    .joint-connector-dots.active-selected {
+      stroke: #c084fc;
+      stroke-width: 3;
+    }
+
   </style>
 </head>
 <body>
@@ -1702,30 +2138,28 @@
       </div>
     </div>
 
-    <!-- Model Browser & Active Component Selector (Mimics SolidCraft Browser Tree) -->
-    <div class="browser-panel">
-      <div class="browser-header">
-        <div class="browser-title-group">
-          <span class="browser-badge">CAD Browser</span>
-          <span class="browser-heading">Active Component Selector</span>
-          <span class="browser-subtext">— Radio indicators (empty circle: inactive, dot: active) mirror the browser activation controls. Newly modeled features are created on the active track.</span>
+    <!-- Modern 2-Column Control Deck (Full Width) -->
+    <div class="control-deck">
+      <!-- Left Column: Active Component Browser & Modeling Actions -->
+      <div class="deck-card">
+        <div class="deck-card-header">
+          <div class="deck-card-title">
+            <span class="browser-badge">CAD Browser</span>
+            <span>Active Modeling Target</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px; font-size: 11px;">
+            <span>Active:</span>
+            <span class="active-comp-summary-pill" id="activeCompSummaryBadge">
+              <span class="comp-radio-indicator active" style="width: 10px; height: 10px;"></span>
+              <strong id="activeCompSummaryName">Housing</strong>
+            </span>
+          </div>
         </div>
-        <div class="browser-active-summary">
-          <span>Active in Browser:</span>
-          <span id="activeCompSummaryBadge" class="active-comp-summary-pill">
-            <span class="comp-radio-indicator active" style="width: 10px; height: 10px;"></span>
-            <strong id="activeCompSummaryName">Housing</strong>
-          </span>
-        </div>
-      </div>
 
-      <div class="browser-body">
-        <!-- Component selector cards mimicking SolidCraft browser rows -->
-        <div class="browser-components-row" id="browserComponentsList"></div>
+        <div class="browser-components-row" id="browserComponentsList" style="margin-top: 4px;"></div>
 
-        <!-- Modeling action simulation bar -->
-        <div class="browser-modeling-bar">
-          <span class="modeling-label">Simulate Action in Active Component:</span>
+        <div class="browser-modeling-bar" style="margin-top: 6px; padding-top: 8px; border-top: 1px solid #252b37;">
+          <span class="modeling-label">Simulate Modeling Feature:</span>
           <div class="modeling-btn-group">
             <button id="btnNewExtrude" class="btn-model-action" title="Create Extrude in active component track">
               <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor"><path d="M8 1L1 4v8l7 3 7-3V4L8 1z"/></svg>
@@ -1744,73 +2178,78 @@
               + Fillet
             </button>
           </div>
-          <span class="modeling-note">Creates next timeline feature in <strong id="modelingTargetCompName">Housing</strong></span>
         </div>
       </div>
-    </div>
 
-    <!-- Corridor Bracket & Marker Overlay Mode Switcher -->
-    <div class="overlay-mode-bar">
-      <div class="overlay-mode-left">
-        <span class="overlay-mode-label">Coincidence Design:</span>
-        <div class="overlay-mode-btn-group" id="overlayModeBtnGroup">
-          <button id="btnModeSmartInset" class="btn-mode active" title="Smart Inset: insets bracket by 3px when coincident with marker so both remain 100% visible side-by-side">Smart Inset (Recommended)</button>
-          <button id="btnModeRawSwap" class="btn-mode" title="Direct Layer Swap: renders bracket directly on top of marker line at exact same column boundary">Direct Layer Swap</button>
-          <button id="btnModeHalo" class="btn-mode" title="Knockout Halo: renders bracket on top with dark background knockout outline">Knockout Halo</button>
-          <button id="btnModeOriginal" class="btn-mode" title="Original: marker line renders on top of bracket (hides vertical stem)">Original (Marker on Top)</button>
-        </div>
-      </div>
-      <div id="modeDescription" class="overlay-mode-desc">
-        Smart Inset: insets bracket by 3px when coincident so both bracket clasp and blue scrubber line remain 100% visible side-by-side.
-      </div>
-    </div>
-
-    <!-- 2D Timeline Preferences Bar (Mimics SolidCraft Preferences > Interface) -->
-    <div class="overlay-mode-bar" style="border-left: 3px solid #38bdf8;">
-      <div class="overlay-mode-left" style="gap: 14px; flex-wrap: wrap;">
-        <span class="overlay-mode-label" style="display: flex; align-items: center; gap: 6px;">
-          <svg viewBox="0 0 16 16" width="13" height="13" fill="#38bdf8"><path d="M8 4.75a3.25 3.25 0 1 0 0 6.5 3.25 3.25 0 0 0 0-6.5zM3.5 8a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0z"/></svg>
-          Timeline Preferences:
-        </span>
-        
-        <!-- 1. Alignment Dots & Opacity -->
-        <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer; color: #cbd5e1; font-size: 11px;">
-          <input type="checkbox" id="chkCellDots" checked style="cursor: pointer; accent-color: #38bdf8;">
-          Cell Alignment Dots (·)
-        </label>
-        <div id="dotOpacityGroup" style="display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: #94a3b8;">
-          <span>Opacity:</span>
-          <input type="range" id="rngDotOpacity" min="5" max="100" value="35" style="width: 70px; cursor: pointer; accent-color: #38bdf8;">
-          <span id="lblDotOpacity" style="font-family: monospace; min-width: 30px;">35%</span>
+      <!-- Right Column: Timeline Preferences & Post-Modeling Section Controls -->
+      <div class="deck-card">
+        <div class="deck-card-header">
+          <div class="deck-card-title">
+            <svg viewBox="0 0 16 16" width="13" height="13" fill="#38bdf8"><path d="M8 4.75a3.25 3.25 0 1 0 0 6.5 3.25 3.25 0 0 0 0-6.5zM3.5 8a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0z"/></svg>
+            <span>Timeline Preferences &amp; Split Track Controls</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <button id="btnToggleAssemblySection" class="btn-mode active" style="font-size: 11px; padding: 3px 8px;" title="Toggle Post-Modeling / Assembly section visibility">🟣 Assembly Track: Shown (5)</button>
+            <button id="btnAddJoint" class="btn-mode" style="font-size: 11px; padding: 3px 8px;" title="Add an assembly joint mate">+ Joint</button>
+          </div>
         </div>
 
-        <span style="color: #334155;">|</span>
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 11px; padding-top: 4px;">
+          <!-- 1. Alignment Dots & Opacity -->
+          <div style="display: inline-flex; align-items: center; gap: 8px;">
+            <label style="display: inline-flex; align-items: center; gap: 5px; cursor: pointer; color: #cbd5e1;">
+              <input type="checkbox" id="chkCellDots" checked style="cursor: pointer; accent-color: #38bdf8;">
+              Alignment Dots
+            </label>
+            <div id="dotOpacityGroup" style="display: inline-flex; align-items: center; gap: 4px; color: #94a3b8;">
+              <span>Opacity:</span>
+              <input type="range" id="rngDotOpacity" min="5" max="100" value="35" style="width: 55px; cursor: pointer; accent-color: #38bdf8;">
+              <span id="lblDotOpacity" style="font-family: monospace; min-width: 28px;">35%</span>
+            </div>
+          </div>
 
-        <!-- 2. Component Activation in Timeline -->
-        <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer; color: #cbd5e1; font-size: 11px;">
-          <input type="checkbox" id="chkTimelineCompActivation" checked style="cursor: pointer; accent-color: #38bdf8;">
-          Activate from Timeline
-        </label>
-
-        <span style="color: #334155;">|</span>
-
-        <!-- 3. DAG Highlight Custom Colors -->
-        <div style="display: inline-flex; align-items: center; gap: 8px; font-size: 11px; color: #cbd5e1;">
-          <span>Highlight Colors:</span>
-          <label style="display: inline-flex; align-items: center; gap: 4px; cursor: pointer;">
-            <input type="color" id="pickerPrereqColor" value="#f59e0b" style="width: 20px; height: 20px; border: 1px solid #475569; border-radius: 4px; padding: 0; background: none; cursor: pointer;">
-            Prerequisites
+          <!-- 2. Component Activation in Timeline -->
+          <label style="display: inline-flex; align-items: center; gap: 5px; cursor: pointer; color: #cbd5e1;">
+            <input type="checkbox" id="chkTimelineCompActivation" checked style="cursor: pointer; accent-color: #38bdf8;">
+            Timeline Activation
           </label>
-          <label style="display: inline-flex; align-items: center; gap: 4px; cursor: pointer;">
-            <input type="color" id="pickerDepColor" value="#38bdf8" style="width: 20px; height: 20px; border: 1px solid #475569; border-radius: 4px; padding: 0; background: none; cursor: pointer;">
-            Dependents
-          </label>
-          <button id="btnResetColors" class="btn-mode" style="padding: 2px 6px; font-size: 10px;" title="Reset to SolidCraft default colors">Reset</button>
+
+          <!-- 3. Split Presets -->
+          <div style="display: inline-flex; align-items: center; gap: 4px;">
+            <span style="color: #94a3b8;">Split:</span>
+            <button id="btnSplit65" class="btn-mode active" style="padding: 2px 6px; font-size: 10px;" title="65% Modeling, 35% Assembly">65/35</button>
+            <button id="btnSplit50" class="btn-mode" style="padding: 2px 6px; font-size: 10px;" title="50% Modeling, 50% Assembly">50/50</button>
+          </div>
+        </div>
+
+        <!-- Coincidence mode switcher & Highlight Colors in one row -->
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding-top: 8px; border-top: 1px solid #252b37; font-size: 11px;">
+          <div style="display: inline-flex; align-items: center; gap: 6px;">
+            <span style="color: #94a3b8;">Coincidence:</span>
+            <div class="overlay-mode-btn-group" id="overlayModeBtnGroup" style="margin: 0;">
+              <button id="btnModeSmartInset" class="btn-mode active" style="padding: 2px 6px; font-size: 10px;" title="Smart Inset: insets bracket by 3px when coincident">Smart Inset</button>
+              <button id="btnModeRawSwap" class="btn-mode" style="padding: 2px 6px; font-size: 10px;" title="Direct Layer Swap">Layer Swap</button>
+              <button id="btnModeHalo" class="btn-mode" style="padding: 2px 6px; font-size: 10px;" title="Knockout Halo">Halo</button>
+              <button id="btnModeOriginal" class="btn-mode" style="padding: 2px 6px; font-size: 10px;" title="Original Marker on Top">Original</button>
+            </div>
+          </div>
+
+          <div style="display: inline-flex; align-items: center; gap: 6px; color: #cbd5e1;">
+            <span>Colors:</span>
+            <label style="display: inline-flex; align-items: center; gap: 3px; cursor: pointer;" title="Prerequisite chip color">
+              <input type="color" id="pickerPrereqColor" value="#f59e0b" style="width: 16px; height: 16px; border: 1px solid #475569; border-radius: 3px; padding: 0; background: none; cursor: pointer;">
+              Prereqs
+            </label>
+            <label style="display: inline-flex; align-items: center; gap: 3px; cursor: pointer;" title="Dependent chip color">
+              <input type="color" id="pickerDepColor" value="#38bdf8" style="width: 16px; height: 16px; border: 1px solid #475569; border-radius: 3px; padding: 0; background: none; cursor: pointer;">
+              Dependents
+            </label>
+            <button id="btnResetColors" class="btn-mode" style="padding: 2px 5px; font-size: 10px;" title="Reset to SolidCraft default colors">↺</button>
+          </div>
         </div>
       </div>
     </div>
-
-    <!-- Main Viewport -->
+<!-- Main Viewport -->
     <div class="viewport-container" id="viewportContainer">
       <!-- Pinned Left Component Headers (160px wide, stays stationary horizontally) -->
       <div class="pinned-headers">
@@ -1831,42 +2270,135 @@
         </div>
       </div>
 
-      <!-- Timeline Scroll Area (Dual-Axis Scrolling) -->
-      <div class="timeline-scroll-area" id="timelineScrollArea">
-        <div class="tracks-content" id="tracksContent">
-          <!-- Dedicated Header Scrubber Track (Holds Timeline Marker Head Pin) -->
-          <div class="timeline-header-track" id="timelineHeaderTrack"></div>
-
-          <!-- Dynamic SVG Overlay for Movable Brackets & Multi-Component Connectors -->
-          <svg class="svg-overlay" id="svgOverlay">
-            <defs>
-              <mask id="suppress-slash-mask" maskUnits="userSpaceOnUse" x="-32" y="-32" width="128" height="128">
-                <path d="M-32 -32L96 -32L96 96L-32 96Z" fill="white"/>
-                <path d="M13 51L51 13" fill="none" stroke="black" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
-              </mask>
-            </defs>
-            <g id="bracketGroup" style="display: none;">
-              <rect id="bracketCorridorActive" x="0" y="0" width="0" height="190" fill="rgba(34, 197, 94, 0.08)"></rect>
-              <rect id="bracketCorridorInactive" x="0" y="0" width="0" height="190" fill="rgba(161, 161, 170, 0.08)"></rect>
-              <path id="pathBracketLeftHalo" d="" fill="none" stroke="#14161a" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path id="pathBracketLeft" d="" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path id="pathBracketRightHalo" d="" fill="none" stroke="#14161a" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path id="pathBracketRight" d="" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
-            </g>
-            <g id="connectorsGroup"></g>
-          </svg>
-
-          <!-- History Rollback Marker (Draggable Scrubber Pin & Vertical Boundary Line) -->
-          <div id="timelineMarker" class="timeline-marker" style="left: 1248px;" title="History Rollback Marker: Drag head pin to scrub active steps">
-            <div class="marker-handle-top" title="Drag head pin to scrub timeline">
-              <div class="marker-pin-inner"></div>
-            </div>
-            <div class="marker-line"></div>
-            <div class="marker-handle-bottom"></div>
+      <!-- Split Viewport Wrapper containing Modeling Track, Splitter, and Assembly Track -->
+      <div class="split-viewport-wrapper" id="splitViewportWrapper">
+        <!-- Collapsed Strip for Modeling (shown when modeling section is collapsed) -->
+        <div class="collapsed-strip modeling-strip" id="stripModeling" title="Modeling Track collapsed. Click to restore split view.">
+          <div class="collapsed-strip-btn" id="btnExpandModeling" title="Expand Modeling Section">▶</div>
+          <div class="collapsed-strip-content">
+            <span>🔷 Geometric Modeling</span>
+            <span class="collapsed-strip-badge" id="stripModelingBadge">24</span>
           </div>
+        </div>
 
-          <!-- DOM Grid Cells (Component Tracks 0 to 4) -->
-          <div id="trackRowsContainer"></div>
+        <!-- 1. Geometric Modeling Track Section -->
+        <div class="track-section modeling-section" id="sectionModeling">
+          <div class="section-header-banner">
+            <div class="section-header-title">
+              <span>🔷</span>
+              <span>MODELING FEATURES</span>
+              <span class="section-header-badge badge-modeling" id="badgeModelingCount">24 Steps</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span id="modelingActiveSummary" style="color: #94a3b8; font-size: 11px;">Active: 16 / 24</span>
+              <div class="transport-bar" style="margin: 0;">
+                <button id="mBtnBack" class="btn-transport" title="Step Back Modeling">◀</button>
+                <button id="mBtnPlay" class="btn-transport" title="Play Modeling Sequence">▶</button>
+                <button id="mBtnForward" class="btn-transport" title="Step Forward Modeling">▶</button>
+              </div>
+            </div>
+          </div>
+          <div class="timeline-scroll-area" id="timelineScrollArea">
+            <div class="tracks-content" id="tracksContent">
+              <!-- Dedicated Header Scrubber Track (Holds Timeline Marker Head Pin) -->
+              <div class="timeline-header-track" id="timelineHeaderTrack"></div>
+
+              <!-- Dynamic SVG Overlay for Movable Brackets & Multi-Component Connectors -->
+              <svg class="svg-overlay" id="svgOverlay">
+                <defs>
+                  <mask id="suppress-slash-mask" maskUnits="userSpaceOnUse" x="-32" y="-32" width="128" height="128">
+                    <path d="M-32 -32L96 -32L96 96L-32 96Z" fill="white"/>
+                    <path d="M13 51L51 13" fill="none" stroke="black" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+                  </mask>
+                </defs>
+                <g id="bracketGroup" style="display: none;">
+                  <rect id="bracketCorridorActive" x="0" y="0" width="0" height="190" fill="rgba(34, 197, 94, 0.08)"></rect>
+                  <rect id="bracketCorridorInactive" x="0" y="0" width="0" height="190" fill="rgba(161, 161, 170, 0.08)"></rect>
+                  <path id="pathBracketLeftHalo" d="" fill="none" stroke="#14161a" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path id="pathBracketLeft" d="" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path id="pathBracketRightHalo" d="" fill="none" stroke="#14161a" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path id="pathBracketRight" d="" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                </g>
+                <g id="connectorsGroup"></g>
+              </svg>
+
+              <!-- History Rollback Marker (Draggable Scrubber Pin & Vertical Boundary Line) -->
+              <div id="timelineMarker" class="timeline-marker" style="left: 832px;" title="History Rollback Marker: Drag head pin to scrub active modeling steps">
+                <div class="marker-handle-top" title="Drag head pin to scrub timeline">
+                  <div class="marker-pin-inner"></div>
+                </div>
+                <div class="marker-line"></div>
+                <div class="marker-handle-bottom"></div>
+              </div>
+
+              <!-- DOM Grid Cells (Component Tracks 0 to 4) -->
+              <div id="trackRowsContainer"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resizable Splitter Bar with Quick < and > buttons -->
+        <div class="track-splitter" id="trackSplitter" title="Drag to resize Modeling vs Assembly sections">
+          <button class="splitter-btn" id="btnCollapseLeft" title="Collapse Modeling section (Full-size Assembly)">◀</button>
+          <div class="splitter-grip"></div>
+          <button class="splitter-btn" id="btnCollapseRight" title="Collapse Assembly section (Full-size Modeling)">▶</button>
+        </div>
+
+        <!-- 2. Post-Modeling / Assembly Track Section -->
+        <div class="track-section assembly-section" id="sectionAssembly">
+          <div class="section-header-banner">
+            <div class="section-header-title">
+              <span>🟣</span>
+              <span>ASSEMBLY &amp; JOINTS</span>
+              <span class="section-header-badge badge-assembly" id="badgeAssemblyCount">5 Joints</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span id="assemblyActiveSummary" style="color: #c084fc; font-size: 11px;">Active: 4 / 5</span>
+              <div class="transport-bar" style="margin: 0;">
+                <button id="jBtnBack" class="btn-transport" title="Step Back Assembly">◀</button>
+                <button id="jBtnPlay" class="btn-transport" title="Play Assembly Sequence">▶</button>
+                <button id="jBtnForward" class="btn-transport" title="Step Forward Assembly">▶</button>
+              </div>
+            </div>
+          </div>
+          <div class="timeline-scroll-area" id="assemblyScrollArea">
+            <div class="tracks-content" id="assemblyTracksContent">
+              <!-- Assembly Header Scrubber Track (Holds Assembly Marker Head Pin) -->
+              <div class="timeline-header-track" id="assemblyHeaderTrack"></div>
+
+              <!-- SVG Overlay for Assembly Movable Brackets & Joint Connector Lines -->
+              <svg class="svg-overlay" id="assemblySvgOverlay">
+                <g id="assemblyBracketGroup" style="display: none;">
+                  <rect id="assemblyBracketCorridorActive" x="0" y="0" width="0" height="190" fill="rgba(168, 85, 247, 0.08)"></rect>
+                  <rect id="assemblyBracketCorridorInactive" x="0" y="0" width="0" height="190" fill="rgba(161, 161, 170, 0.08)"></rect>
+                  <path id="pathAssemblyBracketLeft" d="" fill="none" stroke="#a855f7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path id="pathAssemblyBracketRight" d="" fill="none" stroke="#a855f7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                </g>
+                <g id="assemblyConnectorsGroup"></g>
+              </svg>
+
+              <!-- Dedicated Assembly Rollback Marker (Purple #a855f7) -->
+              <div id="assemblyMarker" class="assembly-marker" style="left: 208px;" title="Assembly Rollback Marker: Drag head pin to scrub kinematic assembly steps">
+                <div class="marker-handle-top" title="Drag to scrub assembly sequence">
+                  <div class="marker-pin-inner"></div>
+                </div>
+                <div class="marker-line"></div>
+                <div class="marker-handle-bottom"></div>
+              </div>
+
+              <!-- DOM Grid Cells for Assembly Tracks -->
+              <div id="assemblyTrackRowsContainer"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Collapsed Strip for Assembly (shown when assembly section is collapsed) -->
+        <div class="collapsed-strip assembly-strip" id="stripAssembly" title="Assembly Section collapsed. Click to restore split view.">
+          <div class="collapsed-strip-btn" id="btnExpandAssembly" title="Expand Assembly Section">◀</div>
+          <div class="collapsed-strip-content">
+            <span>🟣 Assembly &amp; Joints</span>
+            <span class="collapsed-strip-badge" id="stripAssemblyBadge">5</span>
+          </div>
         </div>
       </div>
     </div>
@@ -2008,6 +2540,10 @@
       combine: `<svg viewBox="0 0 64 64" width="20" height="20"><path d="M5 19.6L19.72 28.1L19.72 48.5L5 40Z" fill="#328bd3" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/><path d="M19.72 28.1L28.56 23L28.56 43.4L19.72 48.5Z" fill="#236ead" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/><path d="M28.56 23L43.28 31.5L43.28 51.9L28.56 43.4Z" fill="#328bd3" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/><path d="M43.28 31.5L58 23L58 43.4L43.28 51.9Z" fill="#236ead" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/><path d="M5 19.6L19.72 28.1L28.56 23L43.28 31.5L58 23L43.28 14.5L34.44 19.6L19.72 11.1Z" fill="#b9ddf8" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/></svg>`,
       thread: `<svg viewBox="0 0 64 64" width="20" height="20"><path d="M18 12L18 54A14 8.08 0 0 0 46 54L46 12Z" fill="#b8c3cf" stroke="#34465b" stroke-width="2.55"/><path d="M18 12A14 8.08 0 1 0 46 12A14 8.08 0 1 0 18 12Z" fill="#e2e8ef" stroke="#34465b" stroke-width="2.55"/><path d="M48.4 22L15.6 27.75" stroke="#328bd3" stroke-width="3.2" stroke-linecap="round"/><path d="M48.4 33.5L15.6 39.25" stroke="#328bd3" stroke-width="3.2" stroke-linecap="round"/><path d="M48.4 45L15.6 50.75" stroke="#328bd3" stroke-width="3.2" stroke-linecap="round"/></svg>`,
       hole: `<svg viewBox="0 0 64 64" width="20" height="20"><path d="M3 20.35L32 37.1L32 48.74L3 32Z" fill="#b8c3cf"/><path d="M61 20.35L32 37.1L32 48.74L61 32Z" fill="#8e9faf"/><path d="M32 3.61L61 20.35L32 37.1L3 20.35Z" fill="#e2e8ef" stroke="#34465b" stroke-width="2.55"/><path d="M22.19 20.35A9.81 5.66 0 1 0 41.81 20.35A9.81 5.66 0 1 0 22.19 20.35Z" fill="#236ead" stroke="#34465b" stroke-width="2.55"/></svg>`,
+            joint: `<svg viewBox="0 0 64 64" width="20" height="20"><path d="M25.9 14.39L38.1 21.44L38.1 35.52L25.9 28.48Z" fill="#328bd3"/><path d="M50.3 14.39L38.1 21.44L38.1 35.52L50.3 28.48Z" fill="#236ead"/><path d="M38.1 7.35L50.3 14.39L38.1 21.44L25.9 14.39Z" fill="#b9ddf8"/><path d="M38.1 7.35L50.3 14.39L50.3 28.48L38.1 35.52L25.9 28.48L25.9 14.39Z" fill="none" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/><path d="M13.7 35.52L25.9 42.56L25.9 56.65L13.7 49.61Z" fill="#b8c3cf"/><path d="M38.1 35.52L25.9 42.56L25.9 56.65L38.1 49.61Z" fill="#8e9faf"/><path d="M25.9 28.48L38.1 35.52L25.9 42.56L13.7 35.52Z" fill="#e2e8ef"/><path d="M25.9 28.48L38.1 35.52L38.1 49.61L25.9 56.65L13.7 49.61L13.7 35.52Z" fill="none" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/><path d="M25.9 28.48L38.1 35.52" fill="none" stroke="#ffffff" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/><path d="M25.9 28.48L38.1 35.52" fill="none" stroke="#a855f7" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/></svg>`,
+      rigid_group: `<svg viewBox="0 0 64 64" width="20" height="20"><path d="M25.9 14.39L38.1 21.44L38.1 35.52L25.9 28.48Z" fill="#b8c3cf"/><path d="M50.3 14.39L38.1 21.44L38.1 35.52L50.3 28.48Z" fill="#8e9faf"/><path d="M38.1 7.35L50.3 14.39L38.1 21.44L25.9 14.39Z" fill="#e2e8ef"/><path d="M38.1 7.35L50.3 14.39L50.3 28.48L38.1 35.52L25.9 28.48L25.9 14.39Z" fill="none" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/><path d="M13.7 35.52L25.9 42.56L25.9 56.65L13.7 49.61Z" fill="#b8c3cf"/><path d="M38.1 35.52L25.9 42.56L25.9 56.65L38.1 49.61Z" fill="#8e9faf"/><path d="M25.9 28.48L38.1 35.52L25.9 42.56L13.7 35.52Z" fill="#e2e8ef"/><path d="M25.9 28.48L38.1 35.52L38.1 49.61L25.9 56.65L13.7 49.61L13.7 35.52Z" fill="none" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/><path d="M38.1 2.96L54.1 12.2L54.1 30.67L41.9 37.72L41.9 51.8L25.9 61.04L9.9 51.8L9.9 33.33L22.1 26.28L22.1 12.2Z" fill="none" stroke="#ffffff" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M38.1 2.96L54.1 12.2L54.1 30.67L41.9 37.72L41.9 51.8L25.9 61.04L9.9 51.8L9.9 33.33L22.1 26.28L22.1 12.2Z" fill="none" stroke="#a855f7" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></svg>`,
+      motion_link: `<svg viewBox="0 0 64 64" width="20" height="20"><circle cx="24" cy="40" r="10" fill="#236ead" stroke="#34465b" stroke-width="2.5"/><circle cx="40" cy="24" r="10" fill="#38bdf8" stroke="#34465b" stroke-width="2.5"/><path d="M24 20 C24 12, 40 12, 40 20" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/><path d="M24 20 C24 12, 40 12, 40 20" fill="none" stroke="#a855f7" stroke-width="2.5" stroke-linecap="round"/></svg>`,
+      joint_origin: `<svg viewBox="0 0 64 64" width="20" height="20"><circle cx="32" cy="32" r="8" fill="#a855f7" stroke="#ffffff" stroke-width="2.5"/><line x1="32" y1="12" x2="32" y2="52" stroke="#a855f7" stroke-width="2.5"/><line x1="12" y1="32" x2="52" y2="32" stroke="#a855f7" stroke-width="2.5"/></svg>`,
       mirror: `<svg viewBox="0 0 64 64" width="20" height="20"><path d="M32 6L32 54" fill="none" stroke="#6f879c" stroke-width="2" stroke-dasharray="4 4"/><path d="M8 50L28 50L28 16Z" fill="#b8c3cf" stroke="#34465b" stroke-width="2.55"/><path d="M56 50L36 50L36 16Z" fill="#328bd3" stroke="#34465b" stroke-width="2.55"/></svg>`
     };
 
@@ -4106,6 +4642,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
     // Reset button
     document.getElementById('btnReset').addEventListener('click', () => {
       stopPlayback();
+      stopAssemblyPlayback();
       closeContextMenu();
       clipboardFeature = null;
       groups = [];
@@ -4116,10 +4653,18 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       anchorActionId = 5;
       markerStep = 16;
       activeComponentRow = 1;
+      assemblyJoints = JSON.parse(JSON.stringify(initialAssemblyJoints));
+      assemblyMarkerStep = 4;
+      selectedJointId = 102;
+      restoreBothSections();
+      if (!isAssemblySectionVisible) {
+        if (btnToggleAssemblySection) btnToggleAssemblySection.click();
+      }
       if (activeCompSummaryName) activeCompSummaryName.textContent = 'Housing';
       if (modelingTargetCompName) modelingTargetCompName.textContent = 'Housing';
       renderTimeline();
-      dragFeedback.innerHTML = `🔄 <strong>Timeline Reset:</strong> Restored default sequence (16 active, 8 inactive steps, Housing component active). Ready to test!`;
+      renderAssemblyTimeline();
+      dragFeedback.innerHTML = `🔄 <strong>Timeline Reset:</strong> Restored default sequence (16 active modeling steps, 4 active assembly joints, Housing component active). Ready to test!`;
     });
 
     // Modeling action simulation buttons
@@ -4229,9 +4774,890 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
     }
 
     // Initialize transport handlers, marker scrubbing, and render
+    
+    // =========================================================================
+    // POST-MODELING / ASSEMBLY TRACK VIEW DATA & INTERACTIVITY
+    // =========================================================================
+
+    // Realistic Kinematic Assembly Joints and Mates
+    let assemblyJoints = [
+      {
+        id: 101,
+        name: "Housing Ground",
+        type: "joint_origin",
+        typeLabel: "Rigid Ground",
+        rows: [0, 1], // Ground Housing to Root
+        prereqs: [],
+        downstream: [102, 103],
+        stepLabel: "J01",
+        info: "Grounds Housing occurrence to Root Design coordinate frame (0 DOF)."
+      },
+      {
+        id: 102,
+        name: "Shaft Revolute Joint",
+        type: "joint",
+        typeLabel: "Revolute",
+        rows: [1, 2], // Housing (1) & Shaft (2)
+        prereqs: [101],
+        downstream: [104],
+        stepLabel: "J02",
+        limits: "0° to 360°",
+        info: "Revolute joint along primary Z-axis between Housing bore and Shaft journal."
+      },
+      {
+        id: 103,
+        name: "Bearing Press-Fit Group",
+        type: "rigid_group",
+        typeLabel: "Rigid Group",
+        rows: [1, 3], // Housing (1) & Bearing (3)
+        prereqs: [101],
+        downstream: [],
+        stepLabel: "J03",
+        info: "Rigidly groups Bearing outer ring into Housing bearing seat."
+      },
+      {
+        id: 104,
+        name: "Cap Screw Cylindrical Joint",
+        type: "joint",
+        typeLabel: "Cylindrical",
+        rows: [1, 4], // Housing (1) & Fastener (4)
+        prereqs: [102],
+        downstream: [105],
+        stepLabel: "J04",
+        limits: "Pitch 1.5mm / rev",
+        info: "Cylindrical mate securing Fastener cap into tapped housing boss."
+      },
+      {
+        id: 105,
+        name: "Shaft-Screw Motion Link",
+        type: "motion_link",
+        typeLabel: "Motion Link",
+        rows: [2, 4], // Shaft (2) & Fastener (4)
+        prereqs: [104],
+        downstream: [],
+        stepLabel: "J05",
+        limits: "1:1 Ratio",
+        info: "Couples rotation of Shaft with axial drive of Fastener cap."
+      }
+    ];
+
+    const initialAssemblyJoints = JSON.parse(JSON.stringify(assemblyJoints));
+    let selectedJointId = 102; // Default select J02 (Shaft Revolute Joint)
+    let assemblyMarkerStep = 4; // 4 active, 1 inactive
+    let isAssemblyPlaying = false;
+    let assemblyPlaybackTimer = null;
+    let isAssemblySectionVisible = true;
+    let isModelingCollapsed = false;
+    let isAssemblyCollapsed = false;
+    let savedModelingFlexWidth = 65; // percentage or px
+
+    // DOM Elements for Assembly Track
+    const sectionModeling = document.getElementById('sectionModeling');
+    const sectionAssembly = document.getElementById('sectionAssembly');
+    const trackSplitter = document.getElementById('trackSplitter');
+    const stripModeling = document.getElementById('stripModeling');
+    const stripAssembly = document.getElementById('stripAssembly');
+    const stripModelingBadge = document.getElementById('stripModelingBadge');
+    const stripAssemblyBadge = document.getElementById('stripAssemblyBadge');
+    const badgeModelingCount = document.getElementById('badgeModelingCount');
+    const badgeAssemblyCount = document.getElementById('badgeAssemblyCount');
+    const modelingActiveSummary = document.getElementById('modelingActiveSummary');
+    const assemblyActiveSummary = document.getElementById('assemblyActiveSummary');
+
+    const assemblyScrollArea = document.getElementById('assemblyScrollArea');
+    const assemblyTracksContent = document.getElementById('assemblyTracksContent');
+    const assemblyHeaderTrack = document.getElementById('assemblyHeaderTrack');
+    const assemblySvgOverlay = document.getElementById('assemblySvgOverlay');
+    const assemblyBracketGroup = document.getElementById('assemblyBracketGroup');
+    const assemblyBracketCorridorActive = document.getElementById('assemblyBracketCorridorActive');
+    const assemblyBracketCorridorInactive = document.getElementById('assemblyBracketCorridorInactive');
+    const pathAssemblyBracketLeft = document.getElementById('pathAssemblyBracketLeft');
+    const pathAssemblyBracketRight = document.getElementById('pathAssemblyBracketRight');
+    const assemblyConnectorsGroup = document.getElementById('assemblyConnectorsGroup');
+    const assemblyMarker = document.getElementById('assemblyMarker');
+
+    const btnToggleAssemblySection = document.getElementById('btnToggleAssemblySection');
+    const btnAddJoint = document.getElementById('btnAddJoint');
+    const btnSplit65 = document.getElementById('btnSplit65');
+    const btnSplit50 = document.getElementById('btnSplit50');
+    const btnCollapseLeft = document.getElementById('btnCollapseLeft');
+    const btnCollapseRight = document.getElementById('btnCollapseRight');
+    const btnExpandModeling = document.getElementById('btnExpandModeling');
+    const btnExpandAssembly = document.getElementById('btnExpandAssembly');
+
+    // Modeling Transport buttons in Section Header
+    const mBtnBack = document.getElementById('mBtnBack');
+    const mBtnPlay = document.getElementById('mBtnPlay');
+    const mBtnForward = document.getElementById('mBtnForward');
+
+    // Assembly Transport buttons in Section Header
+    const jBtnBack = document.getElementById('jBtnBack');
+    const jBtnPlay = document.getElementById('jBtnPlay');
+    const jBtnForward = document.getElementById('jBtnForward');
+
+    // Compute Movable Range for an Assembly Joint
+    function computeJointMovableRange(joint) {
+      const currentCol = assemblyJoints.findIndex(j => j.id === joint.id) + 1;
+      if (currentCol <= 0) return { minCol: 1, maxCol: 1, currentCol: 1 };
+
+      let maxPrereqCol = 0;
+      joint.prereqs.forEach(pid => {
+        const idx = assemblyJoints.findIndex(j => j.id === pid);
+        if (idx !== -1 && (idx + 1) > maxPrereqCol) maxPrereqCol = idx + 1;
+      });
+
+      let minDownstreamCol = assemblyJoints.length + 1;
+      joint.downstream.forEach(did => {
+        const idx = assemblyJoints.findIndex(j => j.id === did);
+        if (idx !== -1 && (idx + 1) < minDownstreamCol) minDownstreamCol = idx + 1;
+      });
+
+      return {
+        minCol: maxPrereqCol + 1,
+        maxCol: minDownstreamCol - 1,
+        currentCol: currentCol
+      };
+    }
+
+    // Set Assembly Rollback Marker Step
+    function setAssemblyMarkerStep(step, updateFeedback = true) {
+      const totalJoints = assemblyJoints.length;
+      assemblyMarkerStep = Math.max(0, Math.min(totalJoints, step));
+
+      if (assemblyMarker) {
+        assemblyMarker.style.left = `${assemblyMarkerStep * COL_W}px`;
+      }
+
+      // Update counters
+      const activeCount = Math.min(assemblyMarkerStep, totalJoints);
+      if (assemblyActiveSummary) {
+        assemblyActiveSummary.textContent = `Active: ${activeCount} / ${totalJoints}`;
+      }
+      if (badgeAssemblyCount) {
+        badgeAssemblyCount.textContent = `${totalJoints} Joints`;
+      }
+
+      // Update header step cells for assembly
+      document.querySelectorAll('.assembly-step-cell').forEach(cell => {
+        const c = parseInt(cell.dataset.col);
+        if (c > assemblyMarkerStep) {
+          cell.className = 'header-step-cell assembly-step-cell rolled-back-step';
+        } else {
+          cell.className = 'header-step-cell assembly-step-cell active-step';
+        }
+      });
+
+      // Update transport buttons
+      if (jBtnBack) jBtnBack.disabled = (assemblyMarkerStep === 0);
+      if (jBtnForward) jBtnForward.disabled = (assemblyMarkerStep === totalJoints);
+
+      applyAssemblyHighlight();
+
+      if (updateFeedback && !isAssemblyPlaying) {
+        if (assemblyMarkerStep < totalJoints) {
+          dragFeedback.innerHTML = `🟣 <strong>Assembly Marker Rolled Back:</strong> Joints 1 to ${activeCount} are solved in kinematics. ${totalJoints - activeCount} joint(s) after marker remain unsolved in assembly (100% opacity greyscale).`;
+        } else {
+          dragFeedback.innerHTML = `✨ <strong>All Assembly Joints Active:</strong> All ${totalJoints} kinematic joints fully solved. Drag purple marker left to scrub assembly sequence!`;
+        }
+      }
+    }
+
+    // Render Assembly Timeline (Headers, Track Rows, Chips, Link Lines)
+    function renderAssemblyTimeline() {
+      const assemblyTrackContainer = document.getElementById('assemblyTrackRowsContainer');
+      if (!assemblyHeaderTrack || !assemblyTrackContainer) return;
+
+      const totalCols = assemblyJoints.length;
+
+      // 1. Render Assembly Two-Tier Header
+      assemblyHeaderTrack.innerHTML = '';
+
+      const tierSteps = document.createElement('div');
+      tierSteps.className = 'header-tier-steps';
+
+      const tierGroups = document.createElement('div');
+      tierGroups.className = 'header-tier-groups';
+
+      for (let colIdx = 0; colIdx < totalCols; colIdx++) {
+        const c = colIdx + 1;
+        const joint = assemblyJoints[colIdx];
+
+        // Step number cell (J01, J02, ...)
+        const hCell = document.createElement('div');
+        hCell.className = `header-step-cell assembly-step-cell ${c > assemblyMarkerStep ? 'rolled-back-step' : 'active-step'}`;
+        hCell.dataset.col = c;
+        hCell.title = `Step ${joint.stepLabel}: ${joint.name} (${joint.typeLabel})
+Click to roll assembly marker here`;
+        hCell.innerHTML = `
+          <div class="header-step-tick"></div>
+          <span style="font-weight: 700; color: ${c > assemblyMarkerStep ? '#64748b' : '#c084fc'};">${joint.stepLabel}</span>
+        `;
+        hCell.addEventListener('click', () => {
+          stopAssemblyPlayback();
+          setAssemblyMarkerStep(c);
+        });
+        tierSteps.appendChild(hCell);
+
+        // Lower tier label cell
+        const gCell = document.createElement('div');
+        gCell.className = 'header-group-cell';
+        gCell.style.display = 'flex';
+        gCell.style.alignItems = 'center';
+        gCell.style.justifyContent = 'center';
+        gCell.style.fontSize = '9px';
+        gCell.style.fontWeight = '600';
+        gCell.style.color = '#94a3b8';
+        gCell.innerHTML = `<span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 48px;">${joint.typeLabel}</span>`;
+        tierGroups.appendChild(gCell);
+      }
+
+      assemblyHeaderTrack.appendChild(tierSteps);
+      assemblyHeaderTrack.appendChild(tierGroups);
+
+      // 2. Render Assembly Track Rows (Rows 0 to 4 matching component definitions)
+      assemblyTrackContainer.innerHTML = '';
+      for (let r = 0; r < NUM_ROWS; r++) {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'track-row' + (r === activeComponentRow ? ' active-track-row' : '');
+        rowDiv.dataset.row = r;
+
+        for (let colIdx = 0; colIdx < totalCols; colIdx++) {
+          const c = colIdx + 1;
+          const joint = assemblyJoints[colIdx];
+          const cell = document.createElement('div');
+          cell.className = 'track-cell';
+          cell.dataset.col = c;
+          cell.dataset.row = r;
+
+          const isPrimaryRow = joint.rows[0] === r;
+          const isSecondaryRow = joint.rows.length > 1 && joint.rows.slice(1).includes(r);
+
+          if (isPrimaryRow) {
+            const chip = document.createElement('div');
+            const isInactive = c > assemblyMarkerStep;
+            chip.className = `chip joint-chip${isInactive ? ' unselected-inactive' : ' active-joint'}`;
+            chip.dataset.id = joint.id;
+            chip.dataset.col = c;
+            chip.dataset.row = r;
+            chip.innerHTML = ICONS[joint.type] || ICONS.joint;
+            chip.title = `${joint.stepLabel}: ${joint.name} (${joint.typeLabel})
+Connects: ${joint.rows.map(row => componentDefs[row]?.name || row).join(' ↔ ')}${joint.limits ? `
+Limits: ${joint.limits}` : ''}
+${joint.info}`;
+
+            attachJointDragHandlers(chip, joint);
+            cell.appendChild(chip);
+          } else if (isSecondaryRow) {
+            const targetNode = document.createElement('div');
+            const isInactive = c > assemblyMarkerStep;
+            targetNode.className = `joint-target-node${isInactive ? ' inactive' : ''}`;
+            targetNode.dataset.id = joint.id;
+            targetNode.dataset.col = c;
+            targetNode.dataset.row = r;
+            targetNode.title = `Mate Target for ${joint.stepLabel}: ${joint.name} on ${componentDefs[r]?.name}`;
+            targetNode.innerHTML = `<div class="joint-target-inner"></div>`;
+
+            targetNode.addEventListener('click', (e) => {
+              e.stopPropagation();
+              selectedJointId = joint.id;
+              selectedActionIds = []; // clear modeling selection
+              applyAssemblyHighlight();
+              applyHighlight();
+            });
+
+            cell.appendChild(targetNode);
+          } else {
+            cell.innerHTML = '<span class="empty-hint">·</span>';
+          }
+
+          rowDiv.appendChild(cell);
+        }
+        assemblyTrackContainer.appendChild(rowDiv);
+      }
+
+      renderAssemblyConnectors();
+      setAssemblyMarkerStep(assemblyMarkerStep, false);
+      applyAssemblyHighlight();
+    }
+
+    // Render Joint Connector Lines
+    function renderAssemblyConnectors() {
+      if (!assemblyConnectorsGroup) return;
+      assemblyConnectorsGroup.innerHTML = '';
+
+      assemblyJoints.forEach((joint, colIdx) => {
+        if (joint.rows.length > 1) {
+          const c = colIdx + 1;
+          const minRow = Math.min(...joint.rows);
+          const maxRow = Math.max(...joint.rows);
+
+          const cx = (c - 1) * COL_W + (COL_W / 2);
+          const y1 = minRow * ROW_H + (ROW_H / 2);
+          const y2 = maxRow * ROW_H + (ROW_H / 2);
+
+          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          line.setAttribute('x1', cx);
+          line.setAttribute('y1', y1);
+          line.setAttribute('x2', cx);
+          line.setAttribute('y2', y2);
+
+          const isInactive = c > assemblyMarkerStep;
+          const isSelected = selectedJointId === joint.id;
+          line.setAttribute('class', `joint-connector-dots ${isSelected ? 'active-selected' : (isInactive ? 'inactive' : '')}`);
+          line.dataset.jointId = joint.id;
+          assemblyConnectorsGroup.appendChild(line);
+        }
+      });
+    }
+
+    // Apply Assembly Highlighting (Colors, Corridors, 100% Greyscale Inactive)
+    function applyAssemblyHighlight() {
+      // 1. Joint Chips
+      document.querySelectorAll('.chip.joint-chip').forEach(chip => {
+        const jid = parseInt(chip.dataset.id);
+        const col = parseInt(chip.dataset.col);
+        const joint = assemblyJoints.find(j => j.id === jid);
+        const isInactive = col > assemblyMarkerStep;
+
+        if (selectedJointId === jid) {
+          chip.className = `chip joint-chip ${isInactive ? 'selected-inactive' : 'selected'}`;
+        } else if (selectedJointId !== null) {
+          const selJoint = assemblyJoints.find(j => j.id === selectedJointId);
+          if (selJoint && selJoint.prereqs.includes(jid)) {
+            chip.className = `chip joint-chip ${isInactive ? 'unselected-inactive' : 'prereq'}`;
+          } else if (selJoint && selJoint.downstream.includes(jid)) {
+            chip.className = `chip joint-chip ${isInactive ? 'unselected-inactive' : 'downstream'}`;
+          } else {
+            chip.className = `chip joint-chip ${isInactive ? 'unselected-inactive' : 'active-joint'}`;
+          }
+        } else {
+          chip.className = `chip joint-chip ${isInactive ? 'unselected-inactive' : 'active-joint'}`;
+        }
+      });
+
+      // 2. Target Nodes
+      document.querySelectorAll('.joint-target-node').forEach(node => {
+        const jid = parseInt(node.dataset.id);
+        const col = parseInt(node.dataset.col);
+        const isInactive = col > assemblyMarkerStep;
+        if (isInactive) {
+          node.classList.add('inactive');
+        } else {
+          node.classList.remove('inactive');
+        }
+        if (selectedJointId === jid) {
+          node.style.borderColor = '#ffffff';
+          node.style.boxShadow = '0 0 10px rgba(255, 255, 255, 0.5)';
+        } else {
+          node.style.borderColor = isInactive ? '#71717a' : '#a855f7';
+          node.style.boxShadow = isInactive ? 'none' : '0 0 6px rgba(168, 85, 247, 0.4)';
+        }
+      });
+
+      // 3. Connectors
+      document.querySelectorAll('.joint-connector-dots').forEach(line => {
+        const jid = parseInt(line.dataset.jointId);
+        const idx = assemblyJoints.findIndex(j => j.id === jid);
+        const isInactive = (idx + 1) > assemblyMarkerStep;
+        const isSelected = selectedJointId === jid;
+        line.setAttribute('class', `joint-connector-dots ${isSelected ? 'active-selected' : (isInactive ? 'inactive' : '')}`);
+      });
+
+      // 4. Movable Corridor Brackets for Joint
+      if (selectedJointId !== null) {
+        const joint = assemblyJoints.find(j => j.id === selectedJointId);
+        if (joint) {
+          const { minCol, maxCol, currentCol } = computeJointMovableRange(joint);
+          if (minCol <= maxCol && assemblyBracketGroup) {
+            assemblyBracketGroup.style.display = 'block';
+            const xLeft = (minCol - 1) * COL_W;
+            const xRight = maxCol * COL_W;
+            const totalHeight = NUM_ROWS * ROW_H;
+            const markerX = assemblyMarkerStep * COL_W;
+
+            // Active corridor
+            const activeStartX = xLeft;
+            const activeEndX = Math.min(xRight, markerX);
+            const activeWidth = Math.max(0, activeEndX - activeStartX);
+
+            if (activeWidth > 0 && assemblyBracketCorridorActive) {
+              assemblyBracketCorridorActive.style.display = 'block';
+              assemblyBracketCorridorActive.setAttribute('x', activeStartX);
+              assemblyBracketCorridorActive.setAttribute('width', activeWidth);
+              assemblyBracketCorridorActive.setAttribute('height', totalHeight);
+            } else if (assemblyBracketCorridorActive) {
+              assemblyBracketCorridorActive.style.display = 'none';
+            }
+
+            // Inactive corridor
+            const inactiveStartX = Math.max(xLeft, markerX);
+            const inactiveEndX = xRight;
+            const inactiveWidth = Math.max(0, inactiveEndX - inactiveStartX);
+
+            if (inactiveWidth > 0 && assemblyBracketCorridorInactive) {
+              assemblyBracketCorridorInactive.style.display = 'block';
+              assemblyBracketCorridorInactive.setAttribute('x', inactiveStartX);
+              assemblyBracketCorridorInactive.setAttribute('width', inactiveWidth);
+              assemblyBracketCorridorInactive.setAttribute('height', totalHeight);
+            } else if (assemblyBracketCorridorInactive) {
+              assemblyBracketCorridorInactive.style.display = 'none';
+            }
+
+            // Left bracket
+            const leftD = `M ${xLeft + 7} 4 L ${xLeft} 4 L ${xLeft} ${totalHeight - 4} L ${xLeft + 7} ${totalHeight - 4}`;
+            if (pathAssemblyBracketLeft) {
+              pathAssemblyBracketLeft.setAttribute('d', leftD);
+              pathAssemblyBracketLeft.setAttribute('stroke', xLeft < markerX ? '#a855f7' : '#71717a');
+            }
+
+            // Right bracket
+            const rightD = `M ${xRight - 7} 4 L ${xRight} 4 L ${xRight} ${totalHeight - 4} L ${xRight - 7} ${totalHeight - 4}`;
+            if (pathAssemblyBracketRight) {
+              pathAssemblyBracketRight.setAttribute('d', rightD);
+              pathAssemblyBracketRight.setAttribute('stroke', xRight <= markerX ? '#a855f7' : '#71717a');
+            }
+          }
+        }
+      } else if (assemblyBracketGroup) {
+        assemblyBracketGroup.style.display = 'none';
+      }
+
+      // Update status details if joint selected
+      if (selectedJointId !== null) {
+        const joint = assemblyJoints.find(j => j.id === selectedJointId);
+        if (joint) {
+          const col = assemblyJoints.findIndex(j => j.id === joint.id) + 1;
+          const isInactive = col > assemblyMarkerStep;
+          const { minCol, maxCol } = computeJointMovableRange(joint);
+          const compNames = joint.rows.map(r => componentDefs[r]?.name || `Comp ${r}`).join(' ↔ ');
+          statusDetails.innerHTML = `
+            <strong style="color: #c084fc;">🟣 ${joint.stepLabel}: ${joint.name}</strong> (${joint.typeLabel} · Connects: [${compNames}] · ${isInactive ? '<span style="color: #cbd5e1;">Unsolved Inactive</span>' : '<span style="color: #38bdf8;">Solved Active</span>'}):
+            <span style="color: #cbd5e1; margin-left: 6px;">${joint.info}</span>
+            <span style="color: #a855f7; font-weight: bold; margin-left: 8px;">[ Assembly Reorder Corridor: Steps J0${minCol} to J0${maxCol} ]</span>
+          `;
+        }
+      }
+    }
+
+    // Attach Drag & Reorder Handlers for Joint Chips
+    function attachJointDragHandlers(chip, joint) {
+      let isDragging = false;
+      let startX = 0;
+      let currentDeltaX = 0;
+
+      chip.addEventListener('mousedown', (e) => {
+        if (e.button !== 0) return;
+        closeContextMenu();
+
+        selectedJointId = joint.id;
+        selectedActionIds = []; // focus on joint
+        applyAssemblyHighlight();
+        applyHighlight();
+
+        isDragging = true;
+        startX = e.clientX;
+        currentDeltaX = 0;
+        chip.classList.add('dragging');
+        document.body.style.cursor = 'grabbing';
+
+        const { minCol, maxCol, currentCol } = computeJointMovableRange(joint);
+        const fromIndex = assemblyJoints.findIndex(j => j.id === joint.id);
+
+        function onMouseMove(e) {
+          if (!isDragging) return;
+          const deltaX = e.clientX - startX;
+          currentDeltaX = deltaX;
+          chip.style.transform = `translate3d(${deltaX}px, 0, 0) scale(1.08)`;
+
+          const colShift = Math.round(deltaX / COL_W);
+          const targetCol = currentCol + colShift;
+
+          if (targetCol >= minCol && targetCol <= maxCol) {
+            chip.style.borderColor = '#a855f7';
+            dragFeedback.innerHTML = `🟣 <strong>Valid Joint Step J0${targetCol}:</strong> Release to reorder assembly kinematic chain!`;
+          } else {
+            chip.style.borderColor = '#ef4444';
+            dragFeedback.innerHTML = `🚫 <strong>Step J0${targetCol} Invalid:</strong> Joint dependency constraint violated!`;
+          }
+        }
+
+        function onMouseUp() {
+          if (!isDragging) return;
+          isDragging = false;
+          chip.classList.remove('dragging');
+          document.body.style.cursor = 'default';
+          window.removeEventListener('mousemove', onMouseMove);
+          window.removeEventListener('mouseup', onMouseUp);
+
+          const colShift = Math.round(currentDeltaX / COL_W);
+          const targetCol = currentCol + colShift;
+
+          if (targetCol >= minCol && targetCol <= maxCol && targetCol !== currentCol) {
+            const toIndex = targetCol - 1;
+            const [movedJoint] = assemblyJoints.splice(fromIndex, 1);
+            assemblyJoints.splice(toIndex, 0, movedJoint);
+
+            // Re-label step numbers
+            assemblyJoints.forEach((j, idx) => {
+              j.stepLabel = `J0${idx + 1}`;
+            });
+
+            renderAssemblyTimeline();
+            dragFeedback.innerHTML = `🎉 <strong>Assembly Reordered:</strong> <em>${joint.name}</em> moved to Step ${joint.stepLabel}! Kinematic solver chain updated.`;
+          } else {
+            chip.style.transition = 'transform 0.2s ease-out';
+            chip.style.transform = 'translate3d(0, 0, 0)';
+            setTimeout(() => {
+              chip.style.transition = '';
+              renderAssemblyTimeline();
+            }, 200);
+          }
+        }
+
+        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('mouseup', onMouseUp);
+      });
+    }
+
+    // Attach Marker Scrubbing Logic for Assembly Marker
+    function attachAssemblyMarkerScrubbing() {
+      if (!assemblyMarker) return;
+      let isScrubbing = false;
+
+      assemblyMarker.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeContextMenu();
+        stopAssemblyPlayback();
+        isScrubbing = true;
+        assemblyMarker.classList.add('scrubbing');
+        document.body.style.cursor = 'col-resize';
+
+        function onMouseMove(e) {
+          if (!isScrubbing) return;
+          const rect = assemblyTracksContent.getBoundingClientRect();
+          const relX = e.clientX - rect.left;
+          const totalJoints = assemblyJoints.length;
+          const targetStep = Math.max(0, Math.min(totalJoints, Math.round(relX / COL_W)));
+          setAssemblyMarkerStep(targetStep);
+        }
+
+        function onMouseUp() {
+          if (!isScrubbing) return;
+          isScrubbing = false;
+          assemblyMarker.classList.remove('scrubbing');
+          document.body.style.cursor = 'default';
+          window.removeEventListener('mousemove', onMouseMove);
+          window.removeEventListener('mouseup', onMouseUp);
+        }
+
+        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('mouseup', onMouseUp);
+      });
+    }
+
+    // Assembly Playback
+    function toggleAssemblyPlayback() {
+      if (isAssemblyPlaying) {
+        stopAssemblyPlayback();
+      } else {
+        startAssemblyPlayback();
+      }
+    }
+
+    function startAssemblyPlayback() {
+      if (assemblyMarkerStep >= assemblyJoints.length) {
+        setAssemblyMarkerStep(0, false);
+      }
+      isAssemblyPlaying = true;
+      if (jBtnPlay) jBtnPlay.innerHTML = '⏸';
+      dragFeedback.innerHTML = `▶️ <strong>Solving Kinematic Joints:</strong> Solving mates step by step...`;
+
+      assemblyPlaybackTimer = setInterval(() => {
+        if (assemblyMarkerStep < assemblyJoints.length) {
+          setAssemblyMarkerStep(assemblyMarkerStep + 1, false);
+        } else {
+          stopAssemblyPlayback();
+          dragFeedback.innerHTML = `🏁 <strong>Assembly Fully Solved:</strong> All ${assemblyJoints.length} joints solved.`;
+        }
+      }, 420);
+    }
+
+    function stopAssemblyPlayback() {
+      isAssemblyPlaying = false;
+      if (assemblyPlaybackTimer) {
+        clearInterval(assemblyPlaybackTimer);
+        assemblyPlaybackTimer = null;
+      }
+      if (jBtnPlay) jBtnPlay.innerHTML = '▶';
+    }
+
+    // =========================================================================
+    // SPLITTER DRAGGING, COLLAPSE / EXPAND, AND FULL WIDTH CONTROLS
+    // =========================================================================
+
+    function initSplitterAndCollapse() {
+      if (!trackSplitter || !sectionModeling || !sectionAssembly) return;
+
+      let isDraggingSplitter = false;
+      let startMouseX = 0;
+      let startModelingWidth = 0;
+
+      // Mouse drag resize
+      trackSplitter.addEventListener('mousedown', (e) => {
+        if (e.target.closest('.splitter-btn')) return; // ignore click on buttons
+        e.preventDefault();
+        isDraggingSplitter = true;
+        trackSplitter.classList.add('dragging');
+        document.body.style.cursor = 'col-resize';
+        startMouseX = e.clientX;
+        startModelingWidth = sectionModeling.getBoundingClientRect().width;
+
+        function onMouseMove(e) {
+          if (!isDraggingSplitter) return;
+          const deltaX = e.clientX - startMouseX;
+          const wrapperWidth = document.getElementById('splitViewportWrapper').getBoundingClientRect().width;
+          const minWidth = 180;
+          const maxWidth = wrapperWidth - 180 - trackSplitter.offsetWidth;
+
+          let newWidth = Math.max(minWidth, Math.min(maxWidth, startModelingWidth + deltaX));
+          sectionModeling.style.flex = `0 0 ${newWidth}px`;
+          sectionAssembly.style.flex = '1 1 0';
+        }
+
+        function onMouseUp() {
+          if (!isDraggingSplitter) return;
+          isDraggingSplitter = false;
+          trackSplitter.classList.remove('dragging');
+          document.body.style.cursor = 'default';
+          window.removeEventListener('mousemove', onMouseMove);
+          window.removeEventListener('mouseup', onMouseUp);
+        }
+
+        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('mouseup', onMouseUp);
+      });
+
+      // Collapse Modeling Section (< button on splitter)
+      if (btnCollapseLeft) {
+        btnCollapseLeft.addEventListener('click', (e) => {
+          e.stopPropagation();
+          collapseModelingSection();
+        });
+      }
+
+      // Collapse Assembly Section (> button on splitter)
+      if (btnCollapseRight) {
+        btnCollapseRight.addEventListener('click', (e) => {
+          e.stopPropagation();
+          collapseAssemblySection();
+        });
+      }
+
+      // Restore Modeling from Collapsed Strip
+      if (stripModeling) {
+        stripModeling.addEventListener('click', () => {
+          restoreModelingSection();
+        });
+      }
+      if (btnExpandModeling) {
+        btnExpandModeling.addEventListener('click', (e) => {
+          e.stopPropagation();
+          restoreModelingSection();
+        });
+      }
+
+      // Restore Assembly from Collapsed Strip
+      if (stripAssembly) {
+        stripAssembly.addEventListener('click', () => {
+          restoreAssemblySection();
+        });
+      }
+      if (btnExpandAssembly) {
+        btnExpandAssembly.addEventListener('click', (e) => {
+          e.stopPropagation();
+          restoreAssemblySection();
+        });
+      }
+
+      // Split Presets (65/35 and 50/50)
+      if (btnSplit65) {
+        btnSplit65.addEventListener('click', () => {
+          restoreBothSections();
+          sectionModeling.style.flex = '65 1 0';
+          sectionAssembly.style.flex = '35 1 0';
+          btnSplit65.classList.add('active');
+          if (btnSplit50) btnSplit50.classList.remove('active');
+        });
+      }
+
+      if (btnSplit50) {
+        btnSplit50.addEventListener('click', () => {
+          restoreBothSections();
+          sectionModeling.style.flex = '50 1 0';
+          sectionAssembly.style.flex = '50 1 0';
+          btnSplit50.classList.add('active');
+          if (btnSplit65) btnSplit65.classList.remove('active');
+        });
+      }
+
+      // Toggle Assembly Section Visibility ("Only appears when at least 1 item is present")
+      if (btnToggleAssemblySection) {
+        btnToggleAssemblySection.addEventListener('click', () => {
+          isAssemblySectionVisible = !isAssemblySectionVisible;
+          if (isAssemblySectionVisible) {
+            sectionAssembly.style.display = 'flex';
+            trackSplitter.style.display = 'flex';
+            if (isAssemblyCollapsed) stripAssembly.style.display = 'flex';
+            btnToggleAssemblySection.classList.add('active');
+            btnToggleAssemblySection.textContent = `🟣 Assembly Track: Shown (${assemblyJoints.length})`;
+            sectionModeling.style.flex = '65 1 0';
+            sectionAssembly.style.flex = '35 1 0';
+            dragFeedback.innerHTML = `🟣 <strong>Assembly Track Shown:</strong> Displays kinematic joints, mates, and assembly rollback marker side-by-side with modeling features.`;
+          } else {
+            sectionAssembly.style.display = 'none';
+            trackSplitter.style.display = 'none';
+            stripAssembly.style.display = 'none';
+            btnToggleAssemblySection.classList.remove('active');
+            btnToggleAssemblySection.textContent = `🟣 Assembly Track: Hidden (0)`;
+            sectionModeling.style.flex = '1 1 100%';
+            dragFeedback.innerHTML = `🔷 <strong>Full-Screen Modeling View:</strong> Demonstrating SolidCraft rule: Post-modeling section automatically hides when 0 items are present.`;
+          }
+        });
+      }
+
+      // Add Joint button
+      if (btnAddJoint) {
+        btnAddJoint.addEventListener('click', () => {
+          if (!isAssemblySectionVisible) {
+            btnToggleAssemblySection.click();
+          }
+          const newJid = Math.max(...assemblyJoints.map(j => j.id), 100) + 1;
+          const stepNum = assemblyJoints.length + 1;
+          const newJoint = {
+            id: newJid,
+            name: `Lock Joint J0${stepNum}`,
+            type: "joint",
+            typeLabel: "Rigid",
+            rows: [activeComponentRow, 0],
+            prereqs: [assemblyJoints[assemblyJoints.length - 1].id],
+            downstream: [],
+            stepLabel: `J0${stepNum}`,
+            info: `Mates active component ${componentDefs[activeComponentRow]?.name || ''} to Root Design.`
+          };
+          assemblyJoints[assemblyJoints.length - 1].downstream.push(newJid);
+          assemblyJoints.push(newJoint);
+          selectedJointId = newJid;
+          assemblyMarkerStep = assemblyJoints.length;
+
+          renderAssemblyTimeline();
+          dragFeedback.innerHTML = `✨ <strong>New Joint Added:</strong> Created <em>${newJoint.name}</em> connecting ${componentDefs[activeComponentRow]?.name} to Root Design.`;
+        });
+      }
+    }
+
+    function collapseModelingSection() {
+      isModelingCollapsed = true;
+      sectionModeling.classList.add('collapsed');
+      stripModeling.style.display = 'flex';
+      stripModelingBadge.textContent = actions.length;
+      sectionAssembly.style.flex = '1 1 auto';
+      dragFeedback.innerHTML = `🟣 <strong>Assembly Full View:</strong> Modeling features collapsed into left dock tab. Click tab or [▶] to restore split.`;
+    }
+
+    function restoreModelingSection() {
+      isModelingCollapsed = false;
+      sectionModeling.classList.remove('collapsed');
+      stripModeling.style.display = 'none';
+      sectionModeling.style.flex = '65 1 0';
+      sectionAssembly.style.flex = '35 1 0';
+      dragFeedback.innerHTML = `↔️ <strong>Split View Restored:</strong> Modeling and Assembly views visible side-by-side.`;
+    }
+
+    function collapseAssemblySection() {
+      isAssemblyCollapsed = true;
+      sectionAssembly.classList.add('collapsed');
+      stripAssembly.style.display = 'flex';
+      stripAssemblyBadge.textContent = assemblyJoints.length;
+      sectionModeling.style.flex = '1 1 auto';
+      dragFeedback.innerHTML = `🔷 <strong>Modeling Full View:</strong> Assembly section collapsed into right dock tab. Click tab or [◀] to restore split.`;
+    }
+
+    function restoreAssemblySection() {
+      isAssemblyCollapsed = false;
+      sectionAssembly.classList.remove('collapsed');
+      stripAssembly.style.display = 'none';
+      sectionModeling.style.flex = '65 1 0';
+      sectionAssembly.style.flex = '35 1 0';
+      dragFeedback.innerHTML = `↔️ <strong>Split View Restored:</strong> Modeling and Assembly views visible side-by-side.`;
+    }
+
+    function restoreBothSections() {
+      isModelingCollapsed = false;
+      isAssemblyCollapsed = false;
+      sectionModeling.classList.remove('collapsed');
+      sectionAssembly.classList.remove('collapsed');
+      stripModeling.style.display = 'none';
+      stripAssembly.style.display = 'none';
+    }
+
+    // =========================================================================
+    // SYNCHRONIZED VERTICAL SCROLLING (100% LOCKSTEP ALIGNMENT)
+    // =========================================================================
+
+    function initUnifiedVerticalScroll() {
+      const viewportContainer = document.getElementById('viewportContainer');
+      const pinnedContent = document.getElementById('pinnedHeadersContent');
+      const modelingTracks = document.getElementById('tracksContent');
+      const assemblyTracks = document.getElementById('assemblyTracksContent');
+
+      let verticalScrollY = 0;
+      const maxScroll = Math.max(0, NUM_ROWS * ROW_H - 142); // 5 rows * 38 = 190
+
+      viewportContainer.addEventListener('wheel', (e) => {
+        // If vertical wheel is dominant, scroll all tracks and pinned headers vertically in sync!
+        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+          e.preventDefault();
+          closeContextMenu();
+          verticalScrollY += e.deltaY * 0.7;
+          verticalScrollY = Math.max(0, Math.min(maxScroll, verticalScrollY));
+
+          pinnedContent.style.transform = `translate3d(0, -${verticalScrollY}px, 0)`;
+          modelingTracks.style.transform = `translate3d(0, -${verticalScrollY}px, 0)`;
+          if (assemblyTracks) {
+            assemblyTracks.style.transform = `translate3d(0, -${verticalScrollY}px, 0)`;
+          }
+        }
+      }, { passive: false });
+    }
+
+    // Assembly Transport Handlers
+    if (jBtnBack) jBtnBack.addEventListener('click', () => { stopAssemblyPlayback(); setAssemblyMarkerStep(assemblyMarkerStep - 1); });
+    if (jBtnPlay) jBtnPlay.addEventListener('click', () => { toggleAssemblyPlayback(); });
+    if (jBtnForward) jBtnForward.addEventListener('click', () => { stopAssemblyPlayback(); setAssemblyMarkerStep(assemblyMarkerStep + 1); });
+
+    // Modeling Transport Handlers in Section Header
+    if (mBtnBack) mBtnBack.addEventListener('click', () => { stopPlayback(); setMarkerStep(markerStep - 1); });
+    if (mBtnPlay) mBtnPlay.addEventListener('click', () => { togglePlayback(); });
+    if (mBtnForward) mBtnForward.addEventListener('click', () => { stopPlayback(); setMarkerStep(markerStep + 1); });
+
+    initSplitterAndCollapse();
+    initUnifiedVerticalScroll();
+    renderAssemblyTimeline();
+    attachAssemblyMarkerScrubbing();
     attachTransportHandlers();
     attachMarkerScrubbing();
     renderTimeline();
+
+    // Support URL view parameters for screenshots & testing
+    const viewParam = urlParams.get('view');
+    if (viewParam === 'collapse-modeling') {
+      collapseModelingSection();
+    } else if (viewParam === 'collapse-assembly') {
+      collapseAssemblySection();
+    } else if (viewParam === 'hide-assembly') {
+      if (btnToggleAssemblySection) btnToggleAssemblySection.click();
+    }
   </script>
 </body>
 </html>
