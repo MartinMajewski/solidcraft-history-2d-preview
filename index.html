@@ -2060,6 +2060,89 @@
       stroke-width: 3;
     }
 
+  
+    /* Sleek Collapsed Dock Strip Tab (Centered, buttonless) */
+    .collapsed-strip {
+      width: 34px !important;
+      background: #13161e !important;
+      border-right: 1px solid #2a313d !important;
+      border-left: 1px solid #2a313d !important;
+      display: none;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 12px 2px !important;
+      cursor: pointer !important;
+      user-select: none;
+      flex-shrink: 0;
+      z-index: 40;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .collapsed-strip:hover {
+      background: #1c2230 !important;
+      border-color: #38bdf8 !important;
+    }
+
+    .collapsed-strip.assembly-strip:hover {
+      border-color: #a855f7 !important;
+    }
+
+    .collapsed-strip-content {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: #94a3b8;
+      white-space: nowrap;
+    }
+
+    .collapsed-strip:hover .collapsed-strip-content {
+      color: #f1f5f9;
+    }
+
+    /* Splitter Button Undo State */
+    .splitter-btn {
+      width: 15px !important;
+      height: 24px !important;
+      border: none;
+      background: #1e2433;
+      color: #94a3b8;
+      border-radius: 3px;
+      font-size: 9px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+      transition: all 0.12s;
+    }
+
+    .splitter-btn:hover {
+      background: #38bdf8;
+      color: #000;
+    }
+
+    .splitter-btn.undo-btn {
+      color: #38bdf8 !important;
+      font-size: 14px !important;
+      background: #1a2333 !important;
+      border: 1px solid rgba(56, 189, 248, 0.5) !important;
+      font-weight: bold !important;
+      line-height: 1;
+    }
+
+    .splitter-btn.undo-btn:hover {
+      background: #38bdf8 !important;
+      color: #000000 !important;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.6) !important;
+    }
+
   </style>
 </head>
 <body>
@@ -2272,9 +2355,8 @@
 
       <!-- Split Viewport Wrapper containing Modeling Track, Splitter, and Assembly Track -->
       <div class="split-viewport-wrapper" id="splitViewportWrapper">
-        <!-- Collapsed Strip for Modeling (shown when modeling section is collapsed) -->
-        <div class="collapsed-strip modeling-strip" id="stripModeling" title="Modeling Track collapsed. Click to restore split view.">
-          <div class="collapsed-strip-btn" id="btnExpandModeling" title="Expand Modeling Section">▶</div>
+        <!-- Collapsed Dock Tab for Modeling (shown when modeling section is collapsed) -->
+        <div class="collapsed-strip modeling-strip" id="stripModeling" title="Modeling Track contracted. Click to restore split view.">
           <div class="collapsed-strip-content">
             <span>🔷 Geometric Modeling</span>
             <span class="collapsed-strip-badge" id="stripModelingBadge">24</span>
@@ -2392,9 +2474,8 @@
           </div>
         </div>
 
-        <!-- Collapsed Strip for Assembly (shown when assembly section is collapsed) -->
-        <div class="collapsed-strip assembly-strip" id="stripAssembly" title="Assembly Section collapsed. Click to restore split view.">
-          <div class="collapsed-strip-btn" id="btnExpandAssembly" title="Expand Assembly Section">◀</div>
+        <!-- Collapsed Dock Tab for Assembly (shown when assembly section is collapsed) -->
+        <div class="collapsed-strip assembly-strip" id="stripAssembly" title="Assembly Track contracted. Click to restore split view.">
           <div class="collapsed-strip-content">
             <span>🟣 Assembly &amp; Joints</span>
             <span class="collapsed-strip-badge" id="stripAssemblyBadge">5</span>
@@ -3223,6 +3304,7 @@
     function renderTimeline() {
       const displayItems = getDisplayItems();
       const totalCols = displayItems.length;
+      const minGridCols = Math.max(totalCols, Math.ceil(window.innerWidth / COL_W) + 20, 60);
 
       // 1. Render Two-Tier Header: Topmost Step Numbers Row & Lower Folders / Features Row
       headerTrack.innerHTML = '';
@@ -3235,68 +3317,76 @@
       const tierGroups = document.createElement('div');
       tierGroups.className = 'header-tier-groups';
 
-      // Background cells for Lower Tier (columns)
-      for (let colIdx = 0; colIdx < totalCols; colIdx++) {
+      // Background cells for Lower Tier (columns extending across full length)
+      for (let colIdx = 0; colIdx < minGridCols; colIdx++) {
         const gCell = document.createElement('div');
         gCell.className = 'header-group-cell';
         tierGroups.appendChild(gCell);
       }
 
-      // Step cells for Top Tier (Step numbers 01 to 24)
-      for (let colIdx = 0; colIdx < totalCols; colIdx++) {
+      // Step cells for Top Tier (Step numbers 01 to 24, plus empty cells for remainder)
+      for (let colIdx = 0; colIdx < minGridCols; colIdx++) {
         const c = colIdx + 1;
-        const item = displayItems[colIdx];
         const hCell = document.createElement('div');
-        hCell.className = `header-step-cell ${c > markerStep ? 'rolled-back-step' : 'active-step'}`;
-        hCell.dataset.col = c;
 
-        if (item.isGroup) {
-          // Closed group: display "-" in numbers row; subsequent features continue with their actual step numbers
-          const minStep = Math.min(...item.actions.map(a => actions.findIndex(act => act.id === a.id) + 1));
-          const maxStep = Math.max(...item.actions.map(a => actions.findIndex(act => act.id === a.id) + 1));
-          const minStepStr = minStep < 10 ? '0' + minStep : minStep;
-          const maxStepStr = maxStep < 10 ? '0' + maxStep : maxStep;
-          const compNames = ['Root (Design)', 'Housing', 'Shaft', 'Bearing', 'Fastener'];
-          const featureListText = item.actions.map(a => {
-            const aStep = actions.findIndex(act => act.id === a.id) + 1;
-            const aStepStr = aStep < 10 ? '0' + aStep : aStep;
-            const cNames = a.rows.map(r => compNames[r] || `Row ${r}`).join(', ');
-            return `  • Step ${aStepStr}: ${a.name} (${cNames})${a.suppressed ? ' [Suppressed]' : ''}`;
-          }).join('\n');
+        if (colIdx < totalCols) {
+          const item = displayItems[colIdx];
+          hCell.className = `header-step-cell ${c > markerStep ? 'rolled-back-step' : 'active-step'}`;
+          hCell.dataset.col = c;
 
-          hCell.title = `📁 Group: ${item.group.name} (${item.actions.length} features · Steps ${minStepStr}–${maxStepStr})\nStatus: ${c > markerStep ? 'Inactive in 3D solid model (rolled back)' : 'Active / Evaluated in 3D solid model'}\n\nIncluded Features:\n${featureListText}\n\nClick to roll marker here · Double-click to Open Group · Right-click for Group menu`;
-          hCell.innerHTML = `
-            <div class="header-step-tick"></div>
-            <span class="group-step-dash">-</span>
-          `;
-          // Double-click on group step cell opens/unfolds group
-          hCell.addEventListener('dblclick', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            closeContextMenu();
-            item.group.isOpen = true;
-            renderTimeline();
-            dragFeedback.innerHTML = `📂 <strong>Group Opened:</strong> Expanded <em>${item.group.name}</em>. Right-click individual chips for feature menu.`;
-          });
-          hCell.addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            openGroupContextMenu(e.clientX, e.clientY, item.group);
+          if (item.isGroup) {
+            // Closed group: display "-" in numbers row; subsequent features continue with their actual step numbers
+            const minStep = Math.min(...item.actions.map(a => actions.findIndex(act => act.id === a.id) + 1));
+            const maxStep = Math.max(...item.actions.map(a => actions.findIndex(act => act.id === a.id) + 1));
+            const minStepStr = minStep < 10 ? '0' + minStep : minStep;
+            const maxStepStr = maxStep < 10 ? '0' + maxStep : maxStep;
+            const compNames = ['Root (Design)', 'Housing', 'Shaft', 'Bearing', 'Fastener'];
+            const featureListText = item.actions.map(a => {
+              const aStep = actions.findIndex(act => act.id === a.id) + 1;
+              const aStepStr = aStep < 10 ? '0' + aStep : aStep;
+              const cNames = a.rows.map(r => compNames[r] || `Row ${r}`).join(', ');
+              return `  • Step ${aStepStr}: ${a.name} (${cNames})${a.suppressed ? ' [Suppressed]' : ''}`;
+            }).join('\n');
+
+            hCell.title = `📁 Group: ${item.group.name} (${item.actions.length} features · Steps ${minStepStr}–${maxStepStr})\nStatus: ${c > markerStep ? 'Inactive in 3D solid model (rolled back)' : 'Active / Evaluated in 3D solid model'}\n\nIncluded Features:\n${featureListText}\n\nClick to roll marker here · Double-click to Open Group · Right-click for Group menu`;
+            hCell.innerHTML = `
+              <div class="header-step-tick"></div>
+              <span class="group-step-dash">-</span>
+            `;
+            hCell.addEventListener('dblclick', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              closeContextMenu();
+              item.group.isOpen = true;
+              renderTimeline();
+              dragFeedback.innerHTML = `📂 <strong>Group Opened:</strong> Expanded <em>${item.group.name}</em>. Right-click individual chips for feature menu.`;
+            });
+            hCell.addEventListener('contextmenu', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              openGroupContextMenu(e.clientX, e.clientY, item.group);
+            });
+          } else {
+            const stepNum = actions.findIndex(a => a.id === item.action.id) + 1;
+            const stepStr = stepNum < 10 ? '0' + stepNum : stepNum;
+            hCell.title = `Step ${stepStr}: ${item.action.name} (Click to roll marker here)`;
+            hCell.innerHTML = `
+              <div class="header-step-tick"></div>
+              <span>${stepStr}</span>
+            `;
+          }
+
+          hCell.addEventListener('click', () => {
+            stopPlayback();
+            setMarkerStep(c);
           });
         } else {
-          const stepNum = actions.findIndex(a => a.id === item.action.id) + 1;
-          const stepStr = stepNum < 10 ? '0' + stepNum : stepNum;
-          hCell.title = `Step ${stepStr}: ${item.action.name} (Click to roll marker here)`;
-          hCell.innerHTML = `
-            <div class="header-step-tick"></div>
-            <span>${stepStr}</span>
-          `;
+          // Empty step cell extending grid lines across full dock width
+          hCell.className = 'header-step-cell rolled-back-step';
+          hCell.dataset.col = c;
+          hCell.innerHTML = `<div class="header-step-tick"></div>`;
         }
 
-        hCell.addEventListener('click', () => {
-          stopPlayback();
-          setMarkerStep(c);
-        });
         tierSteps.appendChild(hCell);
       }
 
@@ -3377,52 +3467,56 @@
       // Below step numbers: Folders & future timeline features row
       headerTrack.appendChild(tierGroups);
 
-      // 2. Render Component Track Rows
+      // 2. Render Component Track Rows (Extending grid cells and dots across entire length)
       trackContainer.innerHTML = '';
       for (let r = 0; r < NUM_ROWS; r++) {
         const rowDiv = document.createElement('div');
         rowDiv.className = 'track-row' + (r === activeComponentRow ? ' active-track-row' : '');
         rowDiv.dataset.row = r;
 
-        for (let colIdx = 0; colIdx < totalCols; colIdx++) {
+        for (let colIdx = 0; colIdx < minGridCols; colIdx++) {
           const c = colIdx + 1;
           const cell = document.createElement('div');
           cell.className = 'track-cell';
           cell.dataset.col = c;
           cell.dataset.row = r;
 
-          const item = displayItems[colIdx];
-          if (item.isGroup) {
-            // Group column: row cells left clear for the column-spanning virtual chip
-            cell.innerHTML = '';
-          } else {
-            const act = item.action;
-            if (act.rows.includes(r)) {
-              const chip = document.createElement('div');
-              chip.className = `chip${act.suppressed ? ' suppressed' : ''}`;
-              chip.dataset.id = act.id;
-              chip.dataset.col = c;
-              chip.dataset.row = r;
-              let chipContent = ICONS[act.type] || ICONS.extrude;
-              if (act.suppressed) {
-                chipContent += `<div class="chip-suppress-overlay" title="Suppressed feature">${SLASHED_EYE_ICON}</div>`;
-              }
-              chip.innerHTML = chipContent;
-              const actStep = actions.findIndex(a => a.id === act.id) + 1;
-              const actStepStr = actStep < 10 ? '0' + actStep : actStep;
-              chip.title = `${act.name} (Step ${actStepStr})${act.suppressed ? ' [Suppressed]' : ''}`;
-
-              attachDragHandlers(chip, act);
-              cell.appendChild(chip);
+          if (colIdx < totalCols) {
+            const item = displayItems[colIdx];
+            if (item.isGroup) {
+              // Group column: row cells left clear for the column-spanning virtual chip
+              cell.innerHTML = '';
             } else {
-              cell.innerHTML = '<span class="empty-hint">·</span>';
+              const act = item.action;
+              if (act.rows.includes(r)) {
+                const chip = document.createElement('div');
+                chip.className = `chip${act.suppressed ? ' suppressed' : ''}`;
+                chip.dataset.id = act.id;
+                chip.dataset.col = c;
+                chip.dataset.row = r;
+                let chipContent = ICONS[act.type] || ICONS.extrude;
+                if (act.suppressed) {
+                  chipContent += `<div class="chip-suppress-overlay" title="Suppressed feature">${SLASHED_EYE_ICON}</div>`;
+                }
+                chip.innerHTML = chipContent;
+                const actStep = actions.findIndex(a => a.id === act.id) + 1;
+                const actStepStr = actStep < 10 ? '0' + actStep : actStep;
+                chip.title = `${act.name} (Step ${actStepStr})${act.suppressed ? ' [Suppressed]' : ''}`;
+
+                attachDragHandlers(chip, act);
+                cell.appendChild(chip);
+              } else {
+                cell.innerHTML = '<span class="empty-hint">·</span>';
+              }
             }
+          } else {
+            // Extension beyond total features: empty cell with alignment dot
+            cell.innerHTML = '<span class="empty-hint">·</span>';
           }
           rowDiv.appendChild(cell);
         }
         trackContainer.appendChild(rowDiv);
       }
-
       // 2b. Render Open Group Corridor Background Tint
       groups.forEach(grp => {
         if (!grp.isOpen) return;
@@ -4968,6 +5062,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       if (!assemblyHeaderTrack || !assemblyTrackContainer) return;
 
       const totalCols = assemblyJoints.length;
+      const minGridCols = Math.max(totalCols, Math.ceil(window.innerWidth / COL_W) + 20, 60);
 
       // 1. Render Assembly Two-Tier Header
       assemblyHeaderTrack.innerHTML = '';
@@ -4978,95 +5073,110 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       const tierGroups = document.createElement('div');
       tierGroups.className = 'header-tier-groups';
 
-      for (let colIdx = 0; colIdx < totalCols; colIdx++) {
+      for (let colIdx = 0; colIdx < minGridCols; colIdx++) {
         const c = colIdx + 1;
-        const joint = assemblyJoints[colIdx];
 
-        // Step number cell (J01, J02, ...)
-        const hCell = document.createElement('div');
-        hCell.className = `header-step-cell assembly-step-cell ${c > assemblyMarkerStep ? 'rolled-back-step' : 'active-step'}`;
-        hCell.dataset.col = c;
-        hCell.title = `Step ${joint.stepLabel}: ${joint.name} (${joint.typeLabel})
-Click to roll assembly marker here`;
-        hCell.innerHTML = `
-          <div class="header-step-tick"></div>
-          <span style="font-weight: 700; color: ${c > assemblyMarkerStep ? '#64748b' : '#c084fc'};">${joint.stepLabel}</span>
-        `;
-        hCell.addEventListener('click', () => {
-          stopAssemblyPlayback();
-          setAssemblyMarkerStep(c);
-        });
-        tierSteps.appendChild(hCell);
+        if (colIdx < totalCols) {
+          const joint = assemblyJoints[colIdx];
 
-        // Lower tier label cell
-        const gCell = document.createElement('div');
-        gCell.className = 'header-group-cell';
-        gCell.style.display = 'flex';
-        gCell.style.alignItems = 'center';
-        gCell.style.justifyContent = 'center';
-        gCell.style.fontSize = '9px';
-        gCell.style.fontWeight = '600';
-        gCell.style.color = '#94a3b8';
-        gCell.innerHTML = `<span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 48px;">${joint.typeLabel}</span>`;
-        tierGroups.appendChild(gCell);
+          // Step number cell (J01, J02, ...)
+          const hCell = document.createElement('div');
+          hCell.className = `header-step-cell assembly-step-cell ${c > assemblyMarkerStep ? 'rolled-back-step' : 'active-step'}`;
+          hCell.dataset.col = c;
+          hCell.title = `Step ${joint.stepLabel}: ${joint.name} (${joint.typeLabel})\nClick to roll assembly marker here`;
+          hCell.innerHTML = `
+            <div class="header-step-tick"></div>
+            <span style="font-weight: 700; color: ${c > assemblyMarkerStep ? '#64748b' : '#c084fc'};">${joint.stepLabel}</span>
+          `;
+          hCell.addEventListener('click', () => {
+            stopAssemblyPlayback();
+            setAssemblyMarkerStep(c);
+          });
+          tierSteps.appendChild(hCell);
+
+          // Lower tier label cell
+          const gCell = document.createElement('div');
+          gCell.className = 'header-group-cell';
+          gCell.style.display = 'flex';
+          gCell.style.alignItems = 'center';
+          gCell.style.justifyContent = 'center';
+          gCell.style.fontSize = '9px';
+          gCell.style.fontWeight = '600';
+          gCell.style.color = '#94a3b8';
+          gCell.innerHTML = `<span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 48px;">${joint.typeLabel}</span>`;
+          tierGroups.appendChild(gCell);
+        } else {
+          // Continuous header track beyond last joint
+          const hCell = document.createElement('div');
+          hCell.className = 'header-step-cell assembly-step-cell rolled-back-step';
+          hCell.dataset.col = c;
+          hCell.innerHTML = `<div class="header-step-tick"></div>`;
+          tierSteps.appendChild(hCell);
+
+          const gCell = document.createElement('div');
+          gCell.className = 'header-group-cell';
+          tierGroups.appendChild(gCell);
+        }
       }
 
       assemblyHeaderTrack.appendChild(tierSteps);
       assemblyHeaderTrack.appendChild(tierGroups);
 
-      // 2. Render Assembly Track Rows (Rows 0 to 4 matching component definitions)
+      // 2. Render Assembly Track Rows (Rows 0 to 4 extending grid across full length)
       assemblyTrackContainer.innerHTML = '';
       for (let r = 0; r < NUM_ROWS; r++) {
         const rowDiv = document.createElement('div');
         rowDiv.className = 'track-row' + (r === activeComponentRow ? ' active-track-row' : '');
         rowDiv.dataset.row = r;
 
-        for (let colIdx = 0; colIdx < totalCols; colIdx++) {
+        for (let colIdx = 0; colIdx < minGridCols; colIdx++) {
           const c = colIdx + 1;
-          const joint = assemblyJoints[colIdx];
           const cell = document.createElement('div');
           cell.className = 'track-cell';
           cell.dataset.col = c;
           cell.dataset.row = r;
 
-          const isPrimaryRow = joint.rows[0] === r;
-          const isSecondaryRow = joint.rows.length > 1 && joint.rows.slice(1).includes(r);
+          if (colIdx < totalCols) {
+            const joint = assemblyJoints[colIdx];
+            const isPrimaryRow = joint.rows[0] === r;
+            const isSecondaryRow = joint.rows.length > 1 && joint.rows.slice(1).includes(r);
 
-          if (isPrimaryRow) {
-            const chip = document.createElement('div');
-            const isInactive = c > assemblyMarkerStep;
-            chip.className = `chip joint-chip${isInactive ? ' unselected-inactive' : ' active-joint'}`;
-            chip.dataset.id = joint.id;
-            chip.dataset.col = c;
-            chip.dataset.row = r;
-            chip.innerHTML = ICONS[joint.type] || ICONS.joint;
-            chip.title = `${joint.stepLabel}: ${joint.name} (${joint.typeLabel})
-Connects: ${joint.rows.map(row => componentDefs[row]?.name || row).join(' ↔ ')}${joint.limits ? `
-Limits: ${joint.limits}` : ''}
-${joint.info}`;
+            if (isPrimaryRow) {
+              const chip = document.createElement('div');
+              const isInactive = c > assemblyMarkerStep;
+              chip.className = `chip joint-chip${isInactive ? ' unselected-inactive' : ' active-joint'}`;
+              chip.dataset.id = joint.id;
+              chip.dataset.col = c;
+              chip.dataset.row = r;
+              chip.innerHTML = ICONS[joint.type] || ICONS.joint;
+              chip.title = `${joint.stepLabel}: ${joint.name} (${joint.typeLabel})\nConnects: ${joint.rows.map(row => componentDefs[row]?.name || row).join(' ↔ ')}${joint.limits ? `\nLimits: ${joint.limits}` : ''}\n${joint.info}`;
 
-            attachJointDragHandlers(chip, joint);
-            cell.appendChild(chip);
-          } else if (isSecondaryRow) {
-            const targetNode = document.createElement('div');
-            const isInactive = c > assemblyMarkerStep;
-            targetNode.className = `joint-target-node${isInactive ? ' inactive' : ''}`;
-            targetNode.dataset.id = joint.id;
-            targetNode.dataset.col = c;
-            targetNode.dataset.row = r;
-            targetNode.title = `Mate Target for ${joint.stepLabel}: ${joint.name} on ${componentDefs[r]?.name}`;
-            targetNode.innerHTML = `<div class="joint-target-inner"></div>`;
+              attachJointDragHandlers(chip, joint);
+              cell.appendChild(chip);
+            } else if (isSecondaryRow) {
+              const targetNode = document.createElement('div');
+              const isInactive = c > assemblyMarkerStep;
+              targetNode.className = `joint-target-node${isInactive ? ' inactive' : ''}`;
+              targetNode.dataset.id = joint.id;
+              targetNode.dataset.col = c;
+              targetNode.dataset.row = r;
+              targetNode.title = `Mate Target for ${joint.stepLabel}: ${joint.name} on ${componentDefs[r]?.name}`;
+              targetNode.innerHTML = `<div class="joint-target-inner"></div>`;
 
-            targetNode.addEventListener('click', (e) => {
-              e.stopPropagation();
-              selectedJointId = joint.id;
-              selectedActionIds = []; // clear modeling selection
-              applyAssemblyHighlight();
-              applyHighlight();
-            });
+              targetNode.addEventListener('click', (e) => {
+                e.stopPropagation();
+                selectedJointId = joint.id;
+                selectedActionIds = []; // clear modeling selection
+                applyAssemblyHighlight();
+                applyHighlight();
+              });
 
-            cell.appendChild(targetNode);
+              cell.appendChild(targetNode);
+            } else {
+              cell.innerHTML = '<span class="empty-hint">·</span>';
+            }
           } else {
+            // Extension beyond total joints: empty cell with alignment dot
             cell.innerHTML = '<span class="empty-hint">·</span>';
           }
 
@@ -5438,45 +5548,54 @@ ${joint.info}`;
         window.addEventListener('mouseup', onMouseUp);
       });
 
-      // Collapse Modeling Section (< button on splitter)
+      // Left Button on Splitter (Contracts Modeling or Undos if already contracted)
       if (btnCollapseLeft) {
         btnCollapseLeft.addEventListener('click', (e) => {
           e.stopPropagation();
-          collapseModelingSection();
+          if (isModelingCollapsed) {
+            // Restore split view
+            restoreBothSections();
+          } else {
+            // Contract modeling section. Ensure assembly is visible (never both contracted)
+            if (isAssemblyCollapsed) {
+              isAssemblyCollapsed = false;
+              sectionAssembly.classList.remove('collapsed');
+              stripAssembly.style.display = 'none';
+            }
+            collapseModelingSection();
+          }
         });
       }
 
-      // Collapse Assembly Section (> button on splitter)
+      // Right Button on Splitter (Contracts Assembly or Undos if already contracted)
       if (btnCollapseRight) {
         btnCollapseRight.addEventListener('click', (e) => {
           e.stopPropagation();
-          collapseAssemblySection();
+          if (isAssemblyCollapsed) {
+            // Restore split view
+            restoreBothSections();
+          } else {
+            // Contract assembly section. Ensure modeling is visible (never both contracted)
+            if (isModelingCollapsed) {
+              isModelingCollapsed = false;
+              sectionModeling.classList.remove('collapsed');
+              stripModeling.style.display = 'none';
+            }
+            collapseAssemblySection();
+          }
         });
       }
 
-      // Restore Modeling from Collapsed Strip
+      // Restore by clicking on the dock tabs themselves
       if (stripModeling) {
         stripModeling.addEventListener('click', () => {
-          restoreModelingSection();
-        });
-      }
-      if (btnExpandModeling) {
-        btnExpandModeling.addEventListener('click', (e) => {
-          e.stopPropagation();
-          restoreModelingSection();
+          restoreBothSections();
         });
       }
 
-      // Restore Assembly from Collapsed Strip
       if (stripAssembly) {
         stripAssembly.addEventListener('click', () => {
-          restoreAssemblySection();
-        });
-      }
-      if (btnExpandAssembly) {
-        btnExpandAssembly.addEventListener('click', (e) => {
-          e.stopPropagation();
-          restoreAssemblySection();
+          restoreBothSections();
         });
       }
 
@@ -5513,6 +5632,7 @@ ${joint.info}`;
             btnToggleAssemblySection.textContent = `🟣 Assembly Track: Shown (${assemblyJoints.length})`;
             sectionModeling.style.flex = '65 1 0';
             sectionAssembly.style.flex = '35 1 0';
+            updateSplitterUI();
             dragFeedback.innerHTML = `🟣 <strong>Assembly Track Shown:</strong> Displays kinematic joints, mates, and assembly rollback marker side-by-side with modeling features.`;
           } else {
             sectionAssembly.style.display = 'none';
@@ -5554,42 +5674,69 @@ ${joint.info}`;
           dragFeedback.innerHTML = `✨ <strong>New Joint Added:</strong> Created <em>${newJoint.name}</em> connecting ${componentDefs[activeComponentRow]?.name} to Root Design.`;
         });
       }
+
+      updateSplitterUI();
+    }
+
+    function updateSplitterUI() {
+      if (!btnCollapseLeft || !btnCollapseRight) return;
+
+      if (isModelingCollapsed && !isAssemblyCollapsed) {
+        // Modeling contracted, Assembly visible
+        btnCollapseLeft.innerHTML = '↺';
+        btnCollapseLeft.className = 'splitter-btn undo-btn';
+        btnCollapseLeft.title = 'Restore Split View (Expand Geometric Modeling)';
+
+        btnCollapseRight.innerHTML = '▶';
+        btnCollapseRight.className = 'splitter-btn';
+        btnCollapseRight.title = 'Contract Assembly Section & Expand Modeling';
+      } else if (isAssemblyCollapsed && !isModelingCollapsed) {
+        // Assembly contracted, Modeling visible
+        btnCollapseLeft.innerHTML = '◀';
+        btnCollapseLeft.className = 'splitter-btn';
+        btnCollapseLeft.title = 'Contract Geometric Modeling & Expand Assembly';
+
+        btnCollapseRight.innerHTML = '↺';
+        btnCollapseRight.className = 'splitter-btn undo-btn';
+        btnCollapseRight.title = 'Restore Split View (Expand Assembly & Joints)';
+      } else {
+        // Both visible (Split View)
+        btnCollapseLeft.innerHTML = '◀';
+        btnCollapseLeft.className = 'splitter-btn';
+        btnCollapseLeft.title = 'Contract Geometric Modeling Section';
+
+        btnCollapseRight.innerHTML = '▶';
+        btnCollapseRight.className = 'splitter-btn';
+        btnCollapseRight.title = 'Contract Assembly Section';
+      }
     }
 
     function collapseModelingSection() {
       isModelingCollapsed = true;
+      isAssemblyCollapsed = false;
+      sectionAssembly.classList.remove('collapsed');
+      stripAssembly.style.display = 'none';
+
       sectionModeling.classList.add('collapsed');
       stripModeling.style.display = 'flex';
       stripModelingBadge.textContent = actions.length;
       sectionAssembly.style.flex = '1 1 auto';
-      dragFeedback.innerHTML = `🟣 <strong>Assembly Full View:</strong> Modeling features collapsed into left dock tab. Click tab or [▶] to restore split.`;
-    }
-
-    function restoreModelingSection() {
-      isModelingCollapsed = false;
-      sectionModeling.classList.remove('collapsed');
-      stripModeling.style.display = 'none';
-      sectionModeling.style.flex = '65 1 0';
-      sectionAssembly.style.flex = '35 1 0';
-      dragFeedback.innerHTML = `↔️ <strong>Split View Restored:</strong> Modeling and Assembly views visible side-by-side.`;
+      updateSplitterUI();
+      dragFeedback.innerHTML = `🟣 <strong>Assembly Full View:</strong> Geometric modeling section contracted. Click [↺] on the splitter to restore split view.`;
     }
 
     function collapseAssemblySection() {
       isAssemblyCollapsed = true;
+      isModelingCollapsed = false;
+      sectionModeling.classList.remove('collapsed');
+      stripModeling.style.display = 'none';
+
       sectionAssembly.classList.add('collapsed');
       stripAssembly.style.display = 'flex';
       stripAssemblyBadge.textContent = assemblyJoints.length;
       sectionModeling.style.flex = '1 1 auto';
-      dragFeedback.innerHTML = `🔷 <strong>Modeling Full View:</strong> Assembly section collapsed into right dock tab. Click tab or [◀] to restore split.`;
-    }
-
-    function restoreAssemblySection() {
-      isAssemblyCollapsed = false;
-      sectionAssembly.classList.remove('collapsed');
-      stripAssembly.style.display = 'none';
-      sectionModeling.style.flex = '65 1 0';
-      sectionAssembly.style.flex = '35 1 0';
-      dragFeedback.innerHTML = `↔️ <strong>Split View Restored:</strong> Modeling and Assembly views visible side-by-side.`;
+      updateSplitterUI();
+      dragFeedback.innerHTML = `🔷 <strong>Modeling Full View:</strong> Assembly section contracted. Click [↺] on the splitter to restore split view.`;
     }
 
     function restoreBothSections() {
@@ -5599,6 +5746,10 @@ ${joint.info}`;
       sectionAssembly.classList.remove('collapsed');
       stripModeling.style.display = 'none';
       stripAssembly.style.display = 'none';
+      sectionModeling.style.flex = '65 1 0';
+      sectionAssembly.style.flex = '35 1 0';
+      updateSplitterUI();
+      dragFeedback.innerHTML = `↔️ <strong>Split View Restored:</strong> Modeling and Assembly views visible side-by-side.`;
     }
 
     // =========================================================================
