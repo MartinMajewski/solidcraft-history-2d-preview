@@ -4549,6 +4549,10 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
           <span class="context-menu-icon">${group.isOpen ? MENU_ICONS.collapse : MENU_ICONS.expand}</span>
           <span>${group.isOpen ? 'Close Group' : 'Open Group'}</span>
         </div>
+        <div class="context-menu-item" id="cmenuRenameGroup">
+          <span class="context-menu-icon">${MENU_ICONS.rename}</span>
+          <span>Rename Group…</span>
+        </div>
         <div class="context-menu-item" id="cmenuDeleteGroupExpand">
           <span class="context-menu-icon">${MENU_ICONS.ungroup}</span>
           <span>Delete Group but expand content</span>
@@ -4589,6 +4593,17 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
         dragFeedback.innerHTML = group.isOpen
           ? `📂 <strong>Group Opened:</strong> Expanded <em>${group.name}</em>. Right-click individual chips for feature menu.`
           : `📁 <strong>Group Closed:</strong> Folded <em>${group.name}</em> into virtual group column chip.`;
+      });
+
+      document.getElementById('cmenuRenameGroup')?.addEventListener('click', () => {
+        closeContextMenu();
+        const currentName = group.name;
+        const newName = prompt(`Rename group "${currentName}":`, currentName);
+        if (newName && newName.trim() && newName.trim() !== currentName) {
+          group.name = newName.trim();
+          renderTimeline();
+          dragFeedback.innerHTML = `✏️ <strong>Group Renamed:</strong> Renamed group to <em>${group.name}</em>.`;
+        }
       });
 
       document.getElementById('cmenuDeleteGroupExpand')?.addEventListener('click', () => {
