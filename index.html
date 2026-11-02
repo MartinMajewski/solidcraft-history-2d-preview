@@ -198,17 +198,17 @@
       cursor: grabbing !important;
     }
 
-    /* Scrubber Head Pin centered vertically in Topmost Step Numbers Row */
+    /* Scrubber Head Pin (Square Handle) centered vertically in Topmost Step Numbers Row */
     .marker-handle-top {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
       background: #14161a;
-      border: 2.5px solid var(--blue);
+      border: 2px solid var(--blue);
       box-shadow: 0 0 8px rgba(56, 189, 248, 0.7);
       flex-shrink: 0;
       cursor: col-resize;
-      margin-top: 4px;
+      margin-top: 5px;
       transition: transform 0.15s, background-color 0.15s;
       position: relative;
       display: flex;
@@ -219,14 +219,14 @@
     .marker-pin-inner {
       width: 4px;
       height: 4px;
-      border-radius: 50%;
+      border-radius: 1px;
       background: var(--blue);
       transition: background-color 0.15s;
     }
 
     .timeline-marker:hover .marker-handle-top,
     .timeline-marker.scrubbing .marker-handle-top {
-      transform: scale(1.25);
+      transform: scale(1.2);
       background: #38bdf8;
     }
 
@@ -1951,26 +1951,7 @@
       transition: left 0.1s ease-out;
     }
 
-    /* Marker bridge for edge offset */
-    .marker-bridge {
-      display: none;
-      height: 2.5px;
-      position: absolute;
-      top: 11px;
-      z-index: 52;
-    }
-
-    .timeline-marker .marker-bridge {
-      background: var(--blue);
-      box-shadow: 0 0 4px rgba(56, 189, 248, 0.4);
-    }
-
-    .assembly-marker .marker-bridge {
-      background: #a855f7;
-      box-shadow: 0 0 4px rgba(168, 85, 247, 0.4);
-    }
-
-    /* Edge First (Step 0): Pin stays inside track, bridge connects to vertical line at 4px */
+    /* Edge First (Step 0): Pin stays inside track, left edge contacts vertical line at 4px */
     .timeline-marker.edge-first, .assembly-marker.edge-first {
       align-items: flex-start !important;
       margin-left: 0 !important;
@@ -1980,30 +1961,7 @@
       margin-left: 4px;
     }
     .timeline-marker.edge-first .marker-handle-top, .assembly-marker.edge-first .marker-handle-top {
-      margin-left: 6px;
-    }
-    .timeline-marker.edge-first .marker-bridge, .assembly-marker.edge-first .marker-bridge {
-      display: block !important;
-      left: 4px;
-      width: 10px;
-    }
-
-    /* Edge Last (Step N): Pin stays inside track, bridge connects to vertical line at right - 4px */
-    .timeline-marker.edge-last, .assembly-marker.edge-last {
-      align-items: flex-end !important;
-      margin-left: -24px !important;
-      width: 24px;
-    }
-    .timeline-marker.edge-last .marker-line, .assembly-marker.edge-last .marker-line {
-      margin-right: 4px;
-    }
-    .timeline-marker.edge-last .marker-handle-top, .assembly-marker.edge-last .marker-handle-top {
-      margin-right: 6px;
-    }
-    .timeline-marker.edge-last .marker-bridge, .assembly-marker.edge-last .marker-bridge {
-      display: block !important;
-      right: 4px;
-      width: 10px;
+      margin-left: 4px;
     }
 
     .assembly-marker.scrubbing {
@@ -2012,15 +1970,15 @@
     }
 
     .assembly-marker .marker-handle-top {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
       background: #14161a;
-      border: 2.5px solid #a855f7;
+      border: 2px solid #a855f7;
       box-shadow: 0 0 8px rgba(168, 85, 247, 0.7);
       flex-shrink: 0;
       cursor: col-resize;
-      margin-top: 4px;
+      margin-top: 5px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -2030,13 +1988,13 @@
     .assembly-marker .marker-pin-inner {
       width: 4px;
       height: 4px;
-      border-radius: 50%;
+      border-radius: 1px;
       background: #a855f7;
     }
 
     .assembly-marker:hover .marker-handle-top,
     .assembly-marker.scrubbing .marker-handle-top {
-      transform: scale(1.25);
+      transform: scale(1.2);
       background: #a855f7;
     }
 
@@ -2532,7 +2490,6 @@
 
               <!-- History Rollback Marker (Draggable Scrubber Pin & Vertical Boundary Line) -->
               <div id="timelineMarker" class="timeline-marker" style="left: 832px;" title="History Rollback Marker: Drag head pin to scrub active modeling steps">
-                <div class="marker-bridge"></div>
                 <div class="marker-handle-top" title="Drag head pin to scrub timeline">
                   <div class="marker-pin-inner"></div>
                 </div>
@@ -2578,17 +2535,16 @@
               <!-- SVG Overlay for Assembly Movable Brackets & Joint Connector Lines -->
               <svg class="svg-overlay" id="assemblySvgOverlay">
                 <g id="assemblyBracketGroup" style="display: none;">
-                  <rect id="assemblyBracketCorridorActive" x="0" y="0" width="0" height="190" fill="rgba(168, 85, 247, 0.08)"></rect>
+                  <rect id="assemblyBracketCorridorActive" x="0" y="0" width="0" height="190" fill="rgba(34, 197, 94, 0.08)"></rect>
                   <rect id="assemblyBracketCorridorInactive" x="0" y="0" width="0" height="190" fill="rgba(161, 161, 170, 0.08)"></rect>
-                  <path id="pathAssemblyBracketLeft" d="" fill="none" stroke="#a855f7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                  <path id="pathAssemblyBracketRight" d="" fill="none" stroke="#a855f7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path id="pathAssemblyBracketLeft" d="" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path id="pathAssemblyBracketRight" d="" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
                 </g>
                 <g id="assemblyConnectorsGroup"></g>
               </svg>
 
               <!-- Dedicated Assembly Rollback Marker (Purple #a855f7) -->
               <div id="assemblyMarker" class="assembly-marker" style="left: 208px;" title="Assembly Rollback Marker: Drag head pin to scrub kinematic assembly steps">
-                <div class="marker-bridge"></div>
                 <div class="marker-handle-top" title="Drag to scrub assembly sequence">
                   <div class="marker-pin-inner"></div>
                 </div>
@@ -3171,13 +3127,10 @@
       markerStep = Math.max(0, Math.min(totalCols, step));
       
       if (timelineMarker) {
-        timelineMarker.classList.remove('edge-first', 'edge-last');
+        timelineMarker.classList.remove('edge-first');
         if (markerStep === 0) {
           timelineMarker.classList.add('edge-first');
           timelineMarker.style.left = '0px';
-        } else if (markerStep === totalCols) {
-          timelineMarker.classList.add('edge-last');
-          timelineMarker.style.left = `${totalCols * COL_W}px`;
         } else {
           timelineMarker.style.left = `${markerStep * COL_W}px`;
         }
@@ -5279,13 +5232,10 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       assemblyMarkerStep = Math.max(0, Math.min(totalJoints, step));
 
       if (assemblyMarker) {
-        assemblyMarker.classList.remove('edge-first', 'edge-last');
+        assemblyMarker.classList.remove('edge-first');
         if (assemblyMarkerStep === 0) {
           assemblyMarker.classList.add('edge-first');
           assemblyMarker.style.left = '0px';
-        } else if (assemblyMarkerStep === totalJoints) {
-          assemblyMarker.classList.add('edge-last');
-          assemblyMarker.style.left = `${totalJoints * COL_W}px`;
         } else {
           assemblyMarker.style.left = `${assemblyMarkerStep * COL_W}px`;
         }
@@ -5602,18 +5552,28 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
               assemblyBracketCorridorInactive.style.display = 'none';
             }
 
-            // Left bracket
-            const leftD = `M ${xLeft + 7} 4 L ${xLeft} 4 L ${xLeft} ${totalHeight - 4} L ${xLeft + 7} ${totalHeight - 4}`;
+            // Smart Inset: sideways shift when coincident with assembly marker
+            let leftDrawX = xLeft;
+            let rightDrawX = xRight;
+            const isCoincidentLeft = Math.abs(xLeft - markerX) < 2;
+            const isCoincidentRight = Math.abs(xRight - markerX) < 2;
+            if (isCoincidentLeft) leftDrawX = xLeft + 3;
+            if (isCoincidentRight) rightDrawX = xRight - 3;
+
+            // Left bracket (Green #22c55e for active)
+            const leftBracketColor = xLeft < markerX ? '#22c55e' : 'var(--grey-corridor)';
+            const leftD = `M ${leftDrawX + 7} 4 L ${leftDrawX} 4 L ${leftDrawX} ${totalHeight - 4} L ${leftDrawX + 7} ${totalHeight - 4}`;
             if (pathAssemblyBracketLeft) {
               pathAssemblyBracketLeft.setAttribute('d', leftD);
-              pathAssemblyBracketLeft.setAttribute('stroke', xLeft < markerX ? '#a855f7' : '#71717a');
+              pathAssemblyBracketLeft.setAttribute('stroke', leftBracketColor);
             }
 
-            // Right bracket
-            const rightD = `M ${xRight - 7} 4 L ${xRight} 4 L ${xRight} ${totalHeight - 4} L ${xRight - 7} ${totalHeight - 4}`;
+            // Right bracket (Green #22c55e for active)
+            const rightBracketColor = xRight <= markerX ? '#22c55e' : 'var(--grey-corridor)';
+            const rightD = `M ${rightDrawX - 7} 4 L ${rightDrawX} 4 L ${rightDrawX} ${totalHeight - 4} L ${rightDrawX - 7} ${totalHeight - 4}`;
             if (pathAssemblyBracketRight) {
               pathAssemblyBracketRight.setAttribute('d', rightD);
-              pathAssemblyBracketRight.setAttribute('stroke', xRight <= markerX ? '#a855f7' : '#71717a');
+              pathAssemblyBracketRight.setAttribute('stroke', rightBracketColor);
             }
           }
         }
@@ -5632,7 +5592,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
           statusDetails.innerHTML = `
             <strong style="color: #c084fc;">🟣 ${joint.stepLabel}: ${joint.name}</strong> (${joint.typeLabel} · Connects: [${compNames}] · ${isInactive ? '<span style="color: #cbd5e1;">Unsolved Inactive</span>' : '<span style="color: #38bdf8;">Solved Active</span>'}):
             <span style="color: #cbd5e1; margin-left: 6px;">${joint.info}</span>
-            <span style="color: #a855f7; font-weight: bold; margin-left: 8px;">[ Assembly Reorder Corridor: Steps J0${minCol} to J0${maxCol} ]</span>
+            <span style="color: #22c55e; font-weight: bold; margin-left: 8px;">[ Assembly Reorder Corridor: Steps J0${minCol} to J0${maxCol} ]</span>
           `;
         }
       }
