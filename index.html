@@ -1755,6 +1755,11 @@
       height: 100%;
     }
 
+    .track-section.assembly-section {
+      z-index: 50;
+      overflow: visible;
+    }
+
     .track-section.collapsed {
       display: none !important;
     }
@@ -1938,11 +1943,11 @@
     /* Assembly Rollback Marker (Purple / Violet #a855f7) */
     .assembly-marker {
       position: absolute;
-      top: 0;
+      top: 28px;
       height: calc(var(--header-h) + var(--row-h) * 5);
       width: 20px;
       margin-left: -10px;
-      z-index: 50;
+      z-index: 60;
       cursor: col-resize;
       display: flex;
       flex-direction: column;
@@ -2530,18 +2535,18 @@
                 <g id="assemblyConnectorsGroup"></g>
               </svg>
 
-              <!-- Dedicated Assembly Rollback Marker (Purple #a855f7) -->
-              <div id="assemblyMarker" class="assembly-marker" style="left: 208px;" title="Assembly Rollback Marker: Drag head pin to scrub kinematic assembly steps">
-                <div class="marker-handle-top" title="Drag to scrub assembly sequence">
-                  <div class="marker-pin-inner"></div>
-                </div>
-                <div class="marker-line"></div>
-                <div class="marker-handle-bottom"></div>
-              </div>
-
               <!-- DOM Grid Cells for Assembly Tracks -->
               <div id="assemblyTrackRowsContainer"></div>
             </div>
+          </div>
+
+          <!-- Dedicated Assembly Rollback Marker (Purple #a855f7) - placed in sectionAssembly to float above splitter -->
+          <div id="assemblyMarker" class="assembly-marker" style="left: 208px;" title="Assembly Rollback Marker: Drag head pin to scrub kinematic assembly steps">
+            <div class="marker-handle-top" title="Drag to scrub assembly sequence">
+              <div class="marker-pin-inner"></div>
+            </div>
+            <div class="marker-line"></div>
+            <div class="marker-handle-bottom"></div>
           </div>
         </div>
 
@@ -5213,7 +5218,8 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       assemblyMarkerStep = Math.max(0, Math.min(totalJoints, step));
 
       if (assemblyMarker) {
-        assemblyMarker.style.left = `${assemblyMarkerStep * COL_W}px`;
+        const scrollLeft = assemblyScrollArea ? assemblyScrollArea.scrollLeft : 0;
+        assemblyMarker.style.left = `${assemblyMarkerStep * COL_W - scrollLeft}px`;
       }
 
       // Update counters
@@ -6134,6 +6140,13 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
     initUnifiedVerticalScroll();
     renderAssemblyTimeline();
     attachAssemblyMarkerScrubbing();
+    if (assemblyScrollArea) {
+      assemblyScrollArea.addEventListener('scroll', () => {
+        if (assemblyMarker) {
+          assemblyMarker.style.left = `${assemblyMarkerStep * COL_W - assemblyScrollArea.scrollLeft}px`;
+        }
+      });
+    }
     attachTransportHandlers();
     attachMarkerScrubbing();
     renderTimeline();
