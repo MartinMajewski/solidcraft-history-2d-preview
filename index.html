@@ -3373,20 +3373,37 @@
 
     // Render Timeline: Header Track & Component Tracks (Supports Virtual Group Chips & Open Group Pills)
     
-    // Compute Track Grid Metrics: Calculates full track width, whole columns,
-    // fractional "half column", and 3 placeholder empty columns with dots when overflowing.
-    function computeTrackGridMetrics(scrollAreaEl, actualCount) {
-      const availableWidth = scrollAreaEl && scrollAreaEl.clientWidth > 0
-        ? scrollAreaEl.clientWidth
-        : Math.floor(window.innerWidth * 0.5);
+    // Entire Track Space Width: Calculates total width of the entire timeline track space
+    // (full width of splitViewportWrapper minus dock strip and splitter).
+    // Tracks are precalculated for this entire track space so there are no blank voids or lazy recalculations.
+    function getEntireTrackSpaceWidth() {
+      const wrapper = document.getElementById('splitViewportWrapper');
+      if (wrapper && wrapper.clientWidth > 100) {
+        const strip = document.getElementById('stripModeling');
+        const splitter = document.getElementById('trackSplitter');
+        const stripW = strip && strip.offsetWidth > 0 ? strip.offsetWidth : 34;
+        const splitterW = splitter && splitter.offsetWidth > 0 ? splitter.offsetWidth : 16;
+        const reservedWidth = stripW + splitterW; // 34px + 16px = 50px
+        return Math.max(wrapper.clientWidth - reservedWidth, 800);
+      }
+      const viewport = document.getElementById('viewportContainer');
+      if (viewport && viewport.clientWidth > 100) {
+        return Math.max(viewport.clientWidth - 160 - 50, 800);
+      }
+      return Math.max(window.innerWidth - 220, 800);
+    }
 
-      const wholeVisibleCols = Math.floor(availableWidth / COL_W);
-      const fractionalWidth = Math.max(0, availableWidth - (wholeVisibleCols * COL_W));
+    // Compute Track Grid Metrics: Precalculates grid metrics for the ENTIRE track space.
+    // In a split track state, both tracks cover the entire track space, so horizontal scrollbars
+    // are naturally available and dragging the splitter never shows blank unrendered space.
+    function computeTrackGridMetrics(actualCount) {
+      const fullTrackWidth = getEntireTrackSpaceWidth();
+      const wholeVisibleCols = Math.floor(fullTrackWidth / COL_W);
+      const fractionalWidth = Math.max(0, fullTrackWidth - (wholeVisibleCols * COL_W));
 
-      // Rule: If enough steps are present to fill or exceed the width,
-      // draw them in full and add 3 placeholder empty columns with dots (+ scrollbar).
-      // Otherwise, occupy full length without scrollbar, drawing lines to the end
-      // and leaving out dots on the partial "half column".
+      // If actual steps exceed the entire track space, render actual steps in full + 3 padding columns.
+      // Otherwise, precalculate for the entire track space: wholeVisibleCols columns with dots,
+      // plus the fractional half-column at the end with horizontal lines and NO DOT.
       const neededColsWithPadding = actualCount + 3;
 
       if (neededColsWithPadding > wholeVisibleCols) {
@@ -3400,7 +3417,7 @@
         return {
           wholeCols: wholeVisibleCols,
           fractionalWidth: fractionalWidth,
-          totalWidth: availableWidth,
+          totalWidth: fullTrackWidth,
           isOverflowing: false
         };
       }
@@ -3410,9 +3427,8 @@
       const displayItems = getDisplayItems();
       const totalCols = displayItems.length;
 
-      // Calculate track width and column metrics based on available space
-      const scrollArea = document.getElementById('timelineScrollArea');
-      const metrics = computeTrackGridMetrics(scrollArea, totalCols);
+      // Calculate track width and column metrics based on the entire track space
+      const metrics = computeTrackGridMetrics(totalCols);
 
       // 1. Render Two-Tier Header: Topmost Step Numbers Row & Lower Folders / Features Row
       headerTrack.innerHTML = '';
@@ -5223,7 +5239,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       if (!assemblyHeaderTrack || !assemblyTrackContainer) return;
 
       const totalCols = assemblyJoints.length;
-      const metrics = computeTrackGridMetrics(assemblyScrollArea, totalCols);
+      const metrics = computeTrackGridMetrics(totalCols);
 
       // 1. Render Assembly Two-Tier Header
       assemblyHeaderTrack.innerHTML = '';
