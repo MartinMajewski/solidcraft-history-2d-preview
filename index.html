@@ -1812,7 +1812,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 7px;
       cursor: col-resize;
       z-index: 45;
       user-select: none;
@@ -1827,10 +1827,10 @@
 
     .splitter-grip {
       width: 4px;
-      height: 32px;
+      height: 24px;
       border-radius: 2px;
       background: #3b4556;
-      transition: background 0.15s;
+      transition: background 0.15s, height 0.15s ease-out;
     }
 
     .track-splitter:hover .splitter-grip, .track-splitter.dragging .splitter-grip {
@@ -1839,10 +1839,7 @@
 
     .splitter-btn {
       width: 14px;
-      height: 22px;
-      border: none;
-      background: #1e2433;
-      color: #94a3b8;
+      height: 20px;
       border-radius: 3px;
       font-size: 9px;
       font-weight: bold;
@@ -1852,11 +1849,38 @@
       cursor: pointer;
       padding: 0;
       transition: all 0.12s;
+      background: #101319;
+      box-sizing: border-box;
     }
 
-    .splitter-btn:hover {
-      background: #38bdf8;
-      color: #000;
+    #btnCollapseLeft {
+      border: 1px solid #38bdf8;
+      color: #94a3b8;
+    }
+
+    #btnCollapseLeft:hover {
+      background: rgba(56, 189, 248, 0.25);
+      color: #ffffff;
+    }
+
+    #btnCollapseLeft:active {
+      background: rgba(56, 189, 248, 0.60);
+      color: #ffffff;
+    }
+
+    #btnCollapseRight {
+      border: 1px solid #c084fc;
+      color: #94a3b8;
+    }
+
+    #btnCollapseRight:hover {
+      background: rgba(192, 132, 252, 0.25);
+      color: #ffffff;
+    }
+
+    #btnCollapseRight:active {
+      background: rgba(192, 132, 252, 0.60);
+      color: #ffffff;
     }
 
     /* Collapsed Dock Strip */
@@ -2151,60 +2175,7 @@
       color: #f1f5f9;
     }
 
-    /* Splitter Button Undo State */
-    .splitter-btn {
-      width: 15px !important;
-      height: 24px !important;
-      border: none;
-      background: #1e2433;
-      color: #94a3b8;
-      border-radius: 3px;
-      font-size: 9px;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      padding: 0;
-      transition: all 0.12s;
-    }
 
-    .splitter-btn:hover {
-      background: #38bdf8;
-      color: #000;
-    }
-
-        /* Splitter Button Reopen State */
-    .splitter-btn.reopen-btn {
-      color: #38bdf8 !important;
-      background: #1a2333 !important;
-      border: 1px solid rgba(56, 189, 248, 0.5) !important;
-      box-shadow: 0 0 6px rgba(56, 189, 248, 0.25) !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-    }
-
-    .splitter-btn.reopen-btn:hover {
-      background: #38bdf8 !important;
-      color: #000000 !important;
-      box-shadow: 0 0 10px rgba(56, 189, 248, 0.6) !important;
-    }
-
-    .splitter-btn.undo-btn {
-      color: #38bdf8 !important;
-      font-size: 14px !important;
-      background: #1a2333 !important;
-      border: 1px solid rgba(56, 189, 248, 0.5) !important;
-      font-weight: bold !important;
-      line-height: 1;
-    }
-
-    .splitter-btn.undo-btn:hover {
-      background: #38bdf8 !important;
-      color: #000000 !important;
-      box-shadow: 0 0 10px rgba(56, 189, 248, 0.6) !important;
-    }
 
   </style>
 </head>
@@ -2506,7 +2477,7 @@
         <!-- Resizable Splitter Bar with Quick < and > buttons -->
         <div class="track-splitter" id="trackSplitter" title="Drag to resize Modeling vs Assembly sections">
           <button class="splitter-btn" id="btnCollapseLeft" title="Collapse Modeling section (Full-size Assembly)">◀</button>
-          <div class="splitter-grip"></div>
+          <div class="splitter-grip" id="splitterGrip"></div>
           <button class="splitter-btn" id="btnCollapseRight" title="Collapse Assembly section (Full-size Modeling)">▶</button>
         </div>
 
@@ -4929,6 +4900,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
     window.addEventListener('resize', () => {
       renderTimeline();
       renderAssemblyTimeline();
+      updateSplitterGripHeight();
     });
 
     window.addEventListener('keydown', (e) => {
@@ -5162,6 +5134,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
     const sectionModeling = document.getElementById('sectionModeling');
     const sectionAssembly = document.getElementById('sectionAssembly');
     const trackSplitter = document.getElementById('trackSplitter');
+    const splitterGrip = document.getElementById('splitterGrip');
     const stripModeling = document.getElementById('stripModeling');
     const stripAssembly = document.getElementById('stripAssembly');
     const stripModelingBadge = document.getElementById('stripModelingBadge');
@@ -6009,6 +5982,23 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       }
     };
 
+    // Crisp Vector Icons for Contraction (|< and >|)
+    const CONTRACT_ICONS = {
+      left: '<svg width="9" height="11" viewBox="0 0 9 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="1.5" y1="1.5" x2="1.5" y2="9.5"/><path d="M7.5 1.5L3.5 5.5L7.5 9.5"/></svg>',
+      right: '<svg width="9" height="11" viewBox="0 0 9 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 1.5L5.5 5.5L1.5 9.5"/><line x1="7.5" y1="1.5" x2="7.5" y2="9.5"/></svg>'
+    };
+
+    function updateSplitterGripHeight() {
+      if (!trackSplitter || !splitterGrip) return;
+      const h = trackSplitter.clientHeight || 110;
+      const oneRowH = 110;
+      const maxH = 262;
+      const t = Math.max(0, Math.min(1, (h - oneRowH) / (maxH - oneRowH)));
+      const baseGripH = 24;
+      const gripH = Math.round(baseGripH * (1 + 0.5 * t));
+      splitterGrip.style.height = `${gripH}px`;
+    }
+
     function setReopenIconStyle(style) {
       reopenIconStyle = style;
       const btns = {
@@ -6035,28 +6025,29 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
         btnCollapseLeft.className = 'splitter-btn reopen-btn';
         btnCollapseLeft.title = 'Reopen Geometric Modeling Track (Expand to Split View)';
 
-        btnCollapseRight.innerHTML = '▶';
+        btnCollapseRight.innerHTML = CONTRACT_ICONS.right;
         btnCollapseRight.className = 'splitter-btn';
-        btnCollapseRight.title = 'Contract Assembly Section & Expand Modeling';
+        btnCollapseRight.title = 'Contract Assembly Section into Right Dock Tab';
       } else if (isAssemblyCollapsed && !isModelingCollapsed) {
         // Assembly contracted (right dock shown), Modeling visible
-        btnCollapseLeft.innerHTML = '◀';
+        btnCollapseLeft.innerHTML = CONTRACT_ICONS.left;
         btnCollapseLeft.className = 'splitter-btn';
-        btnCollapseLeft.title = 'Contract Geometric Modeling & Expand Assembly';
+        btnCollapseLeft.title = 'Contract Geometric Modeling Section into Left Dock Tab';
 
         btnCollapseRight.innerHTML = REOPEN_ICONS[reopenIconStyle].right;
         btnCollapseRight.className = 'splitter-btn reopen-btn';
         btnCollapseRight.title = 'Reopen Assembly Track (Expand to Split View)';
       } else {
         // Both visible (Split View)
-        btnCollapseLeft.innerHTML = '◀';
+        btnCollapseLeft.innerHTML = CONTRACT_ICONS.left;
         btnCollapseLeft.className = 'splitter-btn';
         btnCollapseLeft.title = 'Contract Geometric Modeling Section into Left Dock Tab';
 
-        btnCollapseRight.innerHTML = '▶';
+        btnCollapseRight.innerHTML = CONTRACT_ICONS.right;
         btnCollapseRight.className = 'splitter-btn';
         btnCollapseRight.title = 'Contract Assembly Section into Right Dock Tab';
       }
+      updateSplitterGripHeight();
     }
 
     function collapseModelingSection() {
