@@ -1755,11 +1755,6 @@
       height: 100%;
     }
 
-    .track-section.assembly-section {
-      z-index: 50;
-      overflow: visible;
-    }
-
     .track-section.collapsed {
       display: none !important;
     }
@@ -1943,17 +1938,72 @@
     /* Assembly Rollback Marker (Purple / Violet #a855f7) */
     .assembly-marker {
       position: absolute;
-      top: 28px;
+      top: 0;
       height: calc(var(--header-h) + var(--row-h) * 5);
       width: 20px;
       margin-left: -10px;
-      z-index: 60;
+      z-index: 50;
       cursor: col-resize;
       display: flex;
       flex-direction: column;
       align-items: center;
       pointer-events: auto;
       transition: left 0.1s ease-out;
+    }
+
+    /* Marker bridge for edge offset */
+    .marker-bridge {
+      display: none;
+      height: 2.5px;
+      position: absolute;
+      top: 11px;
+      z-index: 52;
+    }
+
+    .timeline-marker .marker-bridge {
+      background: var(--blue);
+      box-shadow: 0 0 4px rgba(56, 189, 248, 0.4);
+    }
+
+    .assembly-marker .marker-bridge {
+      background: #a855f7;
+      box-shadow: 0 0 4px rgba(168, 85, 247, 0.4);
+    }
+
+    /* Edge First (Step 0): Pin stays inside track, bridge connects to vertical line at 4px */
+    .timeline-marker.edge-first, .assembly-marker.edge-first {
+      align-items: flex-start !important;
+      margin-left: 0 !important;
+      width: 24px;
+    }
+    .timeline-marker.edge-first .marker-line, .assembly-marker.edge-first .marker-line {
+      margin-left: 4px;
+    }
+    .timeline-marker.edge-first .marker-handle-top, .assembly-marker.edge-first .marker-handle-top {
+      margin-left: 6px;
+    }
+    .timeline-marker.edge-first .marker-bridge, .assembly-marker.edge-first .marker-bridge {
+      display: block !important;
+      left: 4px;
+      width: 10px;
+    }
+
+    /* Edge Last (Step N): Pin stays inside track, bridge connects to vertical line at right - 4px */
+    .timeline-marker.edge-last, .assembly-marker.edge-last {
+      align-items: flex-end !important;
+      margin-left: -24px !important;
+      width: 24px;
+    }
+    .timeline-marker.edge-last .marker-line, .assembly-marker.edge-last .marker-line {
+      margin-right: 4px;
+    }
+    .timeline-marker.edge-last .marker-handle-top, .assembly-marker.edge-last .marker-handle-top {
+      margin-right: 6px;
+    }
+    .timeline-marker.edge-last .marker-bridge, .assembly-marker.edge-last .marker-bridge {
+      display: block !important;
+      right: 4px;
+      width: 10px;
     }
 
     .assembly-marker.scrubbing {
@@ -2482,6 +2532,7 @@
 
               <!-- History Rollback Marker (Draggable Scrubber Pin & Vertical Boundary Line) -->
               <div id="timelineMarker" class="timeline-marker" style="left: 832px;" title="History Rollback Marker: Drag head pin to scrub active modeling steps">
+                <div class="marker-bridge"></div>
                 <div class="marker-handle-top" title="Drag head pin to scrub timeline">
                   <div class="marker-pin-inner"></div>
                 </div>
@@ -2535,18 +2586,19 @@
                 <g id="assemblyConnectorsGroup"></g>
               </svg>
 
+              <!-- Dedicated Assembly Rollback Marker (Purple #a855f7) -->
+              <div id="assemblyMarker" class="assembly-marker" style="left: 208px;" title="Assembly Rollback Marker: Drag head pin to scrub kinematic assembly steps">
+                <div class="marker-bridge"></div>
+                <div class="marker-handle-top" title="Drag to scrub assembly sequence">
+                  <div class="marker-pin-inner"></div>
+                </div>
+                <div class="marker-line"></div>
+                <div class="marker-handle-bottom"></div>
+              </div>
+
               <!-- DOM Grid Cells for Assembly Tracks -->
               <div id="assemblyTrackRowsContainer"></div>
             </div>
-          </div>
-
-          <!-- Dedicated Assembly Rollback Marker (Purple #a855f7) - placed in sectionAssembly to float above splitter -->
-          <div id="assemblyMarker" class="assembly-marker" style="left: 208px;" title="Assembly Rollback Marker: Drag head pin to scrub kinematic assembly steps">
-            <div class="marker-handle-top" title="Drag to scrub assembly sequence">
-              <div class="marker-pin-inner"></div>
-            </div>
-            <div class="marker-line"></div>
-            <div class="marker-handle-bottom"></div>
           </div>
         </div>
 
@@ -3119,7 +3171,16 @@
       markerStep = Math.max(0, Math.min(totalCols, step));
       
       if (timelineMarker) {
-        timelineMarker.style.left = `${markerStep * COL_W}px`;
+        timelineMarker.classList.remove('edge-first', 'edge-last');
+        if (markerStep === 0) {
+          timelineMarker.classList.add('edge-first');
+          timelineMarker.style.left = '0px';
+        } else if (markerStep === totalCols) {
+          timelineMarker.classList.add('edge-last');
+          timelineMarker.style.left = `${totalCols * COL_W}px`;
+        } else {
+          timelineMarker.style.left = `${markerStep * COL_W}px`;
+        }
       }
 
       // Update Both Transport Button Sets
@@ -5218,8 +5279,16 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       assemblyMarkerStep = Math.max(0, Math.min(totalJoints, step));
 
       if (assemblyMarker) {
-        const scrollLeft = assemblyScrollArea ? assemblyScrollArea.scrollLeft : 0;
-        assemblyMarker.style.left = `${assemblyMarkerStep * COL_W - scrollLeft}px`;
+        assemblyMarker.classList.remove('edge-first', 'edge-last');
+        if (assemblyMarkerStep === 0) {
+          assemblyMarker.classList.add('edge-first');
+          assemblyMarker.style.left = '0px';
+        } else if (assemblyMarkerStep === totalJoints) {
+          assemblyMarker.classList.add('edge-last');
+          assemblyMarker.style.left = `${totalJoints * COL_W}px`;
+        } else {
+          assemblyMarker.style.left = `${assemblyMarkerStep * COL_W}px`;
+        }
       }
 
       // Update counters
@@ -6140,13 +6209,6 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
     initUnifiedVerticalScroll();
     renderAssemblyTimeline();
     attachAssemblyMarkerScrubbing();
-    if (assemblyScrollArea) {
-      assemblyScrollArea.addEventListener('scroll', () => {
-        if (assemblyMarker) {
-          assemblyMarker.style.left = `${assemblyMarkerStep * COL_W - assemblyScrollArea.scrollLeft}px`;
-        }
-      });
-    }
     attachTransportHandlers();
     attachMarkerScrubbing();
     renderTimeline();
