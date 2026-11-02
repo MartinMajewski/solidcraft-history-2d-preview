@@ -542,6 +542,38 @@
       color: #f0f9ff;
     }
 
+    .header-row.comp-hidden .truncate,
+    .browser-comp-card.comp-hidden .browser-comp-name {
+      color: #64748b;
+      opacity: 0.7;
+    }
+
+    .comp-eye-btn {
+      margin-left: auto;
+      width: 20px;
+      height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #cbd5e1;
+      opacity: 0.85;
+      border-radius: 4px;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: opacity 0.15s, background 0.15s, color 0.15s;
+    }
+
+    .comp-eye-btn:hover {
+      opacity: 1.0;
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+    }
+
+    .comp-eye-btn.hidden-state {
+      opacity: 0.45;
+      color: #94a3b8;
+    }
+
     /* Activation Radio Indicator (mirrors SolidCraft browser component root checkboxes) */
     .comp-radio-indicator {
       width: 12px;
@@ -2838,11 +2870,11 @@
 
     // Component Definitions for Model Browser & Pinned Left Headers
     const componentDefs = [
-      { id: 0, name: "Root (Design)" },
-      { id: 1, name: "Housing" },
-      { id: 2, name: "Shaft" },
-      { id: 3, name: "Bearing" },
-      { id: 4, name: "Fastener" }
+      { id: 0, name: "Root (Design)", visible: true },
+      { id: 1, name: "Housing", visible: true },
+      { id: 2, name: "Shaft", visible: true },
+      { id: 3, name: "Bearing", visible: true },
+      { id: 4, name: "Fastener", visible: true }
     ];
     let activeComponentRow = 1; // Default: Housing (Track Row 1)
 
@@ -3272,43 +3304,69 @@
       browserComponentsList.innerHTML = '';
       componentDefs.forEach(comp => {
         const isActive = comp.id === activeComponentRow;
+        const isVisible = comp.visible !== false;
         const card = document.createElement('div');
-        card.className = `browser-comp-card${isActive ? ' active' : ''}`;
+        card.className = `browser-comp-card${isActive ? ' active' : ''}${!isVisible ? ' comp-hidden' : ''}`;
         card.dataset.id = comp.id;
         card.title = `${comp.name}: Click to ${isActive ? 'keep active' : 'activate exclusively'} as active modeling target`;
 
         card.innerHTML = `
           <span class="comp-radio-indicator${isActive ? ' active' : ''}" title="${isActive ? 'Active Component' : 'Click to Activate'}"></span>
           <span class="browser-comp-name">${comp.name}</span>
+          <span class="comp-eye-btn${!isVisible ? ' hidden-state' : ''}" title="${isVisible ? 'Hide' : 'Show'}">${isVisible ? MENU_ICONS.unsuppress : MENU_ICONS.suppress}</span>
         `;
+
+        const eyeBtn = card.querySelector('.comp-eye-btn');
+        if (eyeBtn) {
+          eyeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleComponentVisibility(comp.id);
+          });
+        }
 
         card.addEventListener('click', (e) => {
           e.stopPropagation();
           setActiveComponent(comp.id);
         });
 
+        card.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          openComponentContextMenu(e.clientX, e.clientY, comp);
+        });
+
         browserComponentsList.appendChild(card);
       });
     }
 
-    // Render Pinned Left Component Headers with Active Highlights & Radio Targets
+    // Render Pinned Left Component Headers with Active Highlights, Radio Targets & Trailing Eye
     function renderPinnedHeaders() {
       if (!pinnedHeadersContent) return;
       pinnedHeadersContent.innerHTML = '';
       componentDefs.forEach(comp => {
         const isActive = comp.id === activeComponentRow;
+        const isVisible = comp.visible !== false;
         const row = document.createElement('div');
         const noActClass = !timelineComponentActivationEnabled ? ' no-activation' : '';
-        row.className = `header-row${isActive ? ' active-component-row' : ''}${noActClass}`;
+        row.className = `header-row${isActive ? ' active-component-row' : ''}${noActClass}${!isVisible ? ' comp-hidden' : ''}`;
         row.dataset.row = comp.id;
         row.title = !timelineComponentActivationEnabled
           ? (isActive ? `${comp.name} (Active Component)` : comp.name)
-          : `${comp.name} (Track Row ${comp.id}) — Click to activate exclusively as modeling target`;
+          : `${comp.name} (Track Row ${comp.id}) — Click to activate exclusively as modeling target, right-click for Component menu`;
 
         row.innerHTML = `
           <span class="comp-radio-indicator${isActive ? ' active' : ''}" title="${isActive ? 'Active Component' : (!timelineComponentActivationEnabled ? 'Inactive Component' : 'Click to Activate')}"></span>
           <span class="truncate">${comp.name}</span>
+          <span class="comp-eye-btn${!isVisible ? ' hidden-state' : ''}" title="${isVisible ? 'Hide' : 'Show'}">${isVisible ? MENU_ICONS.unsuppress : MENU_ICONS.suppress}</span>
         `;
+
+        const eyeBtn = row.querySelector('.comp-eye-btn');
+        if (eyeBtn) {
+          eyeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleComponentVisibility(comp.id);
+          });
+        }
 
         row.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -3316,7 +3374,72 @@
           setActiveComponent(comp.id);
         });
 
+        row.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          openComponentContextMenu(e.clientX, e.clientY, comp);
+        });
+
         pinnedHeadersContent.appendChild(row);
+      });
+    }
+
+    function toggleComponentVisibility(compId) {
+      const comp = componentDefs.find(c => c.id === compId);
+      if (!comp) return;
+      comp.visible = comp.visible === false;
+      renderBrowserComponents();
+      renderPinnedHeaders();
+      dragFeedback.innerHTML = comp.visible
+        ? `👁️ <strong>Component Shown:</strong> <em>${comp.name}</em> is now visible in the 3D viewport.`
+        : `🙈 <strong>Component Hidden:</strong> <em>${comp.name}</em> is now hidden in the 3D viewport.`;
+    }
+
+    function openComponentContextMenu(clientX, clientY, comp) {
+      const menu = document.getElementById('timelineContextMenu');
+      if (!menu) return;
+      const isVisible = comp.visible !== false;
+
+      menu.innerHTML = `
+        <div class="context-menu-item" id="cmenuRenameComponent">
+          <span class="context-menu-icon">${MENU_ICONS.rename}</span>
+          <span>Rename Component</span>
+        </div>
+        <div class="context-menu-item" id="cmenuToggleCompVisibility">
+          <span class="context-menu-icon">${isVisible ? MENU_ICONS.unsuppress : MENU_ICONS.suppress}</span>
+          <span>Show/Hide</span>
+        </div>
+      `;
+      menu.style.display = 'block';
+
+      const menuWidth = menu.offsetWidth || 180;
+      const menuHeight = menu.offsetHeight || 90;
+      let posX = clientX;
+      let posY = clientY;
+      if (posX + menuWidth > window.innerWidth - 10) posX = window.innerWidth - menuWidth - 10;
+      if (posY + menuHeight > window.innerHeight - 10) posY = window.innerHeight - menuHeight - 10;
+      menu.style.left = `${Math.max(10, posX)}px`;
+      menu.style.top = `${Math.max(10, posY)}px`;
+
+      document.getElementById('cmenuRenameComponent')?.addEventListener('click', () => {
+        closeContextMenu();
+        const currentName = comp.name;
+        const newName = prompt(`Rename component "${currentName}":`, currentName);
+        if (newName && newName.trim() && newName.trim() !== currentName) {
+          comp.name = newName.trim();
+          if (comp.id === activeComponentRow) {
+            if (activeCompSummaryName) activeCompSummaryName.textContent = comp.name;
+            if (modelingTargetCompName) modelingTargetCompName.textContent = comp.name;
+          }
+          renderBrowserComponents();
+          renderPinnedHeaders();
+          dragFeedback.innerHTML = `✏️ <strong>Component Renamed:</strong> Renamed component to <em>${comp.name}</em>.`;
+        }
+      });
+
+      document.getElementById('cmenuToggleCompVisibility')?.addEventListener('click', () => {
+        closeContextMenu();
+        toggleComponentVisibility(comp.id);
       });
     }
 
