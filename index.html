@@ -2502,7 +2502,7 @@
               <span class="section-header-badge badge-modeling" id="badgeModelingCount">24 Steps</span>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
-              <span id="modelingActiveSummary" style="color: #94a3b8; font-size: 11px;">Active: 16 / 24</span>
+              <span id="modelingActiveSummary" style="color: #38bdf8; font-size: 11px;">Active: 24 / 24</span>
               <div class="transport-bar" style="margin: 0;">
                 <button id="mBtnBack" class="btn-transport" title="Step Back Modeling">◀</button>
                 <button id="mBtnPlay" class="btn-transport" title="Play Modeling Sequence">▶</button>
@@ -3208,10 +3208,28 @@
         }
       }
 
-      // Update Active Badge
+      // Update Active Badge & Modeling Section Header Summary
+      const mActiveSummaryEl = document.getElementById('modelingActiveSummary');
+      if (mActiveSummaryEl) {
+        mActiveSummaryEl.textContent = `Active: ${activeFeatureCount} / ${actions.length}`;
+        mActiveSummaryEl.style.color = (markerStep < totalCols || activeFeatureCount < actions.length) ? '#f59e0b' : '#38bdf8';
+      }
+      const badgeModCountEl = document.getElementById('badgeModelingCount');
+      if (badgeModCountEl) {
+        badgeModCountEl.textContent = `${actions.length} Steps`;
+      }
+      const stripModBadgeEl = document.getElementById('stripModelingBadge');
+      if (stripModBadgeEl) {
+        stripModBadgeEl.textContent = actions.length;
+      }
+      const mBtnBackEl = document.getElementById('mBtnBack');
+      const mBtnForwardEl = document.getElementById('mBtnForward');
+      if (mBtnBackEl) mBtnBackEl.disabled = isFirst;
+      if (mBtnForwardEl) mBtnForwardEl.disabled = isLast;
+
       if (activeMarkerBadge) {
         activeMarkerBadge.textContent = `Active: ${activeFeatureCount} / ${actions.length} Features`;
-        if (markerStep < totalCols) {
+        if (markerStep < totalCols || activeFeatureCount < actions.length) {
           activeMarkerBadge.style.color = '#f59e0b';
           activeMarkerBadge.style.borderColor = 'rgba(245, 158, 11, 0.4)';
           activeMarkerBadge.style.background = 'rgba(245, 158, 11, 0.15)';
@@ -3222,8 +3240,8 @@
         }
       }
 
-      // Update header step cell highlight
-      document.querySelectorAll('.header-step-cell').forEach(cell => {
+      // Update header step cell highlight (scoped to modeling header track)
+      document.querySelectorAll('#timelineHeaderTrack .header-step-cell').forEach(cell => {
         const c = parseInt(cell.dataset.col);
         if (c > markerStep) {
           cell.className = 'header-step-cell rolled-back-step';
@@ -4058,8 +4076,8 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
         }
       });
 
-      // 2. Highlight All Action Chips with 100% Opacity
-      document.querySelectorAll('.chip').forEach(chip => {
+      // 2. Highlight All Modeling Action Chips with 100% Opacity
+      document.querySelectorAll('#trackRowsContainer .chip').forEach(chip => {
         const id = parseInt(chip.dataset.id);
         const col = parseInt(chip.dataset.col);
         const chipAct = actions.find(a => a.id === id);
@@ -5380,13 +5398,21 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
         }
       }
 
-      // Update counters
-      const activeCount = Math.min(assemblyMarkerStep, totalJoints);
+      // Update counters (exclude suppressed joints from active count)
+      let activeCount = 0;
+      for (let i = 0; i < assemblyMarkerStep && i < totalJoints; i++) {
+        if (!assemblyJoints[i].suppressed) {
+          activeCount += 1;
+        }
+      }
       if (assemblyActiveSummary) {
         assemblyActiveSummary.textContent = `Active: ${activeCount} / ${totalJoints}`;
       }
       if (badgeAssemblyCount) {
         badgeAssemblyCount.textContent = `${totalJoints} Joints`;
+      }
+      if (stripAssemblyBadge) {
+        stripAssemblyBadge.textContent = totalJoints;
       }
 
       // Update header step cells for assembly
