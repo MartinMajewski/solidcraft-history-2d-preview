@@ -578,13 +578,21 @@
       box-shadow: 0 0 4px rgba(56, 189, 248, 0.8);
     }
 
-    /* Timeline Scroll Area: Dual Axis Scroll */
+    /* Timeline Scroll Area: Auto scrollbars when content overflows */
     .timeline-scroll-area {
       flex: 1;
-      overflow-x: scroll;
-      overflow-y: scroll;
+      overflow-x: auto;
+      overflow-y: hidden;
       position: relative;
       background: var(--bg);
+    }
+
+    /* Partial / Half Column at Edge of Track View (Lines continue to end, no dots) */
+    .partial-cell {
+      border-right: none !important;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-sizing: border-box;
     }
 
     /* Tracks Content: Fully DOM-driven grid moving 1:1 with scroll */
@@ -2272,12 +2280,19 @@
             <span class="browser-badge">CAD Browser</span>
             <span>Active Modeling Target</span>
           </div>
-          <div style="display: flex; align-items: center; gap: 6px; font-size: 11px;">
-            <span>Active:</span>
-            <span class="active-comp-summary-pill" id="activeCompSummaryBadge">
-              <span class="comp-radio-indicator active" style="width: 10px; height: 10px;"></span>
-              <strong id="activeCompSummaryName">Housing</strong>
-            </span>
+          <div style="display: flex; align-items: center; gap: 12px; font-size: 11px;">
+            <!-- Timeline Activation option moved above components inside CAD browser -->
+            <label style="display: inline-flex; align-items: center; gap: 5px; cursor: pointer; color: #cbd5e1;" title="Enable/disable activating components directly from timeline track rows">
+              <input type="checkbox" id="chkTimelineCompActivation" checked style="cursor: pointer; accent-color: #38bdf8;">
+              <span style="font-weight: 500;">Timeline Activation</span>
+            </label>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span>Active:</span>
+              <span class="active-comp-summary-pill" id="activeCompSummaryBadge">
+                <span class="comp-radio-indicator active" style="width: 10px; height: 10px;"></span>
+                <strong id="activeCompSummaryName">Housing</strong>
+              </span>
+            </div>
           </div>
         </div>
 
@@ -2333,11 +2348,7 @@
             </div>
           </div>
 
-          <!-- 2. Component Activation in Timeline -->
-          <label style="display: inline-flex; align-items: center; gap: 5px; cursor: pointer; color: #cbd5e1;">
-            <input type="checkbox" id="chkTimelineCompActivation" checked style="cursor: pointer; accent-color: #38bdf8;">
-            Timeline Activation
-          </label>
+
 
           <!-- 3. Split Presets -->
           <div style="display: inline-flex; align-items: center; gap: 4px;">
@@ -3361,31 +3372,83 @@
     }
 
     // Render Timeline: Header Track & Component Tracks (Supports Virtual Group Chips & Open Group Pills)
+    
+    // Compute Track Grid Metrics: Calculates full track width, whole columns,
+    // fractional "half column", and 3 placeholder empty columns with dots when overflowing.
+    function computeTrackGridMetrics(scrollAreaEl, actualCount) {
+      const availableWidth = scrollAreaEl && scrollAreaEl.clientWidth > 0
+        ? scrollAreaEl.clientWidth
+        : Math.floor(window.innerWidth * 0.5);
+
+      const wholeVisibleCols = Math.floor(availableWidth / COL_W);
+      const fractionalWidth = Math.max(0, availableWidth - (wholeVisibleCols * COL_W));
+
+      // Rule: If enough steps are present to fill or exceed the width,
+      // draw them in full and add 3 placeholder empty columns with dots (+ scrollbar).
+      // Otherwise, occupy full length without scrollbar, drawing lines to the end
+      // and leaving out dots on the partial "half column".
+      const neededColsWithPadding = actualCount + 3;
+
+      if (neededColsWithPadding > wholeVisibleCols) {
+        return {
+          wholeCols: neededColsWithPadding,
+          fractionalWidth: 0,
+          totalWidth: neededColsWithPadding * COL_W,
+          isOverflowing: true
+        };
+      } else {
+        return {
+          wholeCols: wholeVisibleCols,
+          fractionalWidth: fractionalWidth,
+          totalWidth: availableWidth,
+          isOverflowing: false
+        };
+      }
+    }
+
     function renderTimeline() {
       const displayItems = getDisplayItems();
       const totalCols = displayItems.length;
-      const minGridCols = Math.max(totalCols, Math.ceil(window.innerWidth / COL_W) + 20, 60);
+
+      // Calculate track width and column metrics based on available space
+      const scrollArea = document.getElementById('timelineScrollArea');
+      const metrics = computeTrackGridMetrics(scrollArea, totalCols);
 
       // 1. Render Two-Tier Header: Topmost Step Numbers Row & Lower Folders / Features Row
       headerTrack.innerHTML = '';
+      headerTrack.style.width = `${metrics.totalWidth}px`;
+      if (tracksContent) tracksContent.style.width = `${metrics.totalWidth}px`;
+      if (svgOverlay) svgOverlay.style.width = `${metrics.totalWidth}px`;
 
       // Top Tier: Step Numbers & Scrubber Pin Track (Topmost)
       const tierSteps = document.createElement('div');
       tierSteps.className = 'header-tier-steps';
+      tierSteps.style.width = `${metrics.totalWidth}px`;
 
       // Lower Tier: Group / Folder Banner Bar (Directly above component grid)
       const tierGroups = document.createElement('div');
       tierGroups.className = 'header-tier-groups';
+      tierGroups.style.width = `${metrics.totalWidth}px`;
 
-      // Background cells for Lower Tier (columns extending across full length)
-      for (let colIdx = 0; colIdx < minGridCols; colIdx++) {
+      // Background cells for Lower Tier (whole columns)
+      for (let colIdx = 0; colIdx < metrics.wholeCols; colIdx++) {
         const gCell = document.createElement('div');
         gCell.className = 'header-group-cell';
         tierGroups.appendChild(gCell);
       }
+      // Partial lower tier cell (half column at end)
+      if (metrics.fractionalWidth > 0) {
+        const partialGCell = document.createElement('div');
+        partialGCell.className = 'header-group-cell partial-cell';
+        partialGCell.style.width = `${metrics.fractionalWidth}px`;
+        partialGCell.style.minWidth = `${metrics.fractionalWidth}px`;
+        partialGCell.style.maxWidth = `${metrics.fractionalWidth}px`;
+        partialGCell.style.borderRight = 'none';
+        tierGroups.appendChild(partialGCell);
+      }
 
-      // Step cells for Top Tier (Step numbers 01 to 24, plus empty cells for remainder)
-      for (let colIdx = 0; colIdx < minGridCols; colIdx++) {
+      // Step cells for Top Tier (Step numbers for actual steps, empty tick cells for remainder)
+      for (let colIdx = 0; colIdx < metrics.wholeCols; colIdx++) {
         const c = colIdx + 1;
         const hCell = document.createElement('div');
 
@@ -3395,7 +3458,6 @@
           hCell.dataset.col = c;
 
           if (item.isGroup) {
-            // Closed group: display "-" in numbers row; subsequent features continue with their actual step numbers
             const minStep = Math.min(...item.actions.map(a => actions.findIndex(act => act.id === a.id) + 1));
             const maxStep = Math.max(...item.actions.map(a => actions.findIndex(act => act.id === a.id) + 1));
             const minStepStr = minStep < 10 ? '0' + minStep : minStep;
@@ -3441,13 +3503,25 @@
             setMarkerStep(c);
           });
         } else {
-          // Empty step cell extending grid lines across full dock width
+          // Whole empty column beyond actual steps: includes tick mark
           hCell.className = 'header-step-cell rolled-back-step';
           hCell.dataset.col = c;
           hCell.innerHTML = `<div class="header-step-tick"></div>`;
         }
 
         tierSteps.appendChild(hCell);
+      }
+
+      // Partial top tier cell (half column: NO TICK MARK)
+      if (metrics.fractionalWidth > 0) {
+        const partialHCell = document.createElement('div');
+        partialHCell.className = 'header-step-cell rolled-back-step partial-cell';
+        partialHCell.style.width = `${metrics.fractionalWidth}px`;
+        partialHCell.style.minWidth = `${metrics.fractionalWidth}px`;
+        partialHCell.style.maxWidth = `${metrics.fractionalWidth}px`;
+        partialHCell.style.borderRight = 'none';
+        partialHCell.innerHTML = '';
+        tierSteps.appendChild(partialHCell);
       }
 
       // Render Group Banners / Pills in Tier 1
@@ -3527,14 +3601,15 @@
       // Below step numbers: Folders & future timeline features row
       headerTrack.appendChild(tierGroups);
 
-      // 2. Render Component Track Rows (Extending grid cells and dots across entire length)
+      // 2. Render Component Track Rows
       trackContainer.innerHTML = '';
       for (let r = 0; r < NUM_ROWS; r++) {
         const rowDiv = document.createElement('div');
         rowDiv.className = 'track-row' + (r === activeComponentRow ? ' active-track-row' : '');
         rowDiv.dataset.row = r;
+        rowDiv.style.width = `${metrics.totalWidth}px`;
 
-        for (let colIdx = 0; colIdx < minGridCols; colIdx++) {
+        for (let colIdx = 0; colIdx < metrics.wholeCols; colIdx++) {
           const c = colIdx + 1;
           const cell = document.createElement('div');
           cell.className = 'track-cell';
@@ -3544,7 +3619,6 @@
           if (colIdx < totalCols) {
             const item = displayItems[colIdx];
             if (item.isGroup) {
-              // Group column: row cells left clear for the column-spanning virtual chip
               cell.innerHTML = '';
             } else {
               const act = item.action;
@@ -3570,11 +3644,24 @@
               }
             }
           } else {
-            // Extension beyond total features: empty cell with alignment dot
+            // Whole empty column beyond actual steps: includes alignment dot
             cell.innerHTML = '<span class="empty-hint">·</span>';
           }
           rowDiv.appendChild(cell);
         }
+
+        // Partial / Half Column at Edge of Track View (Lines continue to end, NO DOT!)
+        if (metrics.fractionalWidth > 0) {
+          const partialCell = document.createElement('div');
+          partialCell.className = 'track-cell partial-cell';
+          partialCell.style.width = `${metrics.fractionalWidth}px`;
+          partialCell.style.minWidth = `${metrics.fractionalWidth}px`;
+          partialCell.style.maxWidth = `${metrics.fractionalWidth}px`;
+          partialCell.style.borderRight = 'none';
+          partialCell.innerHTML = ''; // NO DOT!
+          rowDiv.appendChild(partialCell);
+        }
+
         trackContainer.appendChild(rowDiv);
       }
       // 2b. Render Open Group Corridor Background Tint
@@ -4787,6 +4874,11 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
     });
 
     // Dismiss Context Menu on Escape
+    window.addEventListener('resize', () => {
+      renderTimeline();
+      renderAssemblyTimeline();
+    });
+
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         closeContextMenu();
@@ -5131,18 +5223,23 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       if (!assemblyHeaderTrack || !assemblyTrackContainer) return;
 
       const totalCols = assemblyJoints.length;
-      const minGridCols = Math.max(totalCols, Math.ceil(window.innerWidth / COL_W) + 20, 60);
+      const metrics = computeTrackGridMetrics(assemblyScrollArea, totalCols);
 
       // 1. Render Assembly Two-Tier Header
       assemblyHeaderTrack.innerHTML = '';
+      assemblyHeaderTrack.style.width = `${metrics.totalWidth}px`;
+      if (assemblyTracksContent) assemblyTracksContent.style.width = `${metrics.totalWidth}px`;
+      if (assemblySvgOverlay) assemblySvgOverlay.style.width = `${metrics.totalWidth}px`;
 
       const tierSteps = document.createElement('div');
       tierSteps.className = 'header-tier-steps';
+      tierSteps.style.width = `${metrics.totalWidth}px`;
 
       const tierGroups = document.createElement('div');
       tierGroups.className = 'header-tier-groups';
+      tierGroups.style.width = `${metrics.totalWidth}px`;
 
-      for (let colIdx = 0; colIdx < minGridCols; colIdx++) {
+      for (let colIdx = 0; colIdx < metrics.wholeCols; colIdx++) {
         const c = colIdx + 1;
 
         if (colIdx < totalCols) {
@@ -5175,7 +5272,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
           gCell.innerHTML = `<span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 48px;">${joint.typeLabel}</span>`;
           tierGroups.appendChild(gCell);
         } else {
-          // Continuous header track beyond last joint
+          // Whole empty column beyond actual joints: includes tick mark
           const hCell = document.createElement('div');
           hCell.className = 'header-step-cell assembly-step-cell rolled-back-step';
           hCell.dataset.col = c;
@@ -5188,17 +5285,39 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
         }
       }
 
+      // Partial column header (half column at end: NO TICK MARK)
+      if (metrics.fractionalWidth > 0) {
+        const partialHCell = document.createElement('div');
+        partialHCell.className = 'header-step-cell assembly-step-cell rolled-back-step partial-cell';
+        partialHCell.style.width = `${metrics.fractionalWidth}px`;
+        partialHCell.style.minWidth = `${metrics.fractionalWidth}px`;
+        partialHCell.style.maxWidth = `${metrics.fractionalWidth}px`;
+        partialHCell.style.borderRight = 'none';
+        partialHCell.innerHTML = '';
+        tierSteps.appendChild(partialHCell);
+
+        const partialGCell = document.createElement('div');
+        partialGCell.className = 'header-group-cell partial-cell';
+        partialGCell.style.width = `${metrics.fractionalWidth}px`;
+        partialGCell.style.minWidth = `${metrics.fractionalWidth}px`;
+        partialGCell.style.maxWidth = `${metrics.fractionalWidth}px`;
+        partialGCell.style.borderRight = 'none';
+        partialGCell.innerHTML = '';
+        tierGroups.appendChild(partialGCell);
+      }
+
       assemblyHeaderTrack.appendChild(tierSteps);
       assemblyHeaderTrack.appendChild(tierGroups);
 
-      // 2. Render Assembly Track Rows (Rows 0 to 4 extending grid across full length)
+      // 2. Render Assembly Track Rows
       assemblyTrackContainer.innerHTML = '';
       for (let r = 0; r < NUM_ROWS; r++) {
         const rowDiv = document.createElement('div');
         rowDiv.className = 'track-row' + (r === activeComponentRow ? ' active-track-row' : '');
         rowDiv.dataset.row = r;
+        rowDiv.style.width = `${metrics.totalWidth}px`;
 
-        for (let colIdx = 0; colIdx < minGridCols; colIdx++) {
+        for (let colIdx = 0; colIdx < metrics.wholeCols; colIdx++) {
           const c = colIdx + 1;
           const cell = document.createElement('div');
           cell.className = 'track-cell';
@@ -5245,12 +5364,25 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
               cell.innerHTML = '<span class="empty-hint">·</span>';
             }
           } else {
-            // Extension beyond total joints: empty cell with alignment dot
+            // Whole empty column beyond actual joints: includes alignment dot
             cell.innerHTML = '<span class="empty-hint">·</span>';
           }
 
           rowDiv.appendChild(cell);
         }
+
+        // Half column at the end: horizontal lines continue, NO DOT!
+        if (metrics.fractionalWidth > 0) {
+          const partialCell = document.createElement('div');
+          partialCell.className = 'track-cell partial-cell';
+          partialCell.style.width = `${metrics.fractionalWidth}px`;
+          partialCell.style.minWidth = `${metrics.fractionalWidth}px`;
+          partialCell.style.maxWidth = `${metrics.fractionalWidth}px`;
+          partialCell.style.borderRight = 'none';
+          partialCell.innerHTML = ''; // NO DOT!
+          rowDiv.appendChild(partialCell);
+        }
+
         assemblyTrackContainer.appendChild(rowDiv);
       }
 
@@ -5662,6 +5794,8 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
           document.body.style.cursor = 'default';
           window.removeEventListener('mousemove', onMouseMove);
           window.removeEventListener('mouseup', onMouseUp);
+          renderTimeline();
+          renderAssemblyTimeline();
         }
 
         window.addEventListener('mousemove', onMouseMove);
@@ -5888,6 +6022,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       stripModelingBadge.textContent = actions.length;
       sectionAssembly.style.flex = '1 1 auto';
       updateSplitterUI();
+      renderAssemblyTimeline();
       dragFeedback.innerHTML = `🟣 <strong>Assembly Full View:</strong> Geometric modeling section contracted. Click the splitter button or drag handle towards center to expand.`;
     }
 
@@ -5902,6 +6037,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       stripAssemblyBadge.textContent = assemblyJoints.length;
       sectionModeling.style.flex = '1 1 auto';
       updateSplitterUI();
+      renderTimeline();
       dragFeedback.innerHTML = `🔷 <strong>Modeling Full View:</strong> Assembly section contracted. Click the splitter button or drag handle towards center to expand.`;
     }
 
@@ -5937,6 +6073,8 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       sectionModeling.style.flex = '65 1 0';
       sectionAssembly.style.flex = '35 1 0';
       updateSplitterUI();
+      renderTimeline();
+      renderAssemblyTimeline();
       dragFeedback.innerHTML = `↔️ <strong>Split View Restored:</strong> Modeling and Assembly views visible side-by-side.`;
     }
     // =========================================================================
