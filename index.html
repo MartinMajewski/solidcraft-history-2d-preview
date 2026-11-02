@@ -2064,8 +2064,35 @@
     }
 
     .chip.joint-chip.downstream {
-      border: 2px solid #c084fc !important;
-      background: rgba(192, 132, 252, 0.2) !important;
+      border: 2px solid var(--blue) !important;
+      background: var(--blue-bg) !important;
+    }
+
+    .chip.joint-chip.prereq-inactive {
+      border: 2px solid var(--grey-prereq) !important;
+      background: var(--grey-prereq-bg) !important;
+      filter: grayscale(100%);
+    }
+
+    .chip.joint-chip.downstream-inactive {
+      border: 2px solid var(--grey-downstream) !important;
+      background: var(--grey-downstream-bg) !important;
+      filter: grayscale(100%);
+    }
+
+    .chip.joint-chip.suppressed {
+      border-style: dashed !important;
+      opacity: 0.65 !important;
+    }
+
+    .joint-connector-dots.prereq {
+      stroke: var(--orange) !important;
+      stroke-width: 2px !important;
+    }
+
+    .joint-connector-dots.downstream {
+      stroke: var(--blue) !important;
+      stroke-width: 2px !important;
     }
 
     .chip.joint-chip.unselected-inactive {
@@ -5407,6 +5434,8 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       if (!assemblyConnectorsGroup) return;
       assemblyConnectorsGroup.innerHTML = '';
 
+      const selJoint = selectedJointId ? assemblyJoints.find(j => j.id === selectedJointId) : null;
+
       assemblyJoints.forEach((joint, colIdx) => {
         if (joint.rows.length > 1) {
           const c = colIdx + 1;
@@ -5425,7 +5454,16 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
 
           const isInactive = c > assemblyMarkerStep;
           const isSelected = selectedJointId === joint.id;
-          line.setAttribute('class', `joint-connector-dots ${isSelected ? 'active-selected' : (isInactive ? 'inactive' : '')}`);
+          const isPrereq = selJoint && selJoint.prereqs.includes(joint.id);
+          const isDownstream = selJoint && selJoint.downstream.includes(joint.id);
+
+          let connClass = 'joint-connector-dots';
+          if (isSelected) connClass += ' active-selected';
+          else if (isPrereq) connClass += isInactive ? ' inactive' : ' prereq';
+          else if (isDownstream) connClass += isInactive ? ' inactive' : ' downstream';
+          else if (isInactive) connClass += ' inactive';
+
+          line.setAttribute('class', connClass);
           line.dataset.jointId = joint.id;
           assemblyConnectorsGroup.appendChild(line);
         }
@@ -5440,21 +5478,25 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
         const col = parseInt(chip.dataset.col);
         const joint = assemblyJoints.find(j => j.id === jid);
         const isInactive = col > assemblyMarkerStep;
+        const isSuppressed = joint && joint.suppressed;
 
+        let statusClass = '';
         if (selectedJointId === jid) {
-          chip.className = `chip joint-chip ${isInactive ? 'selected-inactive' : 'selected'}`;
+          statusClass = isInactive ? 'selected-inactive' : 'selected';
         } else if (selectedJointId !== null) {
           const selJoint = assemblyJoints.find(j => j.id === selectedJointId);
           if (selJoint && selJoint.prereqs.includes(jid)) {
-            chip.className = `chip joint-chip ${isInactive ? 'unselected-inactive' : 'prereq'}`;
+            statusClass = isInactive ? 'prereq-inactive' : 'prereq';
           } else if (selJoint && selJoint.downstream.includes(jid)) {
-            chip.className = `chip joint-chip ${isInactive ? 'unselected-inactive' : 'downstream'}`;
+            statusClass = isInactive ? 'downstream-inactive' : 'downstream';
           } else {
-            chip.className = `chip joint-chip ${isInactive ? 'unselected-inactive' : 'active-joint'}`;
+            statusClass = isInactive ? 'unselected-inactive' : 'active-joint';
           }
         } else {
-          chip.className = `chip joint-chip ${isInactive ? 'unselected-inactive' : 'active-joint'}`;
+          statusClass = isInactive ? 'unselected-inactive' : 'active-joint';
         }
+
+        chip.className = `chip joint-chip ${statusClass}${isSuppressed ? ' suppressed' : ''}`;
       });
 
       // 2. Target Nodes
@@ -5649,6 +5691,164 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
         window.addEventListener('mousemove', onMouseMove);
         window.addEventListener('mouseup', onMouseUp);
       });
+
+      // Context menu on right-click for joint chip (matches SolidCraft joint_menu)
+      chip.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        selectedJointId = joint.id;
+        selectedActionIds = []; // clear modeling selection
+        applyAssemblyHighlight();
+        applyHighlight();
+        openJointContextMenu(e.clientX, e.clientY, joint);
+      });
+
+      // Double-click to Edit Joint
+      chip.addEventListener('dblclick', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeContextMenu();
+        openEditJointDialog(joint);
+      });
+    }
+
+    // Open Joint Context Menu (Edit Joint, Drive Joint, Suppress, Delete)
+    function openJointContextMenu(clientX, clientY, joint) {
+      const menu = document.getElementById('timelineContextMenu');
+      if (!menu) return;
+
+      const isRigid = joint.type === 'rigid_group' || joint.type === 'joint_origin' || joint.typeLabel === 'Rigid' || joint.typeLabel === 'Rigid Ground' || joint.typeLabel === 'Rigid Group';
+
+      let html = `
+        <div class="context-menu-header">
+          <span>${joint.name}</span>
+          <span style="font-size: 10px; color: #c084fc; font-weight: normal;">${joint.stepLabel} · ${joint.typeLabel}${joint.suppressed ? ' (Suppressed)' : ''}</span>
+        </div>
+      `;
+
+      html += `
+        <div class="context-menu-item" id="cmenuJointEdit">
+          <span class="context-menu-icon">${MENU_ICONS.edit}</span>
+          <span>Edit Joint</span>
+        </div>
+      `;
+
+      if (!isRigid) {
+        html += `
+          <div class="context-menu-item" id="cmenuJointDrive">
+            <span class="context-menu-icon">🎛️</span>
+            <span>Drive Joint</span>
+          </div>
+        `;
+      }
+
+      const suppText = joint.suppressed ? "Unsuppress" : "Suppress";
+      const suppIcon = joint.suppressed ? MENU_ICONS.unsuppress : MENU_ICONS.suppress;
+      html += `
+        <div class="context-menu-item" id="cmenuJointSuppress">
+          <span class="context-menu-icon">${suppIcon}</span>
+          <span>${suppText}</span>
+        </div>
+        <div class="context-menu-sep"></div>
+        <div class="context-menu-item danger" id="cmenuJointDelete">
+          <span class="context-menu-icon">${MENU_ICONS.delete}</span>
+          <span>Delete</span>
+        </div>
+      `;
+
+      menu.innerHTML = html;
+      menu.style.display = 'block';
+
+      const menuWidth = 200;
+      const menuHeight = menu.offsetHeight || 160;
+      let left = clientX;
+      let top = clientY;
+      if (left + menuWidth > window.innerWidth - 10) left = window.innerWidth - menuWidth - 10;
+      if (top + menuHeight > window.innerHeight - 10) top = window.innerHeight - menuHeight - 10;
+      menu.style.left = `${left}px`;
+      menu.style.top = `${top}px`;
+
+      document.getElementById('cmenuJointEdit')?.addEventListener('click', () => {
+        closeContextMenu();
+        openEditJointDialog(joint);
+      });
+
+      document.getElementById('cmenuJointDrive')?.addEventListener('click', () => {
+        closeContextMenu();
+        driveJoint(joint);
+      });
+
+      document.getElementById('cmenuJointSuppress')?.addEventListener('click', () => {
+        closeContextMenu();
+        toggleJointSuppress(joint);
+      });
+
+      document.getElementById('cmenuJointDelete')?.addEventListener('click', () => {
+        closeContextMenu();
+        deleteJoint(joint);
+      });
+    }
+
+    // Functionality: Edit Joint
+    function openEditJointDialog(joint) {
+      const newName = prompt('Edit Joint Name:', joint.name);
+      if (newName && newName.trim() && newName.trim() !== joint.name) {
+        joint.name = newName.trim();
+        renderAssemblyTimeline();
+        dragFeedback.innerHTML = `✏️ <strong>Joint Renamed:</strong> Updated joint to <em>${joint.name}</em>.`;
+      }
+    }
+
+    // Functionality: Drive Joint
+    function driveJoint(joint) {
+      selectedJointId = joint.id;
+      applyAssemblyHighlight();
+      dragFeedback.innerHTML = `🎛️ <strong>Driving Joint:</strong> Scrubbing <em>${joint.name}</em> (${joint.stepLabel}) through its kinematic range (${joint.limits || '0° to 360°'}).`;
+
+      const chips = document.querySelectorAll(`.chip.joint-chip[data-id="${joint.id}"]`);
+      chips.forEach(c => {
+        c.style.transition = 'transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s';
+        c.style.transform = 'scale(1.22)';
+        c.style.boxShadow = '0 0 16px rgba(192, 132, 252, 0.9)';
+        setTimeout(() => {
+          c.style.transform = '';
+          c.style.boxShadow = '';
+          setTimeout(() => { c.style.transition = ''; }, 250);
+        }, 550);
+      });
+    }
+
+    // Functionality: Suppress / Unsuppress Joint
+    function toggleJointSuppress(joint) {
+      joint.suppressed = !joint.suppressed;
+      renderAssemblyTimeline();
+      if (joint.suppressed) {
+        dragFeedback.innerHTML = `🚫 <strong>Joint Suppressed:</strong> <em>${joint.name}</em> is excluded from kinematic solving.`;
+      } else {
+        dragFeedback.innerHTML = `👁️ <strong>Joint Unsuppressed:</strong> <em>${joint.name}</em> is active in kinematic solving.`;
+      }
+    }
+
+    // Functionality: Delete Joint
+    function deleteJoint(joint) {
+      if (!confirm(`Delete joint "${joint.name}" (${joint.stepLabel})?`)) return;
+      const idx = assemblyJoints.findIndex(j => j.id === joint.id);
+      if (idx !== -1) {
+        assemblyJoints.splice(idx, 1);
+        assemblyJoints.forEach(j => {
+          j.prereqs = j.prereqs.filter(id => id !== joint.id);
+          j.downstream = j.downstream.filter(id => id !== joint.id);
+        });
+        assemblyJoints.forEach((j, i) => {
+          j.stepLabel = `J0${i + 1}`;
+        });
+        if (selectedJointId === joint.id) {
+          selectedJointId = assemblyJoints.length > 0 ? assemblyJoints[0].id : null;
+        }
+        badgeAssemblyCount.textContent = `${assemblyJoints.length} Joints`;
+        renderAssemblyTimeline();
+        dragFeedback.innerHTML = `🗑️ <strong>Joint Deleted:</strong> Deleted <em>${joint.name}</em> from assembly.`;
+      }
     }
 
     // Attach Marker Scrubbing Logic for Assembly Marker
