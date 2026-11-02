@@ -5563,28 +5563,79 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       if (!trackSplitter || !sectionModeling || !sectionAssembly) return;
 
       let isDraggingSplitter = false;
-      let startMouseX = 0;
-      let startModelingWidth = 0;
+      let dragStartX = 0;
+      let didDragMove = false;
 
-      // Mouse drag resize
-      trackSplitter.addEventListener('mousedown', (e) => {
+      // COL_W = 52px. Snapping threshold is less than 1 column (< 46px).
+      // Expanding threshold is dragging past 52px towards center.
+      const SNAP_THRESHOLD = 46;
+      const EXPAND_THRESHOLD = 52;
+
+      function startSplitterDrag(e) {
         if (e.target.closest('.splitter-btn')) return; // ignore click on buttons
         e.preventDefault();
         isDraggingSplitter = true;
+        dragStartX = e.clientX;
+        didDragMove = false;
         trackSplitter.classList.add('dragging');
         document.body.style.cursor = 'col-resize';
-        startMouseX = e.clientX;
-        startModelingWidth = sectionModeling.getBoundingClientRect().width;
+
+        const wrapper = document.getElementById('splitViewportWrapper');
 
         function onMouseMove(e) {
           if (!isDraggingSplitter) return;
-          const deltaX = e.clientX - startMouseX;
-          const wrapperWidth = document.getElementById('splitViewportWrapper').getBoundingClientRect().width;
-          const minWidth = 180;
-          const maxWidth = wrapperWidth - 180 - trackSplitter.offsetWidth;
+          const deltaX = Math.abs(e.clientX - dragStartX);
+          if (deltaX > 3) didDragMove = true;
 
-          let newWidth = Math.max(minWidth, Math.min(maxWidth, startModelingWidth + deltaX));
-          sectionModeling.style.flex = `0 0 ${newWidth}px`;
+          const wrapperRect = wrapper.getBoundingClientRect();
+          const wrapperWidth = wrapperRect.width;
+          const splitterWidth = trackSplitter.offsetWidth || 8;
+          const mouseX = e.clientX - wrapperRect.left;
+          const distFromRight = wrapperWidth - mouseX;
+
+          // 1. Dragging handle while Modeling is contracted on the left
+          if (isModelingCollapsed) {
+            // Dragging handle towards timeline center (to the right)
+            if (mouseX >= EXPAND_THRESHOLD) {
+              expandModelingSection(mouseX - (splitterWidth / 2));
+              dragFeedback.innerHTML = `↔️ <strong>Modeling Expanded:</strong> Unfolded geometric modeling track from dock.`;
+            } else {
+              return; // Stay collapsed until dragged past threshold
+            }
+          }
+
+          // 2. Dragging handle while Assembly is contracted on the right
+          if (isAssemblyCollapsed) {
+            // Dragging handle towards timeline center (to the left)
+            if (distFromRight >= EXPAND_THRESHOLD) {
+              const targetModelingW = mouseX - (splitterWidth / 2);
+              expandAssemblySection(targetModelingW);
+              dragFeedback.innerHTML = `↔️ <strong>Assembly Expanded:</strong> Unfolded assembly & joints track from dock.`;
+            } else {
+              return; // Stay collapsed until dragged past threshold
+            }
+          }
+
+          // 3. Dynamic Snap-to-Collapse when dragging towards edges:
+          // If dragged close to the left edge (< 1 column remaining for Modeling)
+          if (mouseX < SNAP_THRESHOLD) {
+            if (!isModelingCollapsed) {
+              collapseModelingSection();
+            }
+            return;
+          }
+
+          // If dragged close to the right edge (< 1 column remaining for Assembly)
+          if (distFromRight < SNAP_THRESHOLD) {
+            if (!isAssemblyCollapsed) {
+              collapseAssemblySection();
+            }
+            return;
+          }
+
+          // 4. In-between (both sections open): fluid continuous drag
+          const targetModelingWidth = Math.max(SNAP_THRESHOLD, Math.min(wrapperWidth - splitterWidth - SNAP_THRESHOLD, mouseX - (splitterWidth / 2)));
+          sectionModeling.style.flex = `0 0 ${targetModelingWidth}px`;
           sectionAssembly.style.flex = '1 1 0';
         }
 
@@ -5599,17 +5650,18 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
 
         window.addEventListener('mousemove', onMouseMove);
         window.addEventListener('mouseup', onMouseUp);
-      });
+      }
 
-      // Left Button on Splitter (Contracts Modeling or Undos if already contracted)
+      // Attach mousedown to splitter bar and drag handle
+      trackSplitter.addEventListener('mousedown', startSplitterDrag);
+
+      // Left Button on Splitter (Contracts Modeling or Reopens if already contracted)
       if (btnCollapseLeft) {
         btnCollapseLeft.addEventListener('click', (e) => {
           e.stopPropagation();
           if (isModelingCollapsed) {
-            // Restore split view
             restoreBothSections();
           } else {
-            // Contract modeling section. Ensure assembly is visible (never both contracted)
             if (isAssemblyCollapsed) {
               isAssemblyCollapsed = false;
               sectionAssembly.classList.remove('collapsed');
@@ -5620,15 +5672,13 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
         });
       }
 
-      // Right Button on Splitter (Contracts Assembly or Undos if already contracted)
+      // Right Button on Splitter (Contracts Assembly or Reopens if already contracted)
       if (btnCollapseRight) {
         btnCollapseRight.addEventListener('click', (e) => {
           e.stopPropagation();
           if (isAssemblyCollapsed) {
-            // Restore split view
             restoreBothSections();
           } else {
-            // Contract assembly section. Ensure modeling is visible (never both contracted)
             if (isModelingCollapsed) {
               isModelingCollapsed = false;
               sectionModeling.classList.remove('collapsed');
@@ -5639,17 +5689,19 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
         });
       }
 
-      // Restore by clicking on the dock tabs themselves
+      // Dock tab clicks to restore split view
       if (stripModeling) {
         stripModeling.addEventListener('click', () => {
-          restoreBothSections();
+          if (isModelingCollapsed) restoreBothSections();
         });
+        stripModeling.addEventListener('mousedown', startSplitterDrag);
       }
 
       if (stripAssembly) {
         stripAssembly.addEventListener('click', () => {
-          restoreBothSections();
+          if (isAssemblyCollapsed) restoreBothSections();
         });
+        stripAssembly.addEventListener('mousedown', startSplitterDrag);
       }
 
       // Split Presets (65/35 and 50/50)
@@ -5820,7 +5872,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       stripModelingBadge.textContent = actions.length;
       sectionAssembly.style.flex = '1 1 auto';
       updateSplitterUI();
-      dragFeedback.innerHTML = `🟣 <strong>Assembly Full View:</strong> Geometric modeling section contracted. Click the splitter button to reopen.`;
+      dragFeedback.innerHTML = `🟣 <strong>Assembly Full View:</strong> Geometric modeling section contracted. Click the splitter button or drag handle towards center to expand.`;
     }
 
     function collapseAssemblySection() {
@@ -5834,7 +5886,29 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       stripAssemblyBadge.textContent = assemblyJoints.length;
       sectionModeling.style.flex = '1 1 auto';
       updateSplitterUI();
-      dragFeedback.innerHTML = `🔷 <strong>Modeling Full View:</strong> Assembly section contracted. Click the splitter button to reopen.`;
+      dragFeedback.innerHTML = `🔷 <strong>Modeling Full View:</strong> Assembly section contracted. Click the splitter button or drag handle towards center to expand.`;
+    }
+
+    function expandModelingSection(targetWidth) {
+      isModelingCollapsed = false;
+      sectionModeling.classList.remove('collapsed');
+      stripModeling.style.display = 'none';
+      if (targetWidth) {
+        sectionModeling.style.flex = `0 0 ${targetWidth}px`;
+        sectionAssembly.style.flex = '1 1 0';
+      }
+      updateSplitterUI();
+    }
+
+    function expandAssemblySection(targetWidth) {
+      isAssemblyCollapsed = false;
+      sectionAssembly.classList.remove('collapsed');
+      stripAssembly.style.display = 'none';
+      if (targetWidth) {
+        sectionModeling.style.flex = `0 0 ${targetWidth}px`;
+        sectionAssembly.style.flex = '1 1 0';
+      }
+      updateSplitterUI();
     }
 
     function restoreBothSections() {
@@ -5849,7 +5923,6 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       updateSplitterUI();
       dragFeedback.innerHTML = `↔️ <strong>Split View Restored:</strong> Modeling and Assembly views visible side-by-side.`;
     }
-
     // =========================================================================
     // SYNCHRONIZED VERTICAL SCROLLING (100% LOCKSTEP ALIGNMENT)
     // =========================================================================
