@@ -47,19 +47,24 @@
       background-color: #0c0e12;
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      padding: 24px 16px;
+      padding: 0 0 60px 0;
+      margin: 0;
+      width: 100%;
+      overflow-x: hidden;
       user-select: none;
       -webkit-user-select: none;
     }
 
     .container {
-      max-width: 1100px;
-      margin: 0 auto;
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 20px;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      box-sizing: border-box;
     }
 
     /* Header Bar */
@@ -1763,7 +1768,7 @@
     /* Split Viewport Layout */
     .viewport-container {
       position: relative;
-      height: 264px !important; /* Section Header Banner (28px) + Timeline Header (44px) + 4 rows visible (152px) + scrollbar */
+      height: 264px; /* Section Header Banner (28px) + Timeline Header (44px) + 4 rows visible (152px) + scrollbar */
       border: 1px solid var(--border);
       border-radius: 8px;
       overflow: hidden;
@@ -2271,8 +2276,11 @@
     }
 
     .site-nav-inner {
-      max-width: 1260px;
-      margin: 0 auto;
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      padding: 0 24px;
+      box-sizing: border-box;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -2488,9 +2496,11 @@
 
     /* Product Section Containers */
     .product-section {
-      padding: 70px 24px;
+      padding: 60px 0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
       position: relative;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .product-section:nth-child(even) {
@@ -2498,8 +2508,11 @@
     }
 
     .section-container {
-      max-width: 1260px;
-      margin: 0 auto;
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      padding: 0 24px;
+      box-sizing: border-box;
     }
 
     .section-header-deck {
@@ -2534,7 +2547,7 @@
       font-size: 15px;
       line-height: 1.65;
       color: #94a3b8;
-      max-width: 1060px;
+      max-width: 100%;
       margin-bottom: 22px;
     }
 
@@ -2596,6 +2609,8 @@
       border-radius: 12px;
       padding: 18px;
       box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .showcase-header-bar {
@@ -3063,15 +3078,15 @@
           <div class="toolbar-group">
             <span class="toolbar-pill" style="border-color: #38bdf8;">
               <span style="color: #38bdf8; font-weight: 700;">Selected:</span>
-              <span>Step 05 Fillet Edge</span>
+              <span>Step 05 Boss Fillet R2</span>
             </span>
             <span class="toolbar-pill" style="border-color: #f59e0b;">
-              <span style="color: #f59e0b; font-weight: 700;">Prereqs:</span>
-              <span>Step 03 Housing Revolve</span>
+              <span style="color: #f59e0b; font-weight: 700;">Prereq:</span>
+              <span>Step 04 Standoff Boss</span>
             </span>
             <span class="toolbar-pill" style="border-color: #38bdf8;">
               <span style="color: #38bdf8; font-weight: 700;">Dependents:</span>
-              <span>Step 09, Step 14</span>
+              <span>Step 08 Sensor Pocket, Step 12 Tab</span>
             </span>
             <span class="toolbar-pill" style="border-color: #22c55e; background: rgba(34, 197, 94, 0.12);">
               <span style="color: #22c55e; font-weight: 700;">Corridor:</span>
@@ -3318,7 +3333,7 @@
             <span style="font-weight: 600; font-size: 13px; color: #fff;">Virtual Groups, Cascading Suppression &amp; Greyscale Rollback</span>
           </div>
           <div style="font-size: 11.5px; color: #94a3b8;">
-            Group 1 Open · Group 2 Folded · Step 15 Suppressed with Cascading Dependents · Marker at Step 18
+            Group 1 Open · Group 2 Folded · Step 13 Suppressed with Cascading Dependents · Marker at Step 16
           </div>
         </div>
 
@@ -3327,21 +3342,21 @@
           <div class="toolbar-group">
             <span class="toolbar-label">Group Actions:</span>
             <button id="cat5_btnToggleGroup1" class="toolbar-btn">Toggle "Foundation Stage"</button>
-            <button id="cat5_btnToggleGroup2" class="toolbar-btn">Toggle "Shaft Core"</button>
+            <button id="cat5_btnToggleGroup2" class="toolbar-btn">Toggle "Rotor Core Unit"</button>
           </div>
 
           <div class="toolbar-group">
             <span class="toolbar-label">Suppression:</span>
             <button id="cat5_btnToggleSuppress" class="toolbar-btn" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.4);">
-              Toggle Suppress Step 15 (Bearing Shell)
+              Toggle Suppress Step 13 (Bearing Support Flange)
             </button>
           </div>
 
           <div class="toolbar-group">
             <span class="toolbar-label">Rollback Scrubber:</span>
-            <button id="cat5_btnJump18" class="toolbar-btn active">Step 18 (Greyscale Demo)</button>
+            <button id="cat5_btnJump18" class="toolbar-btn active">Step 16 (Greyscale Demo)</button>
             <button id="cat5_btnJump08" class="toolbar-btn">Step 08</button>
-            <button id="cat5_btnJump24" class="toolbar-btn">Step 24 (End)</button>
+            <button id="cat5_btnJump24" class="toolbar-btn">Step 20 (End)</button>
           </div>
         </div>
 
@@ -3912,7 +3927,7 @@ function createTimelineWidget(containerEl, options = {}) {
   const pathBracketRight = containerEl.querySelector('.path-bracket-right');
   const pathBracketRightHalo = containerEl.querySelector('.path-bracket-right-halo');
   const connectorsGroup = containerEl.querySelector('.connectors-group');
-  const statusDetails = containerEl.querySelector('.status-details');
+  const statusDetails = containerEl.querySelector('.status-details') || containerEl.querySelector('.drag-feedback-text') || { innerHTML: '' };
   const dragFeedback = containerEl.querySelector('.drag-feedback-text') || { innerHTML: '' };
   const timelineMarker = containerEl.querySelector('.timeline-marker');
   const activeMarkerBadge = containerEl.querySelector('.active-marker-badge');
@@ -4274,23 +4289,18 @@ function createTimelineWidget(containerEl, options = {}) {
       }
 
       // Update Active Badge & Modeling Section Header Summary
-      const mActiveSummaryEl = document.getElementById('modelingActiveSummary');
-      if (mActiveSummaryEl) {
-        mActiveSummaryEl.textContent = `Active: ${activeFeatureCount} / ${actions.length}`;
-        mActiveSummaryEl.style.color = (markerStep < totalCols || activeFeatureCount < actions.length) ? '#f59e0b' : '#38bdf8';
+      if (modelingActiveSummary) {
+        modelingActiveSummary.textContent = `Active: ${activeFeatureCount} / ${actions.length}`;
+        modelingActiveSummary.style.color = (markerStep < totalCols || activeFeatureCount < actions.length) ? '#f59e0b' : '#38bdf8';
       }
-      const badgeModCountEl = document.getElementById('badgeModelingCount');
-      if (badgeModCountEl) {
-        badgeModCountEl.textContent = `${actions.length} Steps`;
+      if (badgeModelingCount) {
+        badgeModelingCount.textContent = `${actions.length} Steps`;
       }
-      const stripModBadgeEl = document.getElementById('stripModelingBadge');
-      if (stripModBadgeEl) {
-        stripModBadgeEl.textContent = actions.length;
+      if (stripModelingBadge) {
+        stripModelingBadge.textContent = actions.length;
       }
-      const mBtnBackEl = document.getElementById('mBtnBack');
-      const mBtnForwardEl = document.getElementById('mBtnForward');
-      if (mBtnBackEl) mBtnBackEl.disabled = isFirst;
-      if (mBtnForwardEl) mBtnForwardEl.disabled = isLast;
+      if (mBtnBack) mBtnBack.disabled = isFirst;
+      if (mBtnForward) mBtnForward.disabled = isLast;
 
       if (activeMarkerBadge) {
         activeMarkerBadge.textContent = `Active: ${activeFeatureCount} / ${actions.length} Features`;
@@ -4306,7 +4316,7 @@ function createTimelineWidget(containerEl, options = {}) {
       }
 
       // Update header step cell highlight (scoped to modeling header track)
-      document.querySelectorAll('#timelineHeaderTrack .header-step-cell').forEach(cell => {
+      headerTrack.querySelectorAll('.header-step-cell').forEach(cell => {
         const c = parseInt(cell.dataset.col);
         if (c > markerStep) {
           cell.className = 'header-step-cell rolled-back-step';
@@ -4540,7 +4550,7 @@ function createTimelineWidget(containerEl, options = {}) {
       renderPinnedHeaders();
 
       // Update grid track row classes in the DOM directly
-      document.querySelectorAll('.track-row').forEach(rowEl => {
+      trackContainer.querySelectorAll('.track-row').forEach(rowEl => {
         const r = parseInt(rowEl.dataset.row);
         if (r === activeComponentRow) {
           rowEl.classList.add('active-track-row');
@@ -4598,9 +4608,8 @@ function createTimelineWidget(containerEl, options = {}) {
       // Scroll viewport smoothly to new feature
       const newCol = getActionDisplayCol(newId);
       if (newCol > 0) {
-        const viewport = document.getElementById('timelineViewport');
-        if (viewport) {
-          viewport.scrollTo({
+        if (timelineScrollArea) {
+          timelineScrollArea.scrollTo({
             left: (newCol - 1) * COL_W - 100,
             behavior: 'smooth'
           });
@@ -4616,16 +4625,16 @@ function createTimelineWidget(containerEl, options = {}) {
     // (full width of splitViewportWrapper minus dock strip and splitter).
     // Tracks are precalculated for this entire track space so there are no blank voids or lazy recalculations.
     function getEntireTrackSpaceWidth() {
-      const wrapper = document.getElementById('splitViewportWrapper');
+      const wrapper = containerEl.querySelector('.split-viewport-wrapper');
       if (wrapper && wrapper.clientWidth > 100) {
-        const strip = document.getElementById('stripModeling');
-        const splitter = document.getElementById('trackSplitter');
+        const strip = stripModeling;
+        const splitter = trackSplitter;
         const stripW = strip && strip.offsetWidth > 0 ? strip.offsetWidth : 34;
         const splitterW = splitter && splitter.offsetWidth > 0 ? splitter.offsetWidth : 16;
         const reservedWidth = stripW + splitterW; // 34px + 16px = 50px
         return Math.max(wrapper.clientWidth - reservedWidth, 800);
       }
-      const viewport = document.getElementById('viewportContainer');
+      const viewport = viewportContainer;
       if (viewport && viewport.clientWidth > 100) {
         return Math.max(viewport.clientWidth - 160 - 50, 800);
       }
@@ -5073,7 +5082,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
     // Apply Highlighting, Greyscale Inactive States, Multi-Selection, and Movable Brackets
     function applyHighlight() {
       // 1. Highlight All Virtual Group Chips & Dynamic Inactive Greyscale
-      document.querySelectorAll('.virtual-group-chip').forEach(vChip => {
+      containerEl.querySelectorAll('.virtual-group-chip').forEach(vChip => {
         const gid = parseInt(vChip.dataset.groupId);
         const col = parseInt(vChip.dataset.col);
         const isInactive = col > markerStep;
@@ -5123,7 +5132,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       });
 
       // 1b. Update Open Group Header Pills & Corridors
-      document.querySelectorAll('.open-group-header-pill').forEach(pill => {
+      containerEl.querySelectorAll('.open-group-header-pill').forEach(pill => {
         const minCol = parseInt(pill.dataset.minCol);
         if (minCol > markerStep) {
           pill.classList.add('inactive');
@@ -5132,7 +5141,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
         }
       });
 
-      document.querySelectorAll('.open-group-corridor').forEach(corr => {
+      containerEl.querySelectorAll('.open-group-corridor').forEach(corr => {
         const minCol = parseInt(corr.dataset.minCol);
         if (minCol > markerStep) {
           corr.classList.add('inactive');
@@ -5142,7 +5151,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       });
 
       // 2. Highlight All Modeling Action Chips with 100% Opacity
-      document.querySelectorAll('#trackRowsContainer .chip').forEach(chip => {
+      trackContainer.querySelectorAll('.chip').forEach(chip => {
         const id = parseInt(chip.dataset.id);
         const col = parseInt(chip.dataset.col);
         const chipAct = actions.find(a => a.id === id);
@@ -5217,7 +5226,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       });
 
       // 3. Multi-Component Connectors
-      document.querySelectorAll('.connector-dots').forEach(line => {
+      containerEl.querySelectorAll('.connector-dots').forEach(line => {
         const actId = parseInt(line.dataset.actionId);
         const col = getActionDisplayCol(actId);
         const isLineInactive = col > markerStep;
@@ -6129,7 +6138,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       }
 
       // Update header step cells for assembly
-      document.querySelectorAll('.assembly-step-cell').forEach(cell => {
+      assemblyHeaderTrack.querySelectorAll('.assembly-step-cell').forEach(cell => {
         const c = parseInt(cell.dataset.col);
         if (c > assemblyMarkerStep) {
           cell.className = 'header-step-cell assembly-step-cell rolled-back-step';
@@ -6155,7 +6164,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
 
     // Render Assembly Timeline (Headers, Track Rows, Chips, Link Lines)
     function renderAssemblyTimeline() {
-      const assemblyTrackContainer = document.getElementById('assemblyTrackRowsContainer');
+      const assemblyTrackContainer = containerEl.querySelector('.assembly-track-rows-container');
       if (!assemblyHeaderTrack || !assemblyTrackContainer) return;
 
       const totalCols = assemblyJoints.length;
@@ -6351,7 +6360,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
     // Apply Assembly Highlighting (Colors, Corridors, 100% Greyscale Inactive)
     function applyAssemblyHighlight() {
       // 1. Joint Chips
-      document.querySelectorAll('.chip.joint-chip').forEach(chip => {
+      containerEl.querySelectorAll('.chip.joint-chip').forEach(chip => {
         const jid = parseInt(chip.dataset.id);
         const col = parseInt(chip.dataset.col);
         const joint = assemblyJoints.find(j => j.id === jid);
@@ -6378,7 +6387,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       });
 
       // 2. Target Nodes
-      document.querySelectorAll('.joint-target-node').forEach(node => {
+      containerEl.querySelectorAll('.joint-target-node').forEach(node => {
         const jid = parseInt(node.dataset.id);
         const col = parseInt(node.dataset.col);
         const isInactive = col > assemblyMarkerStep;
@@ -6397,7 +6406,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       });
 
       // 3. Connectors
-      document.querySelectorAll('.joint-connector-dots').forEach(line => {
+      containerEl.querySelectorAll('.joint-connector-dots').forEach(line => {
         const jid = parseInt(line.dataset.jointId);
         const idx = assemblyJoints.findIndex(j => j.id === jid);
         const isInactive = (idx + 1) > assemblyMarkerStep;
@@ -6696,7 +6705,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       applyAssemblyHighlight();
       dragFeedback.innerHTML = `🎛️ <strong>Driving Joint:</strong> Scrubbing <em>${joint.name}</em> (${joint.stepLabel}) through its kinematic range (${joint.limits || '0° to 360°'}).`;
 
-      const chips = document.querySelectorAll(`.chip.joint-chip[data-id="${joint.id}"]`);
+      const chips = containerEl.querySelectorAll(`.chip.joint-chip[data-id="${joint.id}"]`);
       chips.forEach(c => {
         c.style.transition = 'transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s';
         c.style.transform = 'scale(1.22)';
@@ -6840,7 +6849,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
         trackSplitter.classList.add('dragging');
         document.body.style.cursor = 'col-resize';
 
-        const wrapper = document.getElementById('splitViewportWrapper');
+        const wrapper = containerEl.querySelector('.split-viewport-wrapper');
 
         function onMouseMove(e) {
           if (!isDraggingSplitter) return;
@@ -6897,6 +6906,10 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
           const targetModelingWidth = Math.max(SNAP_THRESHOLD, Math.min(wrapperWidth - splitterWidth - SNAP_THRESHOLD, mouseX - (splitterWidth / 2)));
           sectionModeling.style.flex = `0 0 ${targetModelingWidth}px`;
           sectionAssembly.style.flex = '1 1 0';
+          requestAnimationFrame(() => {
+            renderTimeline();
+            renderAssemblyTimeline();
+          });
         }
 
         function onMouseUp() {
@@ -7092,17 +7105,15 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
 
     function setReopenIconStyle(style) {
       reopenIconStyle = style;
-      const btns = {
-        chevrons: document.getElementById('btnIconChevrons'),
-        split: document.getElementById('btnIconSplit'),
-        unfold: document.getElementById('btnIconUnfold'),
-        arrows: document.getElementById('btnIconArrows')
-      };
-      Object.keys(btns).forEach(k => {
-        if (btns[k]) {
-          if (k === style) btns[k].classList.add('active');
-          else btns[k].classList.remove('active');
-        }
+      ['chevrons', 'split', 'unfold', 'arrows'].forEach(k => {
+        const b1 = document.getElementById('btnIcon' + k.charAt(0).toUpperCase() + k.slice(1));
+        const b2 = document.getElementById('cat3_btnIcon' + k.charAt(0).toUpperCase() + k.slice(1));
+        [b1, b2].forEach(btn => {
+          if (btn) {
+            if (k === style) btn.classList.add('active');
+            else btn.classList.remove('active');
+          }
+        });
       });
       updateSplitterUI();
     }
@@ -7409,8 +7420,24 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
   renderTimeline();
 
   if (options.dockHeight) setDockHeight(options.dockHeight);
+  if (options.splitRatio && sectionModeling && sectionAssembly) {
+    savedModelingFlexWidth = options.splitRatio * 100;
+    sectionModeling.style.flex = `${options.splitRatio * 100} 1 0`;
+    sectionAssembly.style.flex = `${(1 - options.splitRatio) * 100} 1 0`;
+    updateSplitterUI();
+  }
+  if (options.selectedJointId !== undefined) {
+    selectedJointId = options.selectedJointId;
+    renderAssemblyTimeline();
+    applyAssemblyHighlight();
+  }
   if (options.isModelingCollapsed) collapseModelingSection();
   if (options.isAssemblyCollapsed) collapseAssemblySection();
+
+  window.addEventListener('resize', () => {
+    renderTimeline();
+    renderAssemblyTimeline();
+  });
 
   const widgetApi = {
     id: uid,
@@ -7527,10 +7554,46 @@ ContextMenuManager.init();
 // -------------------------------------------------------------
 // Category 1: Orthogonal Component x Step Matrix & Span Connectors
 // -------------------------------------------------------------
+const CAT1_COMPONENTS = [
+  { id: 0, name: "Root (Design)", visible: true },
+  { id: 1, name: "Housing", visible: true },
+  { id: 2, name: "Drive Shaft", visible: true },
+  { id: 3, name: "Roller Bearing", visible: true },
+  { id: 4, name: "Fasteners", visible: true }
+];
+
+const CAT1_ACTIONS = [
+  { id: 1, name: "Base Sketch", type: "sketch", rows: [0], prereqs: [], downstream: [2,3,4,5,6,7,9,11,13,24] },
+  { id: 2, name: "Extrude Base", type: "extrude", rows: [0], prereqs: [1], downstream: [3,4,5,6,7,9,11,13,24] },
+  { id: 3, name: "Housing Revolve", type: "revolve", rows: [1], prereqs: [2], downstream: [5,6,9,14,17,21] },
+  { id: 4, name: "Shaft Revolve", type: "revolve", rows: [2], prereqs: [2], downstream: [8,9,11,18,19,22] },
+  { id: 5, name: "Fillet Edge", type: "fillet", rows: [1], prereqs: [3], downstream: [9,14] },
+  { id: 6, name: "Pocket Hole", type: "hole", rows: [1], prereqs: [3], downstream: [9,14] },
+  { id: 7, name: "Bearing Inner Ring", type: "revolve", rows: [3], prereqs: [2], downstream: [10,13,15,20,22] },
+  { id: 8, name: "Keyway Chamfer", type: "chamfer", rows: [2], prereqs: [4], downstream: [11,18,19] },
+  { id: 9, name: "Combine (Housing+Shaft)", type: "combine", rows: [1, 2], prereqs: [5,6], downstream: [14,17,21] },
+  { id: 10, name: "Bearing Outer Ring", type: "revolve", rows: [3], prereqs: [7], downstream: [13,15,20] },
+  { id: 11, name: "Shaft Thread", type: "thread", rows: [2], prereqs: [4,8], downstream: [14,18,19] },
+  { id: 12, name: "Cap Screw Extrude", type: "extrude", rows: [4], prereqs: [2], downstream: [14,23] },
+  { id: 13, name: "Press-Fit Assembly (Root+Bearing)", type: "combine", rows: [0, 3], prereqs: [7,10], downstream: [15,16,20] },
+  { id: 14, name: "Fastener Combine (Housing+Fastener)", type: "combine", rows: [1, 4], prereqs: [9,11,12], downstream: [16,17,21,23] },
+  { id: 15, name: "Bearing Shell", type: "shell", rows: [3], prereqs: [13], downstream: [16,20,22] },
+  { id: 16, name: "Assembly Mirror", type: "mirror", rows: [0], prereqs: [13,14,15], downstream: [24] },
+  { id: 17, name: "Flange Mounting Holes", type: "hole", rows: [1], prereqs: [14], downstream: [21,24], warning: "Hole diameter exceeds recommended edge margin (0.8mm clearance)." },
+  { id: 18, name: "Shaft Keyway Sketch", type: "sketch", rows: [2], prereqs: [11], downstream: [19,22] },
+  { id: 19, name: "Shaft Coupling Extrude", type: "extrude", rows: [2], prereqs: [18], downstream: [22,24] },
+  { id: 20, name: "Retaining Ring Groove", type: "chamfer", rows: [3], prereqs: [15], downstream: [22,24] },
+  { id: 21, name: "Housing Fillet Blend", type: "fillet", rows: [1], prereqs: [17], downstream: [23,24] },
+  { id: 22, name: "Sub-Assembly Pin (Shaft+Bearing)", type: "combine", rows: [2, 3], prereqs: [19,20], downstream: [24] },
+  { id: 23, name: "Locknut Thread", type: "thread", rows: [4], prereqs: [14,21], downstream: [24] },
+  { id: 24, name: "Final Inspection Shell", type: "shell", rows: [0], prereqs: [16,22,23], downstream: [] }
+];
+
 const timeline1 = new Timeline2DWidget('#mount-cat1', {
   id: 'cat1',
-  actions: DEFAULT_ACTIONS,
+  actions: CAT1_ACTIONS,
   joints: DEFAULT_JOINTS,
+  componentDefs: CAT1_COMPONENTS,
   groups: [],
   activeComponentRow: 1, // Housing active
   markerStep: 24,
@@ -7549,7 +7612,7 @@ const cat1CompBtns = [
 cat1CompBtns.forEach((btn, idx) => {
   if (!btn) return;
   btn.addEventListener('click', () => {
-    cat1CompBtns.forEach(b => b.classList.remove('active'));
+    cat1CompBtns.forEach(b => b && b.classList.remove('active'));
     btn.classList.add('active');
     timeline1.setActiveComponent(idx);
   });
@@ -7580,10 +7643,36 @@ if (cat1RngOpacity && cat1LblOpacity) {
 // -------------------------------------------------------------
 // Category 2: Real-Time Topological DAG & The Movable Corridor
 // -------------------------------------------------------------
+const CAT2_COMPONENTS = [
+  { id: 0, name: "Root Design", visible: true },
+  { id: 1, name: "Sensor Bracket", visible: true },
+  { id: 2, name: "Hardware", visible: true }
+];
+
+const CAT2_ACTIONS = [
+  { id: 1, name: "Base Datum Profile", type: "sketch", rows: [0], prereqs: [], downstream: [2, 3, 4, 6, 7, 9, 11, 13, 15] },
+  { id: 2, name: "Bracket Base Plate", type: "extrude", rows: [1], prereqs: [1], downstream: [3, 4, 6, 7, 9, 11, 13, 15] },
+  { id: 3, name: "Base Corner Fillets", type: "fillet", rows: [1], prereqs: [2], downstream: [16] },
+  { id: 4, name: "Standoff Boss Extrude", type: "extrude", rows: [1], prereqs: [2], downstream: [5, 10] }, // Prereq of #5 (Amber)
+  { id: 5, name: "Boss Fillet R2", type: "fillet", rows: [1], prereqs: [4], downstream: [8, 12] }, // TARGET (Corridor [04..08])
+  { id: 6, name: "Mounting Bolt Slot L", type: "hole", rows: [1], prereqs: [2], downstream: [16] },
+  { id: 7, name: "Mounting Bolt Slot R", type: "hole", rows: [1], prereqs: [2], downstream: [16] },
+  { id: 8, name: "Sensor Pocket Cut", type: "hole", rows: [1], prereqs: [5], downstream: [14] }, // Direct Downstream of #5 (Blue) -> maxCol = 8
+  { id: 9, name: "Cable Routing Notch", type: "sketch", rows: [1], prereqs: [2], downstream: [16] },
+  { id: 10, name: "Alignment Dowel Pin", type: "revolve", rows: [1], prereqs: [4], downstream: [16] },
+  { id: 11, name: "M4 Threaded Bore", type: "thread", rows: [1], prereqs: [2], downstream: [16] },
+  { id: 12, name: "Cable Tie Bracket Tab", type: "extrude", rows: [1], prereqs: [5], downstream: [16] }, // Downstream of #5 (Blue)
+  { id: 13, name: "Grounding Lug Pad", type: "extrude", rows: [1], prereqs: [2], downstream: [16] },
+  { id: 14, name: "Sensor Retaining Thread", type: "thread", rows: [1], prereqs: [8], downstream: [16] }, // Transitive Downstream of #5 (Blue)
+  { id: 15, name: "Laser Serial Deboss", type: "extrude", rows: [1], prereqs: [2], downstream: [16] },
+  { id: 16, name: "Protective Chamfers", type: "chamfer", rows: [1], prereqs: [3, 6, 7, 9, 10, 11, 12, 13, 14, 15], downstream: [] }
+];
+
 const timeline2 = new Timeline2DWidget('#mount-cat2', {
   id: 'cat2',
-  actions: DEFAULT_ACTIONS,
+  actions: CAT2_ACTIONS,
   joints: DEFAULT_JOINTS,
+  componentDefs: CAT2_COMPONENTS,
   groups: [],
   activeComponentRow: 1,
   markerStep: 8, // Coincident at Step 08 with right bracket of Step 05!
@@ -7596,17 +7685,106 @@ document.getElementById('cat2_btnJump08')?.addEventListener('click', () => {
   timeline2.selectAction(5);
 });
 document.getElementById('cat2_btnJump24')?.addEventListener('click', () => {
-  timeline2.setMarkerStep(24);
+  timeline2.setMarkerStep(16);
   timeline2.selectAction(5);
 });
 
 // -------------------------------------------------------------
 // Category 3: Asymmetric Split-Track Architecture & Kinematic Joint Scrubbing
 // -------------------------------------------------------------
+const CAT3_COMPONENTS = [
+  { id: 0, name: "Root Base Frame", visible: true },
+  { id: 1, name: "X-Gantry Carriage", visible: true },
+  { id: 2, name: "Z-Lift Mast", visible: true },
+  { id: 3, name: "Rotary Toolhead", visible: true }
+];
+
+const CAT3_ACTIONS = [
+  { id: 1, name: "Base Frame Plate", type: "extrude", rows: [0], prereqs: [], downstream: [2, 3, 6] },
+  { id: 2, name: "Linear Guide Rails", type: "extrude", rows: [0], prereqs: [1], downstream: [4, 15] },
+  { id: 3, name: "X-Carriage Main Block", type: "extrude", rows: [1], prereqs: [1], downstream: [4, 5, 9, 14] },
+  { id: 4, name: "Linear Bearing Blocks", type: "extrude", rows: [1], prereqs: [2, 3], downstream: [9] },
+  { id: 5, name: "Timing Belt Anchor", type: "hole", rows: [1], prereqs: [3], downstream: [14] },
+  { id: 6, name: "Z-Mast Column", type: "extrude", rows: [2], prereqs: [1], downstream: [7, 8, 9] },
+  { id: 7, name: "Lead Screw Nut Mount", type: "extrude", rows: [2], prereqs: [6], downstream: [9, 13] },
+  { id: 8, name: "Counterweight Pocket", type: "hole", rows: [2], prereqs: [6], downstream: [13] },
+  { id: 9, name: "Combine: Carriage + Z-Slide", type: "combine", rows: [1, 2], prereqs: [4, 7], downstream: [13, 14] },
+  { id: 10, name: "Tool Spindle Faceplate", type: "revolve", rows: [3], prereqs: [1], downstream: [11, 12, 13] },
+  { id: 11, name: "Collet Chuck Bore", type: "hole", rows: [3], prereqs: [10], downstream: [16] },
+  { id: 12, name: "Spindle Motor Flange", type: "hole", rows: [3], prereqs: [10], downstream: [13, 16] },
+  { id: 13, name: "Combine: Z-Mast + Toolhead", type: "combine", rows: [2, 3], prereqs: [9, 12], downstream: [16] },
+  { id: 14, name: "Limit Switch Bumper", type: "extrude", rows: [1], prereqs: [5, 9], downstream: [] },
+  { id: 15, name: "Cable Carrier Track", type: "extrude", rows: [0], prereqs: [2], downstream: [] },
+  { id: 16, name: "Coolant Shroud Shell", type: "shell", rows: [3], prereqs: [11, 13], downstream: [] }
+];
+
+const CAT3_JOINTS = [
+  {
+    id: 101,
+    name: "Frame Fixed Ground",
+    type: "joint_origin",
+    typeLabel: "Rigid Ground",
+    rows: [0],
+    prereqs: [],
+    downstream: [102],
+    stepLabel: "J01",
+    info: "Grounds Base Frame occurrence to world origin (0 DOF)."
+  },
+  {
+    id: 102,
+    name: "Gantry X-Travel",
+    type: "joint",
+    typeLabel: "Slider",
+    rows: [0, 1],
+    prereqs: [101],
+    downstream: [103],
+    stepLabel: "J02",
+    limits: "0 to 600mm",
+    info: "Linear slider along precision guide rails (1 DOF)."
+  },
+  {
+    id: 103,
+    name: "Vertical Z-Lift",
+    type: "joint",
+    typeLabel: "Slider",
+    rows: [1, 2],
+    prereqs: [102],
+    downstream: [104],
+    stepLabel: "J03",
+    limits: "0 to 300mm",
+    info: "Vertical slide driven by ballscrew actuator (1 DOF)."
+  },
+  {
+    id: 104,
+    name: "Wrist C-Axis",
+    type: "joint",
+    typeLabel: "Revolute",
+    rows: [2, 3],
+    prereqs: [103],
+    downstream: [105],
+    stepLabel: "J04",
+    limits: "-180° to +180°",
+    info: "Revolute spindle joint for 4th axis tool orientation."
+  },
+  {
+    id: 105,
+    name: "Pneumatic Gripper Jaw",
+    type: "joint",
+    typeLabel: "Slider",
+    rows: [3, 0],
+    prereqs: [104],
+    downstream: [],
+    stepLabel: "J05",
+    limits: "0 to 40mm",
+    info: "Actuator mate driving gripper chuck fingers."
+  }
+];
+
 const timeline3 = new Timeline2DWidget('#mount-cat3', {
   id: 'cat3',
-  actions: DEFAULT_ACTIONS,
-  joints: DEFAULT_JOINTS,
+  actions: CAT3_ACTIONS,
+  joints: CAT3_JOINTS,
+  componentDefs: CAT3_COMPONENTS,
   groups: [],
   activeComponentRow: 1,
   splitRatio: 0.50, // 50/50 side-by-side
@@ -7649,15 +7827,51 @@ document.getElementById('cat3_btnAddJoint')?.addEventListener('click', () => tim
 // -------------------------------------------------------------
 // Category 4: Adaptive Vertical Dock Sizing
 // -------------------------------------------------------------
+const CAT4_COMPONENTS = [
+  { id: 0, name: "Machine Bed", visible: true },
+  { id: 1, name: "X-Slide Saddle", visible: true },
+  { id: 2, name: "Y-Cross Table", visible: true },
+  { id: 3, name: "Z-Column Post", visible: true },
+  { id: 4, name: "Spindle Ram", visible: true },
+  { id: 5, name: "Chip Enclosure", visible: true }
+];
+
+const CAT4_ACTIONS = [
+  { id: 1, name: "Bed Casting Extrude", type: "extrude", rows: [0], prereqs: [], downstream: [2, 3, 5] },
+  { id: 2, name: "X-Way Ground Surfaces", type: "chamfer", rows: [0], prereqs: [1], downstream: [4] },
+  { id: 3, name: "Column Mounting Pads", type: "extrude", rows: [0], prereqs: [1], downstream: [7] },
+  { id: 4, name: "X-Saddle Casting", type: "extrude", rows: [1], prereqs: [2], downstream: [6, 9] },
+  { id: 5, name: "Bed Coolant Trough", type: "hole", rows: [0], prereqs: [1], downstream: [18] },
+  { id: 6, name: "Y-Dovetail Ways", type: "chamfer", rows: [1], prereqs: [4], downstream: [8] },
+  { id: 7, name: "Z-Column Upright", type: "extrude", rows: [3], prereqs: [3], downstream: [10, 12] },
+  { id: 8, name: "Y-Table Top Platen", type: "extrude", rows: [2], prereqs: [6], downstream: [11] },
+  { id: 9, name: "Combine: Bed + Saddle Gibb", type: "combine", rows: [0, 1], prereqs: [4], downstream: [14] },
+  { id: 10, name: "Z-Axis Linear Guide", type: "extrude", rows: [3], prereqs: [7], downstream: [13] },
+  { id: 11, name: "T-Slot Table Grid", type: "pattern", rows: [2], prereqs: [8], downstream: [19] },
+  { id: 12, name: "Counterweight Bore", type: "hole", rows: [3], prereqs: [7], downstream: [15] },
+  { id: 13, name: "Spindle Head Casting", type: "extrude", rows: [4], prereqs: [10], downstream: [16] },
+  { id: 14, name: "Combine: Saddle + Table Way", type: "combine", rows: [1, 2], prereqs: [9], downstream: [19] },
+  { id: 15, name: "Spindle Motor Bracket", type: "extrude", rows: [4], prereqs: [12, 13], downstream: [17] },
+  { id: 16, name: "Cartridge Spindle Bore", type: "hole", rows: [4], prereqs: [13], downstream: [17] },
+  { id: 17, name: "Combine: Column + Spindle", type: "combine", rows: [3, 4], prereqs: [15, 16], downstream: [20] },
+  { id: 18, name: "Enclosure Sheet Metal", type: "shell", rows: [5], prereqs: [5], downstream: [20] },
+  { id: 19, name: "Combine: Table + Enclosure Seal", type: "combine", rows: [2, 5], prereqs: [11, 14], downstream: [20] },
+  { id: 20, name: "Final Precision Inspection", type: "shell", rows: [0], prereqs: [17, 18, 19], downstream: [] }
+];
+
 const cat4HeightDisplay = document.getElementById('cat4_heightDisplay');
+const cat4Btn1Row = document.getElementById('cat4_btn1Row');
+const cat4Btn3Row = document.getElementById('cat4_btn3Row');
+const cat4BtnAllFit = document.getElementById('cat4_btnAllFit');
 
 const timeline4 = new Timeline2DWidget('#mount-cat4', {
   id: 'cat4',
-  actions: DEFAULT_ACTIONS,
+  actions: CAT4_ACTIONS,
   joints: DEFAULT_JOINTS,
+  componentDefs: CAT4_COMPONENTS,
   groups: [],
   activeComponentRow: 1,
-  markerStep: 24,
+  markerStep: 20,
   dockHeight: 264,
   onHeightChange: (h) => {
     if (cat4HeightDisplay) cat4HeightDisplay.textContent = `${h} px`;
@@ -7682,10 +7896,6 @@ const timeline4 = new Timeline2DWidget('#mount-cat4', {
   initialFeedback: '↕️ <strong>Category 04:</strong> The 2D Timeline dynamically scales from a 1-Row Compact Strip (116px) with scrollbar clearance to a snug All-Component Fit (264px). Drag the top cyan rail or click presets!'
 });
 
-const cat4Btn1Row = document.getElementById('cat4_btn1Row');
-const cat4Btn3Row = document.getElementById('cat4_btn3Row');
-const cat4BtnAllFit = document.getElementById('cat4_btnAllFit');
-
 cat4Btn1Row?.addEventListener('click', () => timeline4.setDockHeight(116));
 cat4Btn3Row?.addEventListener('click', () => timeline4.setDockHeight(220));
 cat4BtnAllFit?.addEventListener('click', () => timeline4.setDockHeight(264));
@@ -7694,27 +7904,59 @@ document.getElementById('cat4_btnResetHeight')?.addEventListener('click', () => 
 // -------------------------------------------------------------
 // Category 5: Virtual Group Folding & Transitive Suppression
 // -------------------------------------------------------------
+const CAT5_COMPONENTS = [
+  { id: 0, name: "Root Platform", visible: true },
+  { id: 1, name: "Stator Casing", visible: true },
+  { id: 2, name: "Rotor Core", visible: true },
+  { id: 3, name: "Ceramic Bearings", visible: true },
+  { id: 4, name: "Exhaust Cowl", visible: true }
+];
+
+const CAT5_ACTIONS = [
+  { id: 1, name: "Platform Anchor Profile", type: "sketch", rows: [0], prereqs: [], downstream: [2, 3, 5] },
+  { id: 2, name: "Base Flange Extrude", type: "extrude", rows: [0], prereqs: [1], downstream: [3, 4] },
+  { id: 3, name: "Stator Lower Casing", type: "revolve", rows: [1], prereqs: [2], downstream: [4, 13] },
+  { id: 4, name: "Casing Mount Holes", type: "hole", rows: [1], prereqs: [3], downstream: [15] },
+  { id: 5, name: "Main Shaft Journal", type: "revolve", rows: [2], prereqs: [1], downstream: [6, 7, 9] },
+  { id: 6, name: "Shaft Oil Passage", type: "hole", rows: [2], prereqs: [5], downstream: [10] },
+  { id: 7, name: "Impeller Stage 1 Blades", type: "pattern", rows: [2], prereqs: [5], downstream: [8] },
+  { id: 8, name: "Impeller Stage 2 Blades", type: "pattern", rows: [2], prereqs: [7], downstream: [10] },
+  { id: 9, name: "Rotor Coupling Splines", type: "cut", rows: [2], prereqs: [5], downstream: [10] },
+  { id: 10, name: "Rotor Dynamic Balance", type: "cut", rows: [2], prereqs: [8, 9], downstream: [11] },
+  { id: 11, name: "Ceramic Bearing Race", type: "revolve", rows: [3], prereqs: [5, 10], downstream: [12, 13] },
+  { id: 12, name: "Bearing Retainer Ring", type: "chamfer", rows: [3], prereqs: [11], downstream: [14] },
+  { id: 13, name: "Bearing Support Flange", type: "extrude", rows: [1], prereqs: [3, 11], downstream: [14, 17] }, // SUPPRESSED (Cascades to 14, 17)
+  { id: 14, name: "Seal Retainer Ring", type: "revolve", rows: [3], prereqs: [12, 13], downstream: [17] }, // TRANSITIVELY SUPPRESSED
+  { id: 15, name: "Stator Upper Casing Shell", type: "shell", rows: [1], prereqs: [4], downstream: [16] },
+  { id: 16, name: "Exhaust Plenum Nozzle", type: "extrude", rows: [1], prereqs: [15], downstream: [18] },
+  { id: 17, name: "Outer Cowling Cover Plate", type: "extrude", rows: [4], prereqs: [13, 14], downstream: [19] }, // TRANSITIVELY SUPPRESSED + ROLLED BACK
+  { id: 18, name: "Cowling Fastener Pattern", type: "pattern", rows: [4], prereqs: [16], downstream: [20] }, // ROLLED BACK
+  { id: 19, name: "Intake Guide Vanes", type: "pattern", rows: [4], prereqs: [17], downstream: [20] }, // ROLLED BACK
+  { id: 20, name: "Final Inspection Shell", type: "shell", rows: [0], prereqs: [18, 19], downstream: [] } // ROLLED BACK
+];
+
 const timeline5 = new Timeline2DWidget('#mount-cat5', {
   id: 'cat5',
-  actions: DEFAULT_ACTIONS,
+  actions: CAT5_ACTIONS,
   joints: DEFAULT_JOINTS,
+  componentDefs: CAT5_COMPONENTS,
   groups: [
     { id: 1, name: "Foundation Stage", actionIds: [1, 2, 3, 4], isOpen: true },
-    { id: 2, name: "Shaft Core", actionIds: [8, 9, 10, 11], isOpen: false } // Folded virtual group card!
+    { id: 2, name: "Rotor Core Unit", actionIds: [7, 8, 9, 10], isOpen: false } // Folded virtual group card!
   ],
-  activeComponentRow: 3, // Bearing
-  markerStep: 18, // Steps 19-24 rendered in high-contrast greyscale rollback state!
-  selectedActionIds: [15], // Step 15 Bearing Shell
-  suppressedActionIds: [15], // Cascades to 16, 20, 22, 24!
-  initialFeedback: '📁 <strong>Category 05:</strong> "Shaft Core" is folded into a sleek Virtual Group Card spanning all 5 rows with badge [4]. Step 15 Bearing Shell is suppressed with dashed border and slashed eye, cascading to downstream dependents.'
+  activeComponentRow: 3, // Ceramic Bearings
+  markerStep: 16, // Steps 17-20 rendered in high-contrast greyscale rollback state!
+  selectedActionIds: [13], // Step 13 Bearing Support Flange
+  suppressedActionIds: [13], // Cascades to 14 and 17!
+  initialFeedback: '📁 <strong>Category 05:</strong> "Rotor Core Unit" is folded into a sleek Virtual Group Card spanning all 5 rows with badge [4]. Step 13 Bearing Support Flange is suppressed with dashed border and slashed eye, cascading to downstream dependents.'
 });
 
 document.getElementById('cat5_btnToggleGroup1')?.addEventListener('click', () => timeline5.toggleGroup(1));
 document.getElementById('cat5_btnToggleGroup2')?.addEventListener('click', () => timeline5.toggleGroup(2));
-document.getElementById('cat5_btnToggleSuppress')?.addEventListener('click', () => timeline5.toggleSuppress(15));
-document.getElementById('cat5_btnJump18')?.addEventListener('click', () => timeline5.setMarkerStep(18));
+document.getElementById('cat5_btnToggleSuppress')?.addEventListener('click', () => timeline5.toggleSuppress(13));
+document.getElementById('cat5_btnJump18')?.addEventListener('click', () => timeline5.setMarkerStep(16));
 document.getElementById('cat5_btnJump08')?.addEventListener('click', () => timeline5.setMarkerStep(8));
-document.getElementById('cat5_btnJump24')?.addEventListener('click', () => timeline5.setMarkerStep(24));
+document.getElementById('cat5_btnJump24')?.addEventListener('click', () => timeline5.setMarkerStep(20));
 
   </script>
 </body>
