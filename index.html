@@ -1880,46 +1880,63 @@
       width: 14px;
       height: 20px;
       border-radius: 3px;
-      font-size: 9px;
-      font-weight: bold;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       padding: 0;
-      transition: all 0.12s;
-      background: #101319;
+      transition: background 0.12s, color 0.12s, border-color 0.12s, box-shadow 0.12s;
+      background: #141720;
       box-sizing: border-box;
+      outline: none;
+      border: 1px solid #333d4e;
+      color: #94a3b8;
     }
 
-    .btn-collapse-left {
+    .splitter-btn:hover {
+      color: #ffffff;
+    }
+
+    .splitter-btn.collapse-left, .splitter-btn.btn-collapse-left {
       border: 1px solid #38bdf8;
       color: #94a3b8;
     }
 
-    .btn-collapse-left:hover {
+    .splitter-btn.collapse-left:hover, .splitter-btn.btn-collapse-left:hover {
       background: rgba(56, 189, 248, 0.25);
       color: #ffffff;
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.45);
     }
 
-    .btn-collapse-left:active {
+    .splitter-btn.collapse-left:active, .splitter-btn.btn-collapse-left:active {
       background: rgba(56, 189, 248, 0.60);
       color: #ffffff;
     }
 
-    .btn-collapse-right {
+    .splitter-btn.collapse-right, .splitter-btn.btn-collapse-right {
       border: 1px solid #c084fc;
       color: #94a3b8;
     }
 
-    .btn-collapse-right:hover {
+    .splitter-btn.collapse-right:hover, .splitter-btn.btn-collapse-right:hover {
       background: rgba(192, 132, 252, 0.25);
+      color: #ffffff;
+      box-shadow: 0 0 8px rgba(192, 132, 252, 0.45);
+    }
+
+    .splitter-btn.collapse-right:active, .splitter-btn.btn-collapse-right:active {
+      background: rgba(192, 132, 252, 0.60);
       color: #ffffff;
     }
 
-    .btn-collapse-right:active {
-      background: rgba(192, 132, 252, 0.60);
-      color: #ffffff;
+    .splitter-btn.reopen-btn {
+      color: #f1f5f9;
+    }
+
+    .splitter-btn svg {
+      display: block;
+      pointer-events: none;
+      flex-shrink: 0;
     }
 
     /* Collapsed Dock Strip */
@@ -7069,27 +7086,27 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
     // Crisp Vector Icons for Reopening / Expanding Contracted Tracks
     const REOPEN_ICONS = {
       chevrons: {
-        left: '<svg width="9" height="11" viewBox="0 0 9 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1.5L5 5.5L1 9.5"/><path d="M4.5 1.5L8.5 5.5L4.5 9.5"/></svg>',
-        right: '<svg width="9" height="11" viewBox="0 0 9 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.5L4 5.5L8 9.5"/><path d="M4.5 1.5L0.5 5.5L4.5 9.5"/></svg>'
+        left: '<svg width="9" height="11" viewBox="0 0 10 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 2.5L5 6L1.5 9.5"/><path d="M5 2.5L8.5 6L5 9.5"/></svg>',
+        right: '<svg width="9" height="11" viewBox="0 0 10 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 2.5L5 6L8.5 9.5"/><path d="M5 2.5L1.5 6L5 9.5"/></svg>'
       },
       split: {
-        left: '<svg width="10" height="11" viewBox="0 0 10 11" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="0.7" y="0.7" width="8.6" height="9.6" rx="1.2"/><line x1="5" y1="0.7" x2="5" y2="10.3"/></svg>',
-        right: '<svg width="10" height="11" viewBox="0 0 10 11" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="0.7" y="0.7" width="8.6" height="9.6" rx="1.2"/><line x1="5" y1="0.7" x2="5" y2="10.3"/></svg>'
+        left: '<svg width="9" height="11" viewBox="0 0 10 12" fill="none" stroke="currentColor"><rect x="1" y="1" width="8" height="10" rx="1.5" stroke-width="1.3"/><line x1="5" y1="1" x2="5" y2="11" stroke-width="1.1"/></svg>',
+        right: '<svg width="9" height="11" viewBox="0 0 10 12" fill="none" stroke="currentColor"><rect x="1" y="1" width="8" height="10" rx="1.5" stroke-width="1.3"/><line x1="5" y1="1" x2="5" y2="11" stroke-width="1.1"/></svg>'
       },
       unfold: {
-        left: '<svg width="10" height="11" viewBox="0 0 10 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="1.5" y1="1" x2="1.5" y2="10"/><path d="M4.5 2.5L8 5.5L4.5 8.5"/></svg>',
-        right: '<svg width="10" height="11" viewBox="0 0 10 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="8.5" y1="1" x2="8.5" y2="10"/><path d="M5.5 2.5L2 5.5L5.5 8.5"/></svg>'
+        left: '<svg width="9" height="11" viewBox="0 0 10 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><line x1="1.5" y1="1.5" x2="1.5" y2="10.5"/><path d="M4.5 3L8 6L4.5 9"/></svg>',
+        right: '<svg width="9" height="11" viewBox="0 0 10 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><line x1="8.5" y1="1.5" x2="8.5" y2="10.5"/><path d="M5.5 3L2 6L5.5 9"/></svg>'
       },
       arrows: {
-        left: '<svg width="11" height="9" viewBox="0 0 11 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 1.5L0.5 4.5L3 7.5"/><path d="M8 1.5L10.5 4.5L8 7.5"/><line x1="0.5" y1="4.5" x2="10.5" y2="4.5"/></svg>',
-        right: '<svg width="11" height="9" viewBox="0 0 11 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 1.5L0.5 4.5L3 7.5"/><path d="M8 1.5L10.5 4.5L8 7.5"/><line x1="0.5" y1="4.5" x2="10.5" y2="4.5"/></svg>'
+        left: '<svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 2.5L1 6L3.5 9.5"/><path d="M8.5 2.5L11 6L8.5 9.5"/><line x1="1.5" y1="6" x2="10.5" y2="6"/></svg>',
+        right: '<svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 2.5L1 6L3.5 9.5"/><path d="M8.5 2.5L11 6L8.5 9.5"/><line x1="1.5" y1="6" x2="10.5" y2="6"/></svg>'
       }
     };
 
-    // Crisp Vector Icons for Contraction (|< and >|)
+    // Crisp Vector Icons for Contraction: |< (collapse left) and >| (collapse right)
     const CONTRACT_ICONS = {
-      left: '<svg width="9" height="11" viewBox="0 0 9 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="1.5" y1="1.5" x2="1.5" y2="9.5"/><path d="M7.5 1.5L3.5 5.5L7.5 9.5"/></svg>',
-      right: '<svg width="9" height="11" viewBox="0 0 9 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 1.5L5.5 5.5L1.5 9.5"/><line x1="7.5" y1="1.5" x2="7.5" y2="9.5"/></svg>'
+      left: '<svg width="9" height="11" viewBox="0 0 10 12" fill="none" stroke="currentColor"><line x1="1.2" y1="1.8" x2="1.2" y2="10.2" stroke-width="1.3" stroke-linecap="round"/><path d="M8.8 2.5L5.0 6L8.8 9.5" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      right: '<svg width="9" height="11" viewBox="0 0 10 12" fill="none" stroke="currentColor"><path d="M1.2 2.5L5.0 6L1.2 9.5" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><line x1="8.8" y1="1.8" x2="8.8" y2="10.2" stroke-width="1.3" stroke-linecap="round"/></svg>'
     };
 
     function updateSplitterGripHeight() {
@@ -7124,29 +7141,29 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       if (isModelingCollapsed && !isAssemblyCollapsed) {
         // Modeling contracted (left dock shown), Assembly visible
         btnCollapseLeft.innerHTML = REOPEN_ICONS[reopenIconStyle].left;
-        btnCollapseLeft.className = 'splitter-btn reopen-btn';
+        btnCollapseLeft.className = 'splitter-btn collapse-left reopen-btn';
         btnCollapseLeft.title = 'Reopen Geometric Modeling Track (Expand to Split View)';
 
         btnCollapseRight.innerHTML = CONTRACT_ICONS.right;
-        btnCollapseRight.className = 'splitter-btn';
+        btnCollapseRight.className = 'splitter-btn collapse-right';
         btnCollapseRight.title = 'Contract Assembly Section into Right Dock Tab';
       } else if (isAssemblyCollapsed && !isModelingCollapsed) {
         // Assembly contracted (right dock shown), Modeling visible
         btnCollapseLeft.innerHTML = CONTRACT_ICONS.left;
-        btnCollapseLeft.className = 'splitter-btn';
+        btnCollapseLeft.className = 'splitter-btn collapse-left';
         btnCollapseLeft.title = 'Contract Geometric Modeling Section into Left Dock Tab';
 
         btnCollapseRight.innerHTML = REOPEN_ICONS[reopenIconStyle].right;
-        btnCollapseRight.className = 'splitter-btn reopen-btn';
+        btnCollapseRight.className = 'splitter-btn collapse-right reopen-btn';
         btnCollapseRight.title = 'Reopen Assembly Track (Expand to Split View)';
       } else {
         // Both visible (Split View)
         btnCollapseLeft.innerHTML = CONTRACT_ICONS.left;
-        btnCollapseLeft.className = 'splitter-btn';
+        btnCollapseLeft.className = 'splitter-btn collapse-left';
         btnCollapseLeft.title = 'Contract Geometric Modeling Section into Left Dock Tab';
 
         btnCollapseRight.innerHTML = CONTRACT_ICONS.right;
-        btnCollapseRight.className = 'splitter-btn';
+        btnCollapseRight.className = 'splitter-btn collapse-right';
         btnCollapseRight.title = 'Contract Assembly Section into Right Dock Tab';
       }
       updateSplitterGripHeight();
