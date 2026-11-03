@@ -2592,7 +2592,7 @@
               </svg>
 
               <!-- Dedicated Assembly Rollback Marker (Purple #a855f7) -->
-              <div id="assemblyMarker" class="assembly-marker" style="left: 208px;" title="Assembly Rollback Marker: Drag head pin to scrub kinematic assembly steps">
+              <div id="assemblyMarker" class="assembly-marker" style="left: 156px;" title="Assembly Rollback Marker: Drag head pin to scrub kinematic assembly steps">
                 <div class="marker-handle-top" title="Drag to scrub assembly sequence">
                   <div class="marker-pin-inner"></div>
                 </div>
@@ -5112,7 +5112,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       markerStep = 16;
       activeComponentRow = 1;
       assemblyJoints = JSON.parse(JSON.stringify(initialAssemblyJoints));
-      assemblyMarkerStep = 4;
+      assemblyMarkerStep = 3;
       selectedJointId = 102;
       restoreBothSections();
       if (!isAssemblySectionVisible) {
@@ -5310,7 +5310,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
 
     const initialAssemblyJoints = JSON.parse(JSON.stringify(assemblyJoints));
     let selectedJointId = 102; // Default select J02 (Shaft Revolute Joint)
-    let assemblyMarkerStep = 4; // 4 active, 1 inactive
+    let assemblyMarkerStep = 3; // 3 active (J01-J03), 2 inactive (J04-J05)
     let isAssemblyPlaying = false;
     let assemblyPlaybackTimer = null;
     let isAssemblySectionVisible = true;
