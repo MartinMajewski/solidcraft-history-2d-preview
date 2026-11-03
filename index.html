@@ -2583,7 +2583,9 @@
                 <g id="assemblyBracketGroup" style="display: none;">
                   <rect id="assemblyBracketCorridorActive" x="0" y="0" width="0" height="190" fill="rgba(34, 197, 94, 0.08)"></rect>
                   <rect id="assemblyBracketCorridorInactive" x="0" y="0" width="0" height="190" fill="rgba(161, 161, 170, 0.08)"></rect>
+                  <path id="pathAssemblyBracketLeftHalo" d="" fill="none" stroke="#14161a" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" style="display: none;"></path>
                   <path id="pathAssemblyBracketLeft" d="" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path id="pathAssemblyBracketRightHalo" d="" fill="none" stroke="#14161a" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" style="display: none;"></path>
                   <path id="pathAssemblyBracketRight" d="" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
                 </g>
                 <g id="assemblyConnectorsGroup"></g>
@@ -2866,6 +2868,8 @@
       if (descEl) descEl.textContent = modeDescriptions[mode] || '';
 
       renderTimeline();
+      // The Coincidence mode applies to both corridor brackets: refresh the assembly track too
+      applyAssemblyHighlight();
     }
 
     // Component Definitions for Model Browser & Pinned Left Headers
@@ -5337,6 +5341,8 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
     const assemblyBracketCorridorInactive = document.getElementById('assemblyBracketCorridorInactive');
     const pathAssemblyBracketLeft = document.getElementById('pathAssemblyBracketLeft');
     const pathAssemblyBracketRight = document.getElementById('pathAssemblyBracketRight');
+    const pathAssemblyBracketLeftHalo = document.getElementById('pathAssemblyBracketLeftHalo');
+    const pathAssemblyBracketRightHalo = document.getElementById('pathAssemblyBracketRightHalo');
     const assemblyConnectorsGroup = document.getElementById('assemblyConnectorsGroup');
     const assemblyMarker = document.getElementById('assemblyMarker');
 
@@ -5732,17 +5738,29 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
               assemblyBracketCorridorInactive.style.display = 'none';
             }
 
-            // Smart Inset: sideways shift when coincident with assembly marker
+            // Draw X coordinates and layering according to the shared Coincidence overlayMode,
+            // exactly as the modeling track does (Smart Inset / Layer Swap / Halo / Original)
             let leftDrawX = xLeft;
             let rightDrawX = xRight;
             const isCoincidentLeft = Math.abs(xLeft - markerX) < 2;
             const isCoincidentRight = Math.abs(xRight - markerX) < 2;
-            if (isCoincidentLeft) leftDrawX = xLeft + 3;
-            if (isCoincidentRight) rightDrawX = xRight - 3;
+            if (overlayMode === 'smart-inset') {
+              if (assemblySvgOverlay) assemblySvgOverlay.style.zIndex = '60';
+              if (isCoincidentLeft) leftDrawX = xLeft + 3;
+              if (isCoincidentRight) rightDrawX = xRight - 3;
+            } else if (overlayMode === 'raw-swap' || overlayMode === 'halo') {
+              if (assemblySvgOverlay) assemblySvgOverlay.style.zIndex = '60';
+            } else if (overlayMode === 'original') {
+              if (assemblySvgOverlay) assemblySvgOverlay.style.zIndex = '10';
+            }
+            const showAsmHalo = (overlayMode === 'halo');
+            if (pathAssemblyBracketLeftHalo) pathAssemblyBracketLeftHalo.style.display = showAsmHalo ? 'inline' : 'none';
+            if (pathAssemblyBracketRightHalo) pathAssemblyBracketRightHalo.style.display = showAsmHalo ? 'inline' : 'none';
 
             // Left bracket (Green #22c55e for active)
             const leftBracketColor = xLeft < markerX ? '#22c55e' : 'var(--grey-corridor)';
             const leftD = `M ${leftDrawX + 7} 4 L ${leftDrawX} 4 L ${leftDrawX} ${totalHeight - 4} L ${leftDrawX + 7} ${totalHeight - 4}`;
+            if (pathAssemblyBracketLeftHalo && showAsmHalo) pathAssemblyBracketLeftHalo.setAttribute('d', leftD);
             if (pathAssemblyBracketLeft) {
               pathAssemblyBracketLeft.setAttribute('d', leftD);
               pathAssemblyBracketLeft.setAttribute('stroke', leftBracketColor);
@@ -5751,6 +5769,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
             // Right bracket (Green #22c55e for active)
             const rightBracketColor = xRight <= markerX ? '#22c55e' : 'var(--grey-corridor)';
             const rightD = `M ${rightDrawX - 7} 4 L ${rightDrawX} 4 L ${rightDrawX} ${totalHeight - 4} L ${rightDrawX - 7} ${totalHeight - 4}`;
+            if (pathAssemblyBracketRightHalo && showAsmHalo) pathAssemblyBracketRightHalo.setAttribute('d', rightD);
             if (pathAssemblyBracketRight) {
               pathAssemblyBracketRight.setAttribute('d', rightD);
               pathAssemblyBracketRight.setAttribute('stroke', rightBracketColor);
