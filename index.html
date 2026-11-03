@@ -2404,8 +2404,8 @@
           <!-- 4. Reopen Splitter Icon Style -->
           <div style="display: inline-flex; align-items: center; gap: 4px; margin-left: 8px; padding-left: 8px; border-left: 1px solid #2a313d;">
             <span style="color: #94a3b8;" title="Icon used on the splitter to reopen a contracted track view">Reopen Icon:</span>
-            <button id="btnIconChevrons" class="btn-mode active" style="padding: 2px 6px; font-size: 10px;" title="Double Chevrons (» / «) — Classic CAD/IDE dock expand pattern">» Chevrons</button>
-            <button id="btnIconSplit" class="btn-mode" style="padding: 2px 6px; font-size: 10px;" title="Dual Split Panes (◫) — Represents restoring two-pane split">◫ Dual Pane</button>
+            <button id="btnIconChevrons" class="btn-mode" style="padding: 2px 6px; font-size: 10px;" title="Double Chevrons (» / «) — Classic CAD/IDE dock expand pattern">» Chevrons</button>
+            <button id="btnIconSplit" class="btn-mode active" style="padding: 2px 6px; font-size: 10px;" title="Dual Split Panes (◫) — Represents restoring two-pane split">◫ Dual Pane</button>
             <button id="btnIconUnfold" class="btn-mode" style="padding: 2px 6px; font-size: 10px;" title="Dock Unfold (⇥ / ⇤) — Wall with outward arrow">⇥ Unfold</button>
             <button id="btnIconArrows" class="btn-mode" style="padding: 2px 6px; font-size: 10px;" title="Bidirectional Split Arrows (↔)">↔ Split</button>
           </div>
@@ -6281,7 +6281,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       updateSplitterUI();
     }
 
-    let reopenIconStyle = 'chevrons'; // 'chevrons' | 'split' | 'unfold' | 'arrows'
+    let reopenIconStyle = 'split'; // Default: dual split panes (◫)
 
     // Crisp Vector Icons for Reopening / Expanding Contracted Tracks
     const REOPEN_ICONS = {
