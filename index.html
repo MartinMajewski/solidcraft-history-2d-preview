@@ -2411,18 +2411,8 @@
           </div>
         </div>
 
-        <!-- Coincidence mode switcher & Highlight Colors in one row -->
-        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding-top: 8px; border-top: 1px solid #252b37; font-size: 11px;">
-          <div style="display: inline-flex; align-items: center; gap: 6px;">
-            <span style="color: #94a3b8;">Coincidence:</span>
-            <div class="overlay-mode-btn-group" id="overlayModeBtnGroup" style="margin: 0;">
-              <button id="btnModeSmartInset" class="btn-mode active" style="padding: 2px 6px; font-size: 10px;" title="Smart Inset: insets bracket by 3px when coincident">Smart Inset</button>
-              <button id="btnModeRawSwap" class="btn-mode" style="padding: 2px 6px; font-size: 10px;" title="Direct Layer Swap">Layer Swap</button>
-              <button id="btnModeHalo" class="btn-mode" style="padding: 2px 6px; font-size: 10px;" title="Knockout Halo">Halo</button>
-              <button id="btnModeOriginal" class="btn-mode" style="padding: 2px 6px; font-size: 10px;" title="Original Marker on Top">Original</button>
-            </div>
-          </div>
-
+        <!-- Highlight Colors -->
+        <div style="display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 8px; padding-top: 8px; border-top: 1px solid #252b37; font-size: 11px;">
           <div style="display: inline-flex; align-items: center; gap: 6px; color: #cbd5e1;">
             <span>Colors:</span>
             <label style="display: inline-flex; align-items: center; gap: 3px; cursor: pointer;" title="Prerequisite chip color">
@@ -2839,38 +2829,8 @@
     let playbackTimer = null;
     let clipboardFeature = null;    // SolidCraft Session Clipboard simulation
 
-    let overlayMode = 'smart-inset'; // 'smart-inset' | 'raw-swap' | 'halo' | 'original'
-    const urlParams = new URLSearchParams(window.location.search);
-    const initialMode = urlParams.get('mode');
-    if (initialMode && ['smart-inset', 'raw-swap', 'halo', 'original'].includes(initialMode)) {
-      overlayMode = initialMode;
-    }
-
-    const modeDescriptions = {
-      'smart-inset': 'Smart Inset (Recommended): insets bracket by 3px when coincident with marker so both bracket clasp and blue scrubber line remain 100% visible side-by-side.',
-      'raw-swap': 'Direct Layer Swap: renders bracket directly on top of marker line at exact same coordinate (marker line is covered by green stem).',
-      'halo': 'Knockout Halo: renders bracket on top of marker with dark outline halo, cleanly severing the marker line behind the bracket.',
-      'original': 'Original: marker scrubber renders on top of bracket (marker line covers and hides the bracket vertical stem).'
-    };
-
-    function setOverlayMode(mode) {
-      overlayMode = mode;
-      document.querySelectorAll('.btn-mode').forEach(btn => btn.classList.remove('active'));
-      const activeBtn = {
-        'smart-inset': document.getElementById('btnModeSmartInset'),
-        'raw-swap': document.getElementById('btnModeRawSwap'),
-        'halo': document.getElementById('btnModeHalo'),
-        'original': document.getElementById('btnModeOriginal')
-      }[mode];
-      if (activeBtn) activeBtn.classList.add('active');
-
-      const descEl = document.getElementById('modeDescription');
-      if (descEl) descEl.textContent = modeDescriptions[mode] || '';
-
-      renderTimeline();
-      // The Coincidence mode applies to both corridor brackets: refresh the assembly track too
-      applyAssemblyHighlight();
-    }
+    // SolidCraft uses Smart Inset by default for coincident brackets and marker
+    const overlayMode = 'smart-inset';
 
     // Component Definitions for Model Browser & Pinned Left Headers
     const componentDefs = [
@@ -5131,29 +5091,6 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
     document.getElementById('btnNewHole')?.addEventListener('click', () => addFeatureToActiveComponent('hole'));
     document.getElementById('btnNewFillet')?.addEventListener('click', () => addFeatureToActiveComponent('fillet'));
 
-    // Overlay Mode Switcher Buttons
-    const btnModeSmartInset = document.getElementById('btnModeSmartInset');
-    const btnModeRawSwap = document.getElementById('btnModeRawSwap');
-    const btnModeHalo = document.getElementById('btnModeHalo');
-    const btnModeOriginal = document.getElementById('btnModeOriginal');
-
-    if (btnModeSmartInset) btnModeSmartInset.addEventListener('click', () => setOverlayMode('smart-inset'));
-    if (btnModeRawSwap) btnModeRawSwap.addEventListener('click', () => setOverlayMode('raw-swap'));
-    if (btnModeHalo) btnModeHalo.addEventListener('click', () => setOverlayMode('halo'));
-    if (btnModeOriginal) btnModeOriginal.addEventListener('click', () => setOverlayMode('original'));
-
-    // Initialize active button state from overlayMode
-    document.querySelectorAll('.btn-mode').forEach(btn => btn.classList.remove('active'));
-    const initialActiveBtn = {
-      'smart-inset': document.getElementById('btnModeSmartInset'),
-      'raw-swap': document.getElementById('btnModeRawSwap'),
-      'halo': document.getElementById('btnModeHalo'),
-      'original': document.getElementById('btnModeOriginal')
-    }[overlayMode];
-    if (initialActiveBtn) initialActiveBtn.classList.add('active');
-    const initialDescEl = document.getElementById('modeDescription');
-    if (initialDescEl) initialDescEl.textContent = modeDescriptions[overlayMode] || '';
-
     // 2D Timeline Preferences event listeners
     let timelineComponentActivationEnabled = true;
 
@@ -6528,6 +6465,56 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
           }
         }
       }, { passive: false });
+
+      // Grab-and-pan on empty areas of the tracks (excluding chips, timeline markers, group cards, and headers)
+      function attachTrackBackgroundPan(areaEl) {
+        if (!areaEl) return;
+        let isPanning = false;
+        let panStartX = 0;
+        let panStartY = 0;
+        let startScrollLeft = 0;
+        let startScrollY = 0;
+
+        areaEl.addEventListener('mousedown', (e) => {
+          if (e.button !== 0) return;
+          if (e.target.closest('.chip, .timeline-marker, .assembly-marker, .virtual-group-card, .timeline-header-track')) {
+            return;
+          }
+          isPanning = true;
+          panStartX = e.clientX;
+          panStartY = e.clientY;
+          startScrollLeft = areaEl.scrollLeft;
+          startScrollY = verticalScrollY;
+          document.body.style.cursor = 'grabbing';
+
+          function onMouseMove(ev) {
+            if (!isPanning) return;
+            const dx = ev.clientX - panStartX;
+            const dy = ev.clientY - panStartY;
+            areaEl.scrollLeft = startScrollLeft - dx;
+            verticalScrollY = Math.max(0, Math.min(maxScroll, startScrollY - dy));
+            pinnedContent.style.transform = `translate3d(0, -${verticalScrollY}px, 0)`;
+            modelingTracks.style.transform = `translate3d(0, -${verticalScrollY}px, 0)`;
+            if (assemblyTracks) {
+              assemblyTracks.style.transform = `translate3d(0, -${verticalScrollY}px, 0)`;
+            }
+          }
+
+          function onMouseUp() {
+            if (!isPanning) return;
+            isPanning = false;
+            document.body.style.cursor = 'default';
+            window.removeEventListener('mousemove', onMouseMove);
+            window.removeEventListener('mouseup', onMouseUp);
+          }
+
+          window.addEventListener('mousemove', onMouseMove);
+          window.addEventListener('mouseup', onMouseUp);
+        });
+      }
+
+      attachTrackBackgroundPan(scrollArea);
+      attachTrackBackgroundPan(assemblyScrollArea);
     }
 
     // Assembly Transport Handlers
