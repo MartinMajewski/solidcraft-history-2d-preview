@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SolidCraft - 2D Timeline Interactive Demonstration</title>
+  <meta name="theme-color" content="#0b0d11">
+  <title>SolidCraft 2D Timeline — Interactive Product Presentation &amp; Feature Guide (PR #11372)</title>
   <style>
+
     :root {
       --bg: #14161a;
       --card-bg: #1b1e24;
@@ -1885,32 +1887,32 @@
       box-sizing: border-box;
     }
 
-    #btnCollapseLeft {
+    .btn-collapse-left {
       border: 1px solid #38bdf8;
       color: #94a3b8;
     }
 
-    #btnCollapseLeft:hover {
+    .btn-collapse-left:hover {
       background: rgba(56, 189, 248, 0.25);
       color: #ffffff;
     }
 
-    #btnCollapseLeft:active {
+    .btn-collapse-left:active {
       background: rgba(56, 189, 248, 0.60);
       color: #ffffff;
     }
 
-    #btnCollapseRight {
+    .btn-collapse-right {
       border: 1px solid #c084fc;
       color: #94a3b8;
     }
 
-    #btnCollapseRight:hover {
+    .btn-collapse-right:hover {
       background: rgba(192, 132, 252, 0.25);
       color: #ffffff;
     }
 
-    #btnCollapseRight:active {
+    .btn-collapse-right:active {
       background: rgba(192, 132, 252, 0.60);
       color: #ffffff;
     }
@@ -2237,467 +2239,1186 @@
 
 
 
+  
+
+    /* =========================================================================
+       PRODUCT PRESENTATION PAGE STYLING (SolidCraft 2D Timeline Preview)
+       ========================================================================= */
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      padding: 0 !important;
+      margin: 0 !important;
+      background-color: #0b0d11 !important;
+      color: #e2e8f0;
+      overflow-x: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* Fixed Top Glassmorphic Navigation Bar */
+    .site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: rgba(11, 13, 17, 0.88);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 10px 24px;
+    }
+
+    .site-nav-inner {
+      max-width: 1260px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #ffffff;
+    }
+
+    .nav-brand-logo {
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      border-radius: 6px;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+    }
+
+    .nav-brand-title {
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.3px;
+      color: #ffffff;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      list-style: none;
+    }
+
+    .nav-link-item a {
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: color 0.15s, background 0.15s;
+      white-space: nowrap;
+    }
+
+    .nav-link-item a:hover {
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-github-pr {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: #181d26;
+      border: 1px solid #333d4e;
+      color: #f1f5f9;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+
+    .btn-github-pr:hover {
+      background: #202734;
+      border-color: #38bdf8;
+      color: #38bdf8;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.25);
+    }
+
+    /* Hero Section */
+    .hero-section {
+      position: relative;
+      padding: 72px 24px 60px;
+      background: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.12) 0%, rgba(11, 13, 17, 0) 70%),
+                  radial-gradient(circle at 80% 20%, rgba(192, 132, 252, 0.08) 0%, rgba(11, 13, 17, 0) 50%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      text-align: center;
+    }
+
+    .hero-container {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .hero-pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 14px;
+      border-radius: 20px;
+      background: rgba(56, 189, 248, 0.10);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #38bdf8;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .hero-title {
+      font-size: 44px;
+      line-height: 1.15;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    .hero-title span.accent-cyan {
+      background: linear-gradient(135deg, #38bdf8, #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 17px;
+      line-height: 1.6;
+      color: #94a3b8;
+      max-width: 820px;
+      margin: 0 auto 30px;
+    }
+
+    .hero-feature-tags {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      background: #141720;
+      border: 1px solid #232b38;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+
+    .hero-tag-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn-hero-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #0284c7;
+      color: #ffffff;
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 4px 16px rgba(2, 132, 199, 0.4);
+      transition: all 0.15s;
+    }
+
+    .btn-hero-primary:hover {
+      background: #0369a1;
+      box-shadow: 0 6px 22px rgba(2, 132, 199, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .btn-hero-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #161a23;
+      border: 1px solid #283244;
+      color: #cbd5e1;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+
+    .btn-hero-secondary:hover {
+      background: #1f2533;
+      color: #ffffff;
+      border-color: #38bdf8;
+    }
+
+    /* Product Section Containers */
+    .product-section {
+      padding: 70px 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      position: relative;
+    }
+
+    .product-section:nth-child(even) {
+      background: rgba(255, 255, 255, 0.015);
+    }
+
+    .section-container {
+      max-width: 1260px;
+      margin: 0 auto;
+    }
+
+    .section-header-deck {
+      margin-bottom: 24px;
+    }
+
+    .section-pill-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: 4px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #38bdf8;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+      margin-bottom: 12px;
+    }
+
+    .section-lead-text {
+      font-size: 15px;
+      line-height: 1.65;
+      color: #94a3b8;
+      max-width: 1060px;
+      margin-bottom: 22px;
+    }
+
+    /* Feature Breakdown 3-Card Grid */
+    .feature-breakdown-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .breakdown-card {
+      background: #141720;
+      border: 1px solid #232a37;
+      border-radius: 8px;
+      padding: 16px 18px;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+
+    .breakdown-card:hover {
+      border-color: #38bdf8;
+      transform: translateY(-2px);
+    }
+
+    .breakdown-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .breakdown-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    .breakdown-card-title {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #f1f5f9;
+    }
+
+    .breakdown-card-desc {
+      font-size: 12.5px;
+      line-height: 1.55;
+      color: #94a3b8;
+    }
+
+    /* Showcase Wrapper & Dedicated Context Toolbar */
+    .showcase-wrapper {
+      background: #13161d;
+      border: 1px solid #242c3b;
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+    }
+
+    .showcase-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #242c3b;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .showcase-live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #22c55e;
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      padding: 2px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .showcase-live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 6px #22c55e;
+      animation: pulse-dot 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    .showcase-toolbar {
+      background: #171b24;
+      border: 1px solid #273042;
+      border-radius: 8px;
+      padding: 9px 14px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 11.5px;
+    }
+
+    .toolbar-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar-label {
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    .toolbar-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #1f2533;
+      border: 1px solid #2f3a4e;
+      padding: 3px 10px;
+      border-radius: 5px;
+      color: #e2e8f0;
+      font-weight: 500;
+    }
+
+    .toolbar-btn {
+      background: #1f2533;
+      border: 1px solid #333e54;
+      color: #cbd5e1;
+      padding: 4px 10px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s;
+    }
+
+    .toolbar-btn:hover {
+      background: #283144;
+      color: #ffffff;
+      border-color: #38bdf8;
+    }
+
+    .toolbar-btn.active {
+      background: rgba(56, 189, 248, 0.18);
+      border-color: #38bdf8;
+      color: #38bdf8;
+      font-weight: 600;
+    }
+
+    .timeline-mount {
+      position: relative;
+      width: 100%;
+    }
+
+    .validation-section {
+      background: #0f1218;
+      border-top: 1px solid #1e2430;
+      border-bottom: 1px solid #1e2430;
+      padding: 60px 24px;
+    }
+
+    .validation-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+      margin-top: 24px;
+    }
+
+    .val-card {
+      background: #141820;
+      border: 1px solid #252d3c;
+      border-radius: 8px;
+      padding: 18px;
+    }
+
+    .val-card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #38bdf8;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .val-code {
+      background: #0a0c10;
+      border: 1px solid #1c222d;
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-size: 11px;
+      color: #a5f3fc;
+      margin-bottom: 8px;
+      display: block;
+      word-break: break-all;
+    }
+
+    .val-desc {
+      font-size: 12px;
+      line-height: 1.5;
+      color: #94a3b8;
+    }
+
+    .site-footer {
+      padding: 40px 24px;
+      background: #090a0d;
+      border-top: 1px solid #161b24;
+      text-align: center;
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      margin-bottom: 14px;
+    }
+
+    .footer-links a {
+      color: #94a3b8;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .footer-links a:hover {
+      color: #38bdf8;
+    }
+
+    .timeline-resize-rail {
+      height: 6px;
+      background: transparent;
+      cursor: row-resize;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+    }
+
+    .timeline-resize-rail:hover, .timeline-resize-rail.resizing {
+      background: rgba(56, 189, 248, 0.4);
+    }
+
+    .timeline-resize-rail .resize-rail-pill {
+      width: 36px;
+      height: 3px;
+      border-radius: 2px;
+      background: rgba(255, 255, 255, 0.25);
+      transition: background 0.15s, transform 0.15s;
+    }
+
+    .timeline-resize-rail:hover .resize-rail-pill, .timeline-resize-rail.resizing .resize-rail-pill {
+      background: #38bdf8;
+      transform: scaleY(1.3);
+    }
+
+    @media (max-width: 900px) {
+      .hero-title { font-size: 32px; }
+      .nav-links { display: none; }
+      .section-title { font-size: 24px; }
+    }
+
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Header -->
-    <div class="header-bar">
-      <div>
-        <div class="header-title-area">
-          <span class="badge" style="background: rgba(56, 189, 248, 0.18); border: 1px solid rgba(56, 189, 248, 0.45); color: #38bdf8; font-weight: 600;">SolidCraft UI Change Proposal</span>
-          <h1 class="header-title">SolidCraft 2D Timeline</h1>
+
+  <!-- Top Sticky Navigation Bar -->
+  <nav class="site-nav">
+    <div class="site-nav-inner">
+      <a href="#" class="nav-brand">
+        <div class="nav-brand-logo">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
         </div>
-        <p class="header-desc">
-          Interactive proposal &amp; prototype demonstrating the 2D multi-track parametric CAD timeline for SolidCraft with split modeling/assembly tracks, dependency visualization &amp; ripple push reordering. (Pull Request link coming soon).
+        <span class="nav-brand-title">SolidCraft 2D Timeline</span>
+        <span class="badge" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; font-size: 10px;">PR #11372</span>
+      </a>
+
+      <ul class="nav-links">
+        <li class="nav-link-item"><a href="#cat1">1. Matrix &amp; Spans</a></li>
+        <li class="nav-link-item"><a href="#cat2">2. DAG &amp; Corridor</a></li>
+        <li class="nav-link-item"><a href="#cat3">3. Split Tracks &amp; Joints</a></li>
+        <li class="nav-link-item"><a href="#cat4">4. Adaptive Dock</a></li>
+        <li class="nav-link-item"><a href="#cat5">5. Groups &amp; Suppression</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="https://github.com/tangency-labs/solidcraft/pull/11372" target="_blank" rel="noopener noreferrer" class="btn-github-pr">
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          <span>PR #11372 Ready for Review</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero-section">
+    <div class="hero-container">
+      <div class="hero-pill-badge">
+        <span>⚡ Pull Request #11372 Ready for Review · Opt-In UI Feature</span>
+      </div>
+      <h1 class="hero-title">
+        The Multi-Component <span class="accent-cyan">2D Timeline</span> for SolidCraft
+      </h1>
+      <p class="hero-subtitle">
+        Transforming flat chronological tape into an interactive, two-dimensional engineering matrix—pairing chronological rebuild history along the horizontal axis with component ownership along the vertical axis.
+      </p>
+
+      <div class="hero-feature-tags">
+        <div class="hero-tag">
+          <span class="hero-tag-dot" style="background: #38bdf8;"></span>
+          <span>Component × Step Matrix</span>
+        </div>
+        <div class="hero-tag">
+          <span class="hero-tag-dot" style="background: #22c55e;"></span>
+          <span>Topological Movable Corridor [ ... ]</span>
+        </div>
+        <div class="hero-tag">
+          <span class="hero-tag-dot" style="background: #c084fc;"></span>
+          <span>Asymmetric Modeling &amp; Assembly Split Tracks</span>
+        </div>
+        <div class="hero-tag">
+          <span class="hero-tag-dot" style="background: #f59e0b;"></span>
+          <span>Adaptive 1-Row to All-Fit Dock</span>
+        </div>
+        <div class="hero-tag">
+          <span class="hero-tag-dot" style="background: #38bdf8;"></span>
+          <span>Virtual Group Cards &amp; Cascading Suppression</span>
+        </div>
+      </div>
+
+      <div class="hero-cta-group">
+        <a href="#cat1" class="btn-hero-primary">Explore Category Showcases ↓</a>
+        <a href="https://github.com/tangency-labs/solidcraft/pull/11372" target="_blank" rel="noopener noreferrer" class="btn-hero-secondary">
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          View Full PR on GitHub ↗
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       CATEGORY 1: ORTHOGONAL COMPONENT × STEP MATRIX & CROSS-ASSEMBLY SPANS
+       ========================================================================= -->
+  <section id="cat1" class="product-section">
+    <div class="section-container">
+      <div class="section-header-deck">
+        <span class="section-pill-tag">Category 01 · Architecture</span>
+        <h2 class="section-title">Orthogonal Component × Step Matrix &amp; Cross-Assembly Span Connectors</h2>
+        <p class="section-lead-text">
+          Instead of forcing engineers to hunt through the browser tree to figure out which component owns step 04 or step 11, the 2D Timeline gives the Root Design and every component its own dedicated horizontal lane. Multi-body operations visually bridge their participating component rows with high-contrast vertical span connectors, while the active component is illuminated in a distinctive cyan wash.
         </p>
       </div>
 
-      <!-- Highlighting Legend -->
-      <div class="legend">
-        <div class="legend-item">
-          <div class="legend-swatch swatch-orange"></div>
-          <div class="legend-swatch swatch-grey-light" style="margin-left: -3px;" title="Inactive Prereq (Light Grey)"></div>
-          <span style="color: var(--orange); font-weight: 500;">Prerequisite (Orange / Inactive: Light Grey)</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-swatch swatch-blue"></div>
-          <div class="legend-swatch swatch-grey-mid" style="margin-left: -3px;" title="Inactive Downstream (Mid Grey)"></div>
-          <span style="color: var(--blue); font-weight: 500;">Downstream (Blue / Inactive: Mid Grey)</span>
-        </div>
-        <div class="legend-item">
-          <span class="swatch-green">[ &nbsp; ]</span>
-          <span style="color: var(--green); font-weight: 500;">Movable Corridor (Green / Inactive: Grey)</span>
-        </div>
-        <div class="legend-item">
-          <div class="marker-swatch"></div>
-          <span style="color: var(--blue); font-weight: 500;">Rollback Marker</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-swatch" style="border: 1px dashed #64748b; background: rgba(24, 27, 34, 0.9); display: flex; align-items: center; justify-content: center; position: relative;" title="Suppressed action chip">
-            <svg viewBox="0 0 64 64" width="10" height="10" fill="none" stroke="#ffffff" style="opacity: 0.6;"><path d="M6 32C16 18 48 18 58 32C48 46 16 46 6 32Z" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" mask="url(#suppress-slash-mask)"/><path d="M24 32A8 8 0 1 0 40 32A8 8 0 1 0 24 32Z" fill="#ffffff" mask="url(#suppress-slash-mask)"/><path d="M13 51L51 13" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      <!-- Feature Breakdown Cards -->
+      <div class="feature-breakdown-grid">
+        <div class="breakdown-card">
+          <div class="breakdown-card-header">
+            <div class="breakdown-icon" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">📌</div>
+            <div class="breakdown-card-title">Pinned Left Headers &amp; Instant Activation</div>
           </div>
-          <span style="color: #94a3b8; font-weight: 500;">Suppressed (Slashed Eye 50% Overlay)</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-swatch" style="border-left: 3px solid #38bdf8; background: rgba(56, 189, 248, 0.2); display: flex; align-items: center; justify-content: center;" title="Active Component Row">
-            <span class="comp-radio-indicator active" style="width: 10px; height: 10px;"></span>
-          </div>
-          <span style="color: #38bdf8; font-weight: 500;">Active Component Track (Cyan Highlight &amp; Radio Indicator)</span>
-        </div>
-        <!-- SolidCraft History Transport Controls (Overview Mirror) -->
-        <div class="legend-item legend-transport-item">
-          <div class="transport-bar" title="SolidCraft History Transport (Scrub Timeline)">
-            <button id="btnFirst" class="btn-transport" title="Roll to First (Step 0)">⏮</button>
-            <button id="btnBack" class="btn-transport" title="Step Back">◀</button>
-            <button id="btnPlay" class="btn-transport" title="Play / Pause Timeline">▶</button>
-            <button id="btnForward" class="btn-transport" title="Step Forward">▶</button>
-            <button id="btnLast" class="btn-transport" title="Roll to Last (End)">⏭</button>
-          </div>
-          <div class="legend-transport-text">
-            <span class="legend-transport-title">Timeline Controls:</span>
-            <span class="legend-transport-desc">Scrub steps &amp; simulate CAD playback (⏮ First · ◀ Step Back · ▶ Play/Pause · ▶ Step Forward · ⏭ Last)</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Status Banner -->
-    <div class="status-bar">
-      <div id="statusContent" class="status-content">
-        <span style="font-weight: 600; color: #fff;">Selected Action:</span>
-        <span id="statusDetails" style="color: var(--text-muted); margin-left: 4px;">Loading...</span>
-      </div>
-      <div class="status-meta">
-        <span id="activeMarkerBadge" class="badge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">Active: 24 / 24 Steps</span> ·
-        <span>Header + 3.5 Rows Visible</span> ·
-        <span style="color: var(--green);">100% Opacity Display</span>
-      </div>
-    </div>
-
-    <!-- Modern 2-Column Control Deck (Full Width) -->
-    <div class="control-deck">
-      <!-- Left Column: Active Component Browser & Modeling Actions -->
-      <div class="deck-card">
-        <div class="deck-card-header">
-          <div class="deck-card-title">
-            <span class="browser-badge">CAD Browser</span>
-            <span>Active Modeling Target</span>
-          </div>
-          <div style="display: flex; align-items: center; gap: 12px; font-size: 11px;">
-            <!-- Timeline Activation option moved above components inside CAD browser -->
-            <label style="display: inline-flex; align-items: center; gap: 5px; cursor: pointer; color: #cbd5e1;" title="Enable/disable activating components directly from timeline track rows">
-              <input type="checkbox" id="chkTimelineCompActivation" checked style="cursor: pointer; accent-color: #38bdf8;">
-              <span style="font-weight: 500;">Timeline Activation</span>
-            </label>
-            <div style="display: flex; align-items: center; gap: 6px;">
-              <span>Active:</span>
-              <span class="active-comp-summary-pill" id="activeCompSummaryBadge">
-                <span class="comp-radio-indicator active" style="width: 10px; height: 10px;"></span>
-                <strong id="activeCompSummaryName">Housing</strong>
-              </span>
-            </div>
+          <div class="breakdown-card-desc">
+            The left Components column stays anchored during horizontal scrubbing. Clicking any row header activates that component (<code>component.activate</code>), illuminating the row with a cyan wash and routing new features directly to it—eliminating accidental feature authoring in the wrong part.
           </div>
         </div>
 
-        <div class="browser-components-row" id="browserComponentsList" style="margin-top: 4px;"></div>
+        <div class="breakdown-card">
+          <div class="breakdown-card-header">
+            <div class="breakdown-icon" style="background: rgba(192, 132, 252, 0.15); color: #c084fc;">🔗</div>
+            <div class="breakdown-card-title">Multi-Component Span Connectors</div>
+          </div>
+          <div class="breakdown-card-desc">
+            Cross-part operations—such as boolean combines, press-fit assemblies, or fastener joins—render linked chips across every participating component row, joined by high-contrast vertical dotted connector lines and endpoint junction nodes.
+          </div>
+        </div>
 
-        <div class="browser-modeling-bar" style="margin-top: 6px; padding-top: 8px; border-top: 1px solid #252b37;">
-          <span class="modeling-label">Simulate Modeling Feature:</span>
-          <div class="modeling-btn-group">
-            <button id="btnNewExtrude" class="btn-model-action" title="Create Extrude in active component track">
-              <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor"><path d="M8 1L1 4v8l7 3 7-3V4L8 1z"/></svg>
-              + Extrude
-            </button>
-            <button id="btnNewRevolve" class="btn-model-action" title="Create Revolve in active component track">
-              <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor"><path d="M8 2a6 6 0 1 0 6 6h-2a4 4 0 1 1-4-4V2z"/></svg>
-              + Revolve
-            </button>
-            <button id="btnNewHole" class="btn-model-action" title="Create Hole in active component track">
-              <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg>
-              + Hole
-            </button>
-            <button id="btnNewFillet" class="btn-model-action" title="Create Fillet in active component track">
-              <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor"><path d="M2 14h12v-2H6a2 2 0 0 1-2-2V2H2v12z"/></svg>
-              + Fillet
-            </button>
+        <div class="breakdown-card">
+          <div class="breakdown-card-header">
+            <div class="breakdown-icon" style="background: rgba(34, 197, 94, 0.15); color: #22c55e;">·</div>
+            <div class="breakdown-card-title">Configurable Alignment Grid</div>
+          </div>
+          <div class="breakdown-card-desc">
+            Unoccupied cells display subtle alignment dots (<code>·</code>) with user-adjustable opacity from 5% to 100%, making horizontal eye-tracking across dozens of chronological modeling steps effortless without adding visual clutter.
           </div>
         </div>
       </div>
 
-      <!-- Right Column: Timeline Preferences & Post-Modeling Section Controls -->
-      <div class="deck-card">
-        <div class="deck-card-header">
-          <div class="deck-card-title">
-            <svg viewBox="0 0 16 16" width="13" height="13" fill="#38bdf8"><path d="M8 4.75a3.25 3.25 0 1 0 0 6.5 3.25 3.25 0 0 0 0-6.5zM3.5 8a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0z"/></svg>
-            <span>Timeline Preferences &amp; Split Track Controls</span>
+      <!-- Interactive Showcase 1 -->
+      <div class="showcase-wrapper">
+        <div class="showcase-header-bar">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span class="showcase-live-badge"><span class="showcase-live-dot"></span> Interactive Showcase 01</span>
+            <span style="font-weight: 600; font-size: 13px; color: #fff;">Component Matrix &amp; Multi-Part Spans</span>
           </div>
-          <div style="display: flex; align-items: center; gap: 6px;">
-            <button id="btnToggleAssemblySection" class="btn-mode active" style="font-size: 11px; padding: 3px 8px;" title="Toggle Post-Modeling / Assembly section visibility">🟣 Assembly Track: Shown (5)</button>
-            <button id="btnAddJoint" class="btn-mode" style="font-size: 11px; padding: 3px 8px;" title="Add an assembly joint mate">+ Joint</button>
+          <div style="font-size: 11.5px; color: #94a3b8;">
+            Try: Click any component header to activate row · Toggle alignment dots
           </div>
         </div>
 
-        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 11px; padding-top: 4px;">
-          <!-- 1. Alignment Dots & Opacity -->
-          <div style="display: inline-flex; align-items: center; gap: 8px;">
+        <!-- Section 1 Toolbar -->
+        <div class="showcase-toolbar">
+          <div class="toolbar-group">
+            <span class="toolbar-label">Active Component:</span>
+            <button id="cat1_btnComp0" class="toolbar-btn">Root (Design)</button>
+            <button id="cat1_btnComp1" class="toolbar-btn active">Housing (⊙ Active)</button>
+            <button id="cat1_btnComp2" class="toolbar-btn">Shaft</button>
+            <button id="cat1_btnComp3" class="toolbar-btn">Bearing</button>
+            <button id="cat1_btnComp4" class="toolbar-btn">Fastener</button>
+          </div>
+
+          <div class="toolbar-group">
+            <span class="toolbar-label">Simulate Feature:</span>
+            <button id="cat1_btnAddExtrude" class="toolbar-btn">+ Extrude</button>
+            <button id="cat1_btnAddRevolve" class="toolbar-btn">+ Revolve</button>
+            <button id="cat1_btnAddHole" class="toolbar-btn">+ Hole</button>
+            <button id="cat1_btnAddFillet" class="toolbar-btn">+ Fillet</button>
+          </div>
+
+          <div class="toolbar-group">
             <label style="display: inline-flex; align-items: center; gap: 5px; cursor: pointer; color: #cbd5e1;">
-              <input type="checkbox" id="chkCellDots" checked style="cursor: pointer; accent-color: #38bdf8;">
-              Alignment Dots
+              <input type="checkbox" id="cat1_chkDots" checked style="accent-color: #38bdf8; cursor: pointer;">
+              <span>Alignment Dots</span>
             </label>
-            <div id="dotOpacityGroup" style="display: inline-flex; align-items: center; gap: 4px; color: #94a3b8;">
-              <span>Opacity:</span>
-              <input type="range" id="rngDotOpacity" min="5" max="100" value="35" style="width: 55px; cursor: pointer; accent-color: #38bdf8;">
-              <span id="lblDotOpacity" style="font-family: monospace; min-width: 28px;">35%</span>
-            </div>
-          </div>
-
-
-
-          <!-- 3. Split Presets -->
-          <div style="display: inline-flex; align-items: center; gap: 4px;">
-            <span style="color: #94a3b8;">Split:</span>
-            <button id="btnSplit65" class="btn-mode active" style="padding: 2px 6px; font-size: 10px;" title="65% Modeling, 35% Assembly">65/35</button>
-            <button id="btnSplit50" class="btn-mode" style="padding: 2px 6px; font-size: 10px;" title="50% Modeling, 50% Assembly">50/50</button>
-          </div>
-
-          <!-- 4. Reopen Splitter Icon Style -->
-          <div style="display: inline-flex; align-items: center; gap: 4px; margin-left: 8px; padding-left: 8px; border-left: 1px solid #2a313d;">
-            <span style="color: #94a3b8;" title="Icon used on the splitter to reopen a contracted track view">Reopen Icon:</span>
-            <button id="btnIconChevrons" class="btn-mode" style="padding: 2px 6px; font-size: 10px;" title="Double Chevrons (» / «) — Classic CAD/IDE dock expand pattern">» Chevrons</button>
-            <button id="btnIconSplit" class="btn-mode active" style="padding: 2px 6px; font-size: 10px;" title="Dual Split Panes (◫) — Represents restoring two-pane split">◫ Dual Pane</button>
-            <button id="btnIconUnfold" class="btn-mode" style="padding: 2px 6px; font-size: 10px;" title="Dock Unfold (⇥ / ⇤) — Wall with outward arrow">⇥ Unfold</button>
-            <button id="btnIconArrows" class="btn-mode" style="padding: 2px 6px; font-size: 10px;" title="Bidirectional Split Arrows (↔)">↔ Split</button>
+            <span style="color: #64748b;">|</span>
+            <span class="toolbar-label">Opacity:</span>
+            <input type="range" id="cat1_rngOpacity" min="5" max="100" value="35" style="width: 55px; accent-color: #38bdf8; cursor: pointer;">
+            <span id="cat1_lblOpacity" style="font-family: monospace; min-width: 28px;">35%</span>
           </div>
         </div>
 
-        <!-- Highlight Colors -->
-        <div style="display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 8px; padding-top: 8px; border-top: 1px solid #252b37; font-size: 11px;">
-          <div style="display: inline-flex; align-items: center; gap: 6px; color: #cbd5e1;">
-            <span>Colors:</span>
-            <label style="display: inline-flex; align-items: center; gap: 3px; cursor: pointer;" title="Prerequisite chip color">
-              <input type="color" id="pickerPrereqColor" value="#f59e0b" style="width: 16px; height: 16px; border: 1px solid #475569; border-radius: 3px; padding: 0; background: none; cursor: pointer;">
-              Prereqs
-            </label>
-            <label style="display: inline-flex; align-items: center; gap: 3px; cursor: pointer;" title="Dependent chip color">
-              <input type="color" id="pickerDepColor" value="#38bdf8" style="width: 16px; height: 16px; border: 1px solid #475569; border-radius: 3px; padding: 0; background: none; cursor: pointer;">
-              Dependents
-            </label>
-            <button id="btnResetColors" class="btn-mode" style="padding: 2px 5px; font-size: 10px;" title="Reset to SolidCraft default colors">↺</button>
+        <!-- Mount point 1 -->
+        <div id="mount-cat1" class="timeline-mount"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       CATEGORY 2: REAL-TIME TOPOLOGICAL DAG INTROSPECTION & THE MOVABLE CORRIDOR
+       ========================================================================= -->
+  <section id="cat2" class="product-section">
+    <div class="section-container">
+      <div class="section-header-deck">
+        <span class="section-pill-tag">Category 02 · DAG Safety</span>
+        <h2 class="section-title">Real-Time Topological DAG Introspection &amp; The Movable Corridor</h2>
+        <p class="section-lead-text">
+          Reordering features in a parametric B-rep kernel is traditionally a high-friction, trial-and-error operation: drag a feature one step too far and downstream fillets, bores, or boolean cuts fail to rebuild. The 2D Timeline turns the internal Directed Acyclic Graph (DAG) into an immediate visual guide the moment any chip is selected, framing the exact safe slot window with green brackets.
+        </p>
+      </div>
+
+      <!-- Feature Breakdown Cards -->
+      <div class="feature-breakdown-grid">
+        <div class="breakdown-card">
+          <div class="breakdown-card-header">
+            <div class="breakdown-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">▲</div>
+            <div class="breakdown-card-title">Upstream Prerequisites (Ancestors)</div>
+          </div>
+          <div class="breakdown-card-desc">
+            Every preceding sketch, datum, or solid operation that the selected feature directly or transitively depends upon is highlighted in warm amber, revealing geometric foundations across all components instantly.
+          </div>
+        </div>
+
+        <div class="breakdown-card">
+          <div class="breakdown-card-header">
+            <div class="breakdown-icon" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">▼</div>
+            <div class="breakdown-card-title">Downstream Dependents (Descendants)</div>
+          </div>
+          <div class="breakdown-card-desc">
+            Every succeeding operation or joint that consumes geometry from the selected feature is highlighted in electric blue across all affected component tracks, preventing accidental regression of dependent geometry.
+          </div>
+        </div>
+
+        <div class="breakdown-card">
+          <div class="breakdown-card-header">
+            <div class="breakdown-icon" style="background: rgba(34, 197, 94, 0.15); color: #22c55e;">[ ]</div>
+            <div class="breakdown-card-title">The Movable Corridor &amp; Smart Inset</div>
+          </div>
+          <div class="breakdown-card-desc">
+            Vivid green boundary brackets frame the exact chronological window—from the last prerequisite to the first dependent—where the action can be ripple-reordered. When coincident with the rollback marker, the bracket automatically insets 3 px inward with zero visual occlusion!
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Showcase 2 -->
+      <div class="showcase-wrapper">
+        <div class="showcase-header-bar">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span class="showcase-live-badge"><span class="showcase-live-dot"></span> Interactive Showcase 02</span>
+            <span style="font-weight: 600; font-size: 13px; color: #fff;">Topological DAG &amp; Movable Corridor with Smart Inset</span>
+          </div>
+          <div style="font-size: 11.5px; color: #94a3b8;">
+            Pre-selected: Step 05 Fillet Edge · Marker coincident at Step 08 showing Smart Inset
+          </div>
+        </div>
+
+        <!-- Section 2 Toolbar -->
+        <div class="showcase-toolbar">
+          <div class="toolbar-group">
+            <span class="toolbar-pill" style="border-color: #38bdf8;">
+              <span style="color: #38bdf8; font-weight: 700;">Selected:</span>
+              <span>Step 05 Fillet Edge</span>
+            </span>
+            <span class="toolbar-pill" style="border-color: #f59e0b;">
+              <span style="color: #f59e0b; font-weight: 700;">Prereqs:</span>
+              <span>Step 03 Housing Revolve</span>
+            </span>
+            <span class="toolbar-pill" style="border-color: #38bdf8;">
+              <span style="color: #38bdf8; font-weight: 700;">Dependents:</span>
+              <span>Step 09, Step 14</span>
+            </span>
+            <span class="toolbar-pill" style="border-color: #22c55e; background: rgba(34, 197, 94, 0.12);">
+              <span style="color: #22c55e; font-weight: 700;">Corridor:</span>
+              <span>[ Step 04 .. Step 08 ]</span>
+            </span>
+          </div>
+
+          <div class="toolbar-group">
+            <span class="badge" style="background: rgba(34, 197, 94, 0.15); border: 1px solid #22c55e; color: #22c55e;">
+              ⚡ Smart Inset Active (3px bracket offset at Step 08)
+            </span>
+            <button id="cat2_btnJump08" class="toolbar-btn">Marker @ Step 08</button>
+            <button id="cat2_btnJump24" class="toolbar-btn">Marker @ Step 24</button>
+          </div>
+        </div>
+
+        <!-- Mount point 2 -->
+        <div id="mount-cat2" class="timeline-mount"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       CATEGORY 3: ASYMMETRIC SPLIT-TRACK ARCHITECTURE & KINEMATIC JOINT SCRUBBING
+       ========================================================================= -->
+  <section id="cat3" class="product-section">
+    <div class="section-container">
+      <div class="section-header-deck">
+        <span class="section-pill-tag">Category 03 · Split Tracks</span>
+        <h2 class="section-title">Asymmetric Split-Track Architecture &amp; Kinematic Joint Scrubbing</h2>
+        <p class="section-lead-text">
+          Mechanical design doesn't stop at solid bodies—kinematic joints (Rigid, Slider, Revolute, Cylindrical) define how those bodies move together. The 2D Timeline introduces a dedicated Assembly &amp; Joints track (purple accent) alongside Modeling Features (blue accent), separated by an interactive vertical splitter bar.
+        </p>
+      </div>
+
+      <!-- Feature Breakdown Cards -->
+      <div class="feature-breakdown-grid">
+        <div class="breakdown-card">
+          <div class="breakdown-card-header">
+            <div class="breakdown-icon" style="background: rgba(192, 132, 252, 0.15); color: #c084fc;">🟣</div>
+            <div class="breakdown-card-title">First-Class Kinematic Joint Matrix</div>
+          </div>
+          <div class="breakdown-card-desc">
+            Each joint (J01, J02, ...) renders connected chips on the two component tracks it constrains, complete with joint type labels, context menu actions (Edit Joint, Drive Joint, Suppress, Delete), joint dependency chains, and an independent assembly rollback marker.
+          </div>
+        </div>
+
+        <div class="breakdown-card">
+          <div class="breakdown-card-header">
+            <div class="breakdown-icon" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">↔️</div>
+            <div class="breakdown-card-title">Fluid Horizontal Track Switching</div>
+          </div>
+          <div class="breakdown-card-desc">
+            Drag the central splitter grip to proportion screen width between modeling and assembly history, or click the directional collapse buttons (<code>|&lt;</code> and <code>&gt;|</code>) to contract either track into a compact dock tab for 100% focused workspace.
+          </div>
+        </div>
+
+        <div class="breakdown-card">
+          <div class="breakdown-card-header">
+            <div class="breakdown-icon" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">◫</div>
+            <div class="breakdown-card-title">Dual-Pane Reopen Icon &amp; Snap Physics</div>
+          </div>
+          <div class="breakdown-card-desc">
+            When contracted, the splitter tab displays a dual-pane reopen icon (<code>◫</code>) to restore split view with a single click. Snapping thresholds allow smooth drag-to-collapse when dragging towards the window borders.
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Showcase 3 -->
+      <div class="showcase-wrapper">
+        <div class="showcase-header-bar">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span class="showcase-live-badge"><span class="showcase-live-dot"></span> Interactive Showcase 03</span>
+            <span style="font-weight: 600; font-size: 13px; color: #fff;">Dual Modeling &amp; Kinematic Assembly Tracks</span>
+          </div>
+          <div style="font-size: 11.5px; color: #94a3b8;">
+            Try: Drag central splitter bar · Click |&lt; or &gt;| to collapse · Scrub assembly marker
+          </div>
+        </div>
+
+        <!-- Section 3 Toolbar -->
+        <div class="showcase-toolbar">
+          <div class="toolbar-group">
+            <span class="toolbar-label">Track View Split:</span>
+            <button id="cat3_btnSplit50" class="toolbar-btn active">50 / 50 Side-by-Side</button>
+            <button id="cat3_btnSplit65" class="toolbar-btn">65 / 35 Split</button>
+            <button id="cat3_btnCollapseMod" class="toolbar-btn">Collapse Modeling (|<)</button>
+            <button id="cat3_btnCollapseAsm" class="toolbar-btn">Collapse Assembly (>|)</button>
+            <button id="cat3_btnRestoreSplit" class="toolbar-btn">Restore Split (◫)</button>
+          </div>
+
+          <div class="toolbar-group">
+            <span class="toolbar-label">Reopen Icon:</span>
+            <button id="cat3_btnIconSplit" class="toolbar-btn active">◫ Dual Pane</button>
+            <button id="cat3_btnIconChevrons" class="toolbar-btn">» Chevrons</button>
+            <button id="cat3_btnIconUnfold" class="toolbar-btn">⇥ Unfold</button>
+            <button id="cat3_btnIconArrows" class="toolbar-btn">↔ Split</button>
+          </div>
+
+          <div class="toolbar-group">
+            <button id="cat3_btnAddJoint" class="toolbar-btn" style="color: #c084fc; border-color: rgba(192, 132, 252, 0.4);">+ Joint Mate</button>
+          </div>
+        </div>
+
+        <!-- Mount point 3 -->
+        <div id="mount-cat3" class="timeline-mount"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       CATEGORY 4: ADAPTIVE VERTICAL DOCK SIZING: FROM 1-ROW STRIP TO ALL-COMPONENT FIT
+       ========================================================================= -->
+  <section id="cat4" class="product-section">
+    <div class="section-container">
+      <div class="section-header-deck">
+        <span class="section-pill-tag">Category 04 · Dock Adaptation</span>
+        <h2 class="section-title">Adaptive Vertical Dock Sizing: From 1-Row Strip to All-Component Fit</h2>
+        <p class="section-lead-text">
+          A multi-track timeline should never hold the 3D viewport hostage. Dragging the top resize rail (<code>timeline:top_rail</code>) scales the dock vertically with pixel-exact responsiveness, while double-clicking the rail resets it to default height. The dock adapts fluidly from a 1-row compact strip to a snug all-component fit.
+        </p>
+      </div>
+
+      <!-- Feature Breakdown Cards -->
+      <div class="feature-breakdown-grid">
+        <div class="breakdown-card">
+          <div class="breakdown-card-header">
+            <div class="breakdown-icon" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">📏</div>
+            <div class="breakdown-card-title">Compact 1-Row Minimum Height (116 px)</div>
+          </div>
+          <div class="breakdown-card-desc">
+            Shrinks the dock to a single visible component row with built-in clearance above the horizontal scrollbar and synchronized vertical scrolling on the right—preserving maximum 3D canvas height on laptop screens.
+          </div>
+        </div>
+
+        <div class="breakdown-card">
+          <div class="breakdown-card-header">
+            <div class="breakdown-icon" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">📐</div>
+            <div class="breakdown-card-title">Snug All-Component-Fit Height (264 px)</div>
+          </div>
+          <div class="breakdown-card-desc">
+            Expands the dock to fit every component row cleanly from top to bottom with zero wasted vertical space below the final track, eliminating inner vertical scrollbars entirely.
+          </div>
+        </div>
+
+        <div class="breakdown-card">
+          <div class="breakdown-card-header">
+            <div class="breakdown-icon" style="background: rgba(34, 197, 94, 0.15); color: #22c55e;">↕️</div>
+            <div class="breakdown-card-title">Top Resize Rail with Quick Reset</div>
+          </div>
+          <div class="breakdown-card-desc">
+            Hovering the top border highlights the cyan resize pill with a <code>row-resize</code> cursor. Dragging dynamically resizes the dock, and double-clicking the rail instantly restores the default height.
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Showcase 4 -->
+      <div class="showcase-wrapper">
+        <div class="showcase-header-bar">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span class="showcase-live-badge"><span class="showcase-live-dot"></span> Interactive Showcase 04</span>
+            <span style="font-weight: 600; font-size: 13px; color: #fff;">Adaptive Dock Height Presets &amp; Resize Rail</span>
+          </div>
+          <div style="font-size: 11.5px; color: #94a3b8;">
+            Try: Drag cyan top border rail · Click height presets below
+          </div>
+        </div>
+
+        <!-- Section 4 Toolbar -->
+        <div class="showcase-toolbar">
+          <div class="toolbar-group">
+            <span class="toolbar-label">Quick Height Presets:</span>
+            <button id="cat4_btn1Row" class="toolbar-btn">1-Row Compact (116 px)</button>
+            <button id="cat4_btn3Row" class="toolbar-btn">Standard 3-Row (220 px)</button>
+            <button id="cat4_btnAllFit" class="toolbar-btn active">All-Component Fit (264 px)</button>
+            <button id="cat4_btnResetHeight" class="toolbar-btn">↺ Reset Height</button>
+          </div>
+
+          <div class="toolbar-group">
+            <span class="toolbar-pill" style="border-color: #38bdf8;">
+              <span style="color: #38bdf8; font-weight: 700;">Dock Height:</span>
+              <span id="cat4_heightDisplay" style="font-family: monospace;">264 px</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Mount point 4 -->
+        <div id="mount-cat4" class="timeline-mount"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       CATEGORY 5: VIRTUAL GROUP FOLDING, TRANSITIVE SUPPRESSION & PRECISION SCRUBBING
+       ========================================================================= -->
+  <section id="cat5" class="product-section">
+    <div class="section-container">
+      <div class="section-header-deck">
+        <span class="section-pill-tag">Category 05 · Feature Organization</span>
+        <h2 class="section-title">Virtual Group Folding, Transitive Suppression &amp; Precision Scrubbing</h2>
+        <p class="section-lead-text">
+          As a design matures from rapid prototyping to production release, the 2D Timeline provides the organizational and diagnostic tools needed to keep large feature trees clean: virtual group folding across component tracks, automatic transitive suppression cascading, and luminance-matched greyscale rollback states.
+        </p>
+      </div>
+
+      <!-- Feature Breakdown Cards -->
+      <div class="feature-breakdown-grid">
+        <div class="breakdown-card">
+          <div class="breakdown-card-header">
+            <div class="breakdown-icon" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">📁</div>
+            <div class="breakdown-card-title">Virtual Group Cards &amp; Header Caps</div>
+          </div>
+          <div class="breakdown-card-desc">
+            Contiguous steps can be multi-selected (Shift+Click, Cmd/Ctrl+Click) and grouped into named stages. When expanded, Tier 2 banners span the columns; when collapsed, they fold into a single Virtual Group Card spanning all component rows with an integrated header cap and member-count badge.
+          </div>
+        </div>
+
+        <div class="breakdown-card">
+          <div class="breakdown-card-header">
+            <div class="breakdown-icon" style="background: rgba(239, 68, 68, 0.15); color: #ef4444;">🚫</div>
+            <div class="breakdown-card-title">Transitive Suppression Cascade</div>
+          </div>
+          <div class="breakdown-card-desc">
+            Suppressing a parent feature automatically cascades to all downstream dependents, rendering a 50% opacity slashed-eye overlay (<code>suppress.svg</code>) with a dashed border so the underlying feature icon remains immediately recognizable.
+          </div>
+        </div>
+
+        <div class="breakdown-card">
+          <div class="breakdown-card-header">
+            <div class="breakdown-icon" style="background: rgba(148, 163, 184, 0.15); color: #94a3b8;">⏱️</div>
+            <div class="breakdown-card-title">Luminance-Matched Greyscale Rollback</div>
+          </div>
+          <div class="breakdown-card-desc">
+            Chips to the right of the rollback marker render at 100% opacity in high-contrast greyscale rather than washed-out transparency, keeping icons and facet shading crisp when inspecting rolled-back model states.
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Showcase 5 -->
+      <div class="showcase-wrapper">
+        <div class="showcase-header-bar">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span class="showcase-live-badge"><span class="showcase-live-dot"></span> Interactive Showcase 05</span>
+            <span style="font-weight: 600; font-size: 13px; color: #fff;">Virtual Groups, Cascading Suppression &amp; Greyscale Rollback</span>
+          </div>
+          <div style="font-size: 11.5px; color: #94a3b8;">
+            Group 1 Open · Group 2 Folded · Step 15 Suppressed with Cascading Dependents · Marker at Step 18
+          </div>
+        </div>
+
+        <!-- Section 5 Toolbar -->
+        <div class="showcase-toolbar">
+          <div class="toolbar-group">
+            <span class="toolbar-label">Group Actions:</span>
+            <button id="cat5_btnToggleGroup1" class="toolbar-btn">Toggle "Foundation Stage"</button>
+            <button id="cat5_btnToggleGroup2" class="toolbar-btn">Toggle "Shaft Core"</button>
+          </div>
+
+          <div class="toolbar-group">
+            <span class="toolbar-label">Suppression:</span>
+            <button id="cat5_btnToggleSuppress" class="toolbar-btn" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.4);">
+              Toggle Suppress Step 15 (Bearing Shell)
+            </button>
+          </div>
+
+          <div class="toolbar-group">
+            <span class="toolbar-label">Rollback Scrubber:</span>
+            <button id="cat5_btnJump18" class="toolbar-btn active">Step 18 (Greyscale Demo)</button>
+            <button id="cat5_btnJump08" class="toolbar-btn">Step 08</button>
+            <button id="cat5_btnJump24" class="toolbar-btn">Step 24 (End)</button>
+          </div>
+        </div>
+
+        <!-- Mount point 5 -->
+        <div id="mount-cat5" class="timeline-mount"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       VALIDATION & TEST SUITE SECTION (Direct from Pull Request #11372)
+       ========================================================================= -->
+  <section class="validation-section">
+    <div class="section-container">
+      <div style="text-align: center; margin-bottom: 24px;">
+        <span class="section-pill-tag">Validation &amp; Integrity</span>
+        <h2 class="section-title">Automated Test Suite &amp; Clean-Room Verification</h2>
+        <p class="section-lead-text" style="margin: 0 auto;">
+          SolidCraft enforces strict zero-panic guarantees, layer boundaries, and clean-room independence. All 2D Timeline capabilities are backed by automated regression and integration tests passing cleanly.
+        </p>
+      </div>
+
+      <div class="validation-grid">
+        <div class="val-card">
+          <div class="val-card-title">
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="#22c55e"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg>
+            <span>Timeline 2D Layout &amp; Logic</span>
+          </div>
+          <code class="val-code">cargo test -p solidcraft-ui-egui --lib timeline_2d</code>
+          <div class="val-desc">
+            20 unit tests covering layout, split ratio &amp; collapse buttons, min-height scrollbar clearance, marker line drag handle vs empty-track pan, multi-component modeling &amp; joint chips, and topological corridor constraints.
+          </div>
+        </div>
+
+        <div class="val-card">
+          <div class="val-card-title">
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="#22c55e"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg>
+            <span>Icon Desaturation &amp; Themes</span>
+          </div>
+          <code class="val-code">cargo test -p solidcraft-ui-egui --lib icons</code>
+          <div class="val-desc">
+            19 unit tests passing, verifying pure vector SVG masters, theme token resolution, and luminance-matched greyscale desaturation for inactive rolled-back steps.
+          </div>
+        </div>
+
+        <div class="val-card">
+          <div class="val-card-title">
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="#22c55e"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg>
+            <span>Workspace Linters &amp; CI Checks</span>
+          </div>
+          <code class="val-code">cargo clippy --workspace -- -D warnings</code>
+          <div class="val-desc">
+            Clean xtask suite execution: <code>cargo xtask assets</code>, <code>cargo xtask lists</code>, <code>cargo xtask ui-containers</code>, <code>cargo xtask layers</code>, <code>cargo xtask skills</code>.
           </div>
         </div>
       </div>
     </div>
-<!-- Main Viewport -->
-    <div class="viewport-container" id="viewportContainer">
-      <!-- Pinned Left Component Headers (160px wide, stays stationary horizontally) -->
-      <div class="pinned-headers">
-        <!-- Top Banner Row (28px height, perfectly aligned with Modeling & Assembly Section Banners) -->
-        <div class="pinned-header-banner">
-          <div class="section-header-title">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" style="width: 14px; height: 14px; flex-shrink: 0;">
-              <path d="M24.82 27.86L39.18 36.14L39.18 52.71L24.82 44.43Z" fill="#328bd3"/>
-              <path d="M53.53 27.86L39.18 36.14L39.18 52.71L53.53 44.43Z" fill="#236ead"/>
-              <path d="M39.18 19.57L53.53 27.86L39.18 36.14L24.82 27.86Z" fill="#b9ddf8"/>
-              <path d="M39.18 19.57L53.53 27.86L53.53 44.43L39.18 52.71L24.82 44.43L24.82 27.86Z" fill="none" stroke="#34465b" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
-              <path d="M24.82 11.29L39.18 19.57L39.18 36.14L24.82 27.86Z" fill="#b8c3cf"/>
-              <path d="M53.53 11.29L39.18 19.57L39.18 36.14L53.53 27.86Z" fill="#8e9faf"/>
-              <path d="M39.18 3L53.53 11.29L39.18 19.57L24.82 11.29Z" fill="#e2e8ef"/>
-              <path d="M39.18 3L53.53 11.29L53.53 27.86L39.18 36.14L24.82 27.86L24.82 11.29Z" fill="none" stroke="#34465b" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
-              <path d="M10.47 36.14L24.82 44.43L24.82 61L10.47 52.71Z" fill="#b8c3cf"/>
-              <path d="M39.18 36.14L24.82 44.43L24.82 61L39.18 52.71Z" fill="#8e9faf"/>
-              <path d="M24.82 27.86L39.18 36.14L24.82 44.43L10.47 36.14Z" fill="#e2e8ef"/>
-              <path d="M24.82 27.86L39.18 36.14L39.18 52.71L24.82 61L10.47 52.71L10.47 36.14Z" fill="none" stroke="#34465b" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
-              <path d="M10.47 36.14L24.82 44.43L39.18 36.14" fill="none" stroke="#34465b" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
-              <path d="M24.82 44.43L24.82 61" fill="none" stroke="#34465b" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
-            </svg>
-            <span>COMPONENTS</span>
-          </div>
-          <span class="section-header-badge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">5</span>
-        </div>
+  </section>
 
-        <!-- Leading Side (Left) of Timeline Header Row: Transport Controls (44px height, matching step numbers track) -->
-        <div class="pinned-header-top">
-          <div class="transport-bar-header" title="Timeline Transport Controls (Scrub Active Steps)">
-            <button id="hdrBtnFirst" class="btn-transport" title="Roll to First (Step 0)">⏮</button>
-            <button id="hdrBtnBack" class="btn-transport" title="Step Back">◀</button>
-            <button id="hdrBtnPlay" class="btn-transport" title="Play / Pause History Timeline">▶</button>
-            <button id="hdrBtnForward" class="btn-transport" title="Step Forward">▶</button>
-            <button id="hdrBtnLast" class="btn-transport" title="Roll to Last (End)">⏭</button>
-          </div>
-        </div>
-
-        <!-- Pinned Component List (Scrolls vertically in sync with timeline tracks) -->
-        <div class="pinned-headers-viewport">
-          <div class="pinned-headers-content" id="pinnedHeadersContent"></div>
-        </div>
+  <!-- =========================================================================
+       INTERACTION REFERENCE CHEAT SHEET
+       ========================================================================= -->
+  <section class="product-section" style="padding: 50px 24px;">
+    <div class="section-container">
+      <div style="text-align: center; margin-bottom: 24px;">
+        <span class="section-pill-tag">Quick Reference</span>
+        <h2 class="section-title">Interaction Cheat Sheet</h2>
       </div>
 
-      <!-- Split Viewport Wrapper containing Modeling Track, Splitter, and Assembly Track -->
-      <div class="split-viewport-wrapper" id="splitViewportWrapper">
-        <!-- Collapsed Dock Tab for Modeling (shown when modeling section is collapsed) -->
-        <div class="collapsed-strip modeling-strip" id="stripModeling" title="Modeling Track contracted. Click to restore split view.">
-          <div class="collapsed-strip-content">
-            <span>🔷 Geometric Modeling</span>
-            <span class="collapsed-strip-badge" id="stripModelingBadge">24</span>
-          </div>
-        </div>
-
-        <!-- 1. Geometric Modeling Track Section -->
-        <div class="track-section modeling-section" id="sectionModeling">
-          <div class="section-header-banner">
-            <div class="section-header-title">
-              <span>🔷</span>
-              <span>MODELING FEATURES</span>
-              <span class="section-header-badge badge-modeling" id="badgeModelingCount">24 Steps</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span id="modelingActiveSummary" style="color: #38bdf8; font-size: 11px;">Active: 24 / 24</span>
-              <div class="transport-bar" style="margin: 0;">
-                <button id="mBtnBack" class="btn-transport" title="Step Back Modeling">◀</button>
-                <button id="mBtnPlay" class="btn-transport" title="Play Modeling Sequence">▶</button>
-                <button id="mBtnForward" class="btn-transport" title="Step Forward Modeling">▶</button>
-              </div>
-            </div>
-          </div>
-          <div class="timeline-scroll-area" id="timelineScrollArea">
-            <div class="tracks-content" id="tracksContent">
-              <!-- Dedicated Header Scrubber Track (Holds Timeline Marker Head Pin) -->
-              <div class="timeline-header-track" id="timelineHeaderTrack"></div>
-
-              <!-- Dynamic SVG Overlay for Movable Brackets & Multi-Component Connectors -->
-              <svg class="svg-overlay" id="svgOverlay">
-                <defs>
-                  <mask id="suppress-slash-mask" maskUnits="userSpaceOnUse" x="-32" y="-32" width="128" height="128">
-                    <path d="M-32 -32L96 -32L96 96L-32 96Z" fill="white"/>
-                    <path d="M13 51L51 13" fill="none" stroke="black" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
-                  </mask>
-                </defs>
-                <g id="bracketGroup" style="display: none;">
-                  <rect id="bracketCorridorActive" x="0" y="0" width="0" height="190" fill="rgba(34, 197, 94, 0.08)"></rect>
-                  <rect id="bracketCorridorInactive" x="0" y="0" width="0" height="190" fill="rgba(161, 161, 170, 0.08)"></rect>
-                  <path id="pathBracketLeftHalo" d="" fill="none" stroke="#14161a" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                  <path id="pathBracketLeft" d="" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                  <path id="pathBracketRightHalo" d="" fill="none" stroke="#14161a" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                  <path id="pathBracketRight" d="" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                </g>
-                <g id="connectorsGroup"></g>
-              </svg>
-
-              <!-- History Rollback Marker (Draggable Scrubber Pin & Vertical Boundary Line) -->
-              <div id="timelineMarker" class="timeline-marker" style="left: 832px;" title="History Rollback Marker: Drag head pin to scrub active modeling steps">
-                <div class="marker-handle-top" title="Drag head pin to scrub timeline">
-                  <div class="marker-pin-inner"></div>
-                </div>
-                <div class="marker-line"></div>
-                <div class="marker-handle-bottom"></div>
-              </div>
-
-              <!-- DOM Grid Cells (Component Tracks 0 to 4) -->
-              <div id="trackRowsContainer"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Resizable Splitter Bar with Quick < and > buttons -->
-        <div class="track-splitter" id="trackSplitter" title="Drag to resize Modeling vs Assembly sections">
-          <button class="splitter-btn" id="btnCollapseLeft" title="Collapse Modeling section (Full-size Assembly)">◀</button>
-          <div class="splitter-grip" id="splitterGrip"></div>
-          <button class="splitter-btn" id="btnCollapseRight" title="Collapse Assembly section (Full-size Modeling)">▶</button>
-        </div>
-
-        <!-- 2. Post-Modeling / Assembly Track Section -->
-        <div class="track-section assembly-section" id="sectionAssembly">
-          <div class="section-header-banner">
-            <div class="section-header-title">
-              <span>🟣</span>
-              <span>ASSEMBLY &amp; JOINTS</span>
-              <span class="section-header-badge badge-assembly" id="badgeAssemblyCount">5 Joints</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span id="assemblyActiveSummary" style="color: #c084fc; font-size: 11px;">Active: 4 / 5</span>
-              <div class="transport-bar" style="margin: 0;">
-                <button id="jBtnBack" class="btn-transport" title="Step Back Assembly">◀</button>
-                <button id="jBtnPlay" class="btn-transport" title="Play Assembly Sequence">▶</button>
-                <button id="jBtnForward" class="btn-transport" title="Step Forward Assembly">▶</button>
-              </div>
-            </div>
-          </div>
-          <div class="timeline-scroll-area" id="assemblyScrollArea">
-            <div class="tracks-content" id="assemblyTracksContent">
-              <!-- Assembly Header Scrubber Track (Holds Assembly Marker Head Pin) -->
-              <div class="timeline-header-track" id="assemblyHeaderTrack"></div>
-
-              <!-- SVG Overlay for Assembly Movable Brackets & Joint Connector Lines -->
-              <svg class="svg-overlay" id="assemblySvgOverlay">
-                <g id="assemblyBracketGroup" style="display: none;">
-                  <rect id="assemblyBracketCorridorActive" x="0" y="0" width="0" height="190" fill="rgba(34, 197, 94, 0.08)"></rect>
-                  <rect id="assemblyBracketCorridorInactive" x="0" y="0" width="0" height="190" fill="rgba(161, 161, 170, 0.08)"></rect>
-                  <path id="pathAssemblyBracketLeftHalo" d="" fill="none" stroke="#14161a" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" style="display: none;"></path>
-                  <path id="pathAssemblyBracketLeft" d="" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                  <path id="pathAssemblyBracketRightHalo" d="" fill="none" stroke="#14161a" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" style="display: none;"></path>
-                  <path id="pathAssemblyBracketRight" d="" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                </g>
-                <g id="assemblyConnectorsGroup"></g>
-              </svg>
-
-              <!-- Dedicated Assembly Rollback Marker (Purple #a855f7) -->
-              <div id="assemblyMarker" class="assembly-marker" style="left: 156px;" title="Assembly Rollback Marker: Drag head pin to scrub kinematic assembly steps">
-                <div class="marker-handle-top" title="Drag to scrub assembly sequence">
-                  <div class="marker-pin-inner"></div>
-                </div>
-                <div class="marker-line"></div>
-                <div class="marker-handle-bottom"></div>
-              </div>
-
-              <!-- DOM Grid Cells for Assembly Tracks -->
-              <div id="assemblyTrackRowsContainer"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Collapsed Dock Tab for Assembly (shown when assembly section is collapsed) -->
-        <div class="collapsed-strip assembly-strip" id="stripAssembly" title="Assembly Track contracted. Click to restore split view.">
-          <div class="collapsed-strip-content">
-            <span>🟣 Assembly &amp; Joints</span>
-            <span class="collapsed-strip-badge" id="stripAssemblyBadge">5</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Live Interaction Log & Instructions -->
-    <div class="footer-bar">
-      <div id="dragFeedback">
-        💡 <strong>Try this:</strong> Multi-select chips with <strong>Shift+Click</strong> (range) or <strong>Cmd/Ctrl+Click</strong>. Right-click adjacent selection to <strong>Group Selection</strong>! Right-click virtual group chip for Group menu. Drag head pin to roll back.
-      </div>
-      <div class="footer-right-area">
-        <span style="font-family: monospace; font-size: 11px; color: var(--text-dim);">
-          ↔ Scroll horizontally &nbsp;|&nbsp; ↕ Scroll vertically
-        </span>
-        <button id="btnReset" class="btn-reset" title="Reset Timeline to initial demo state">
-          <span style="font-size: 13px;">↺</span> Reset
-        </button>
-      </div>
-    </div>
-
-    <!-- Feature Manual & Interaction Reference -->
-    <div class="manual-section">
-      <div class="manual-header">
-        <div class="manual-title">
-          <span>📖</span>
-          <span>Timeline Feature Manual &amp; Interaction Reference</span>
-        </div>
-        <span class="manual-badge">SolidCraft Interaction Guide</span>
-      </div>
-
-      <div class="manual-grid">
-        <!-- 1. Selection & Multi-Select -->
-        <div class="manual-card">
-          <div class="manual-card-header">
-            <span class="manual-card-icon">🎯</span>
-            <span>1. Selection &amp; Multi-Select</span>
-          </div>
-          <ul class="manual-card-list">
-            <li><strong>Single Click</strong>: Select an Action chip or virtual group chip. Displays its prerequisite tree, downstream dependents, and valid reorder corridor <code>[ ... ]</code>.</li>
-            <li><strong><kbd>Shift</kbd> + Click</strong>: Continuous range selection. Selects all contiguous features between the anchor and the clicked chip in sequence order.</li>
-            <li><strong><kbd>Cmd ⌘</kbd> / <kbd>Ctrl</kbd> + Click</strong>: Additive non-adjacent toggle. Adds or removes individual features to/from the current selection set.</li>
-            <li><strong>Click Background</strong>: Clears selection and dismisses any open context menus.</li>
-          </ul>
-        </div>
-
-        <!-- 2. Feature Grouping & Folding -->
-        <div class="manual-card">
-          <div class="manual-card-header">
-            <span class="manual-card-icon">📁</span>
-            <span>2. Feature Grouping &amp; Folding</span>
-          </div>
-          <ul class="manual-card-list">
-            <li><strong>Group Selection</strong>: When 2 or more contiguous adjacent features are selected, right-click to choose <em>"Group Selection"</em>.</li>
-            <li><strong>Virtual Group Chip</strong>: Folds member features into a unified column chip starting on the second header row (step numbers show <code>-</code> in topmost row) and spanning all component tracks with integrated header cap (folder icon + <code>▶</code>), count badge, and vertical title. Rich hover tooltips detail all included features, their steps, and component tracks.</li>
-            <li><strong>Open / Close Fold</strong>: <strong>Double-click</strong> the virtual group chip, its header cap, or click <em>"Close ▴"</em> to toggle between folded and expanded states.</li>
-            <li><strong>Group Menu (Right-Click)</strong>: Dedicated options: <em>Open/Close Group</em>, <em>Delete Group but expand content</em>, <em>Delete Group and content</em>, <em>Deactivate Group</em>, <em>Activate Group</em>.</li>
-          </ul>
-        </div>
-
-        <!-- 3. Rollback & Greyscale Inactive -->
-        <div class="manual-card">
-          <div class="manual-card-header">
-            <span class="manual-card-icon">⏱️</span>
-            <span>3. Rollback &amp; Greyscale Inactive</span>
-          </div>
-          <ul class="manual-card-list">
-            <li><strong>Scrubber Head Pin</strong>: Drag the blue circular pin in the topmost step numbers row to scrub the timeline boundary forward or backward.</li>
-            <li><strong>Click Step Number</strong>: Click any step column (<code>01</code> to <code>24</code>) to immediately jump the rollback marker.</li>
-            <li><strong>Active Steps (Left)</strong>: Steps up to the marker are evaluated in the 3D solid model, displayed in full color (Orange prereqs, Blue downstream, Green corridor).</li>
-            <li><strong>Inactive Steps (Right)</strong>: Steps after the marker remain unbuilt in solid geometry. Rendered in <strong>100% opacity greyscale</strong> with matched luminance. The whole group and its features turn greyscale.</li>
-          </ul>
-        </div>
-
-        <!-- 4. Reordering & Context Menu -->
-        <div class="manual-card">
-          <div class="manual-card-header">
-            <span class="manual-card-icon">↔️</span>
-            <span>4. Reordering &amp; Context Menu</span>
-          </div>
-          <ul class="manual-card-list">
-            <li><strong>Movable Corridor <code>[ ... ]</code></strong>: Indicates the safe topological drag window bounded by the nearest prerequisite and downstream features.</li>
-            <li><strong>Ripple Push Reordering</strong>: Drag a chip horizontally within its brackets. Intermediate jumped features automatically ripple in the opposite direction.</li>
-            <li><strong>Feature Context Menu</strong>: Right-click any action chip for 1:1 SolidCraft options: <em>Edit Feature</em> (or <strong>Double-Click</strong>), <em>Redefine Sketch</em>, <em>Rename</em>, <em>Suppress</em>, <em>Roll Marker Here</em>, <em>Copy/Paste</em>, <em>Delete</em>.</li>
-            <li><strong>Transport Bar</strong>: Pinned toolbar provides playback simulation (<code>⏮</code>, <code>◀</code>, <code>▶</code>/<code>⏸</code>, <code>▶</code>, <code>⏭</code>) without scrolling horizontally.</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Quick Interaction Cheat Sheet -->
-      <div class="manual-cheatsheet">
+      <div class="manual-cheatsheet" style="max-width: 1000px; margin: 0 auto;">
         <div class="cheatsheet-item">
           <kbd>Click</kbd>
-          <span>Select &amp; inspect</span>
+          <span>Select &amp; inspect DAG</span>
         </div>
         <div class="cheatsheet-item">
           <kbd>Shift</kbd> + <kbd>Click</kbd>
-          <span>Range selection</span>
+          <span>Contiguous range selection</span>
         </div>
         <div class="cheatsheet-item">
           <kbd>Cmd ⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Click</kbd>
@@ -2705,34 +3426,43 @@
         </div>
         <div class="cheatsheet-item">
           <kbd>Double Click</kbd>
-          <span>Open/close group or edit</span>
+          <span>Fold/unfold group or edit</span>
         </div>
         <div class="cheatsheet-item">
           <kbd>Right Click</kbd>
-          <span>Context menu</span>
+          <span>egui context menu</span>
         </div>
         <div class="cheatsheet-item">
           <kbd>Drag Chip</kbd>
-          <span>Ripple reorder within <code>[ ]</code></span>
+          <span>Ripple reorder within [ ]</span>
         </div>
         <div class="cheatsheet-item">
-          <kbd>Drag Pin</kbd>
+          <kbd>Drag Pin / Line</kbd>
           <span>Scrub rollback history</span>
         </div>
         <div class="cheatsheet-item">
           <kbd>Shift</kbd> + <kbd>Wheel</kbd>
-          <span>Horizontal pan</span>
+          <span>Horizontal timeline pan</span>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- SolidCraft Timeline Context Menu (egui theme) -->
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="footer-links">
+      <a href="https://github.com/tangency-labs/solidcraft/pull/11372" target="_blank" rel="noopener noreferrer">Pull Request #11372</a>
+      <a href="https://github.com/tangency-labs/solidcraft" target="_blank" rel="noopener noreferrer">SolidCraft Repository</a>
+      <a href="https://www.martinmajewski.net/" target="_blank" rel="noopener noreferrer">Martin Majewski</a>
+    </div>
+    <p>SolidCraft is a clean-room, pure-Rust parametric 3D CAD application. 2D Timeline design and interactive prototype proposal.</p>
+  </footer>
+
+  <!-- SolidCraft Timeline Context Menu (egui dark theme singleton) -->
   <div id="timelineContextMenu" class="context-menu"></div>
 
-  <!-- Script Logic & Vector Icons -->
+
   <script>
-    // Official SolidCraft Model Icons (pure SVG masters from assets/icons/ui/design/svg/model/)
     const ICONS = {
       sketch: `<svg viewBox="0 0 64 64" width="20" height="20"><path d="M8 8L56 8L56 56L8 56Z" fill="none" stroke="#6f879c" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="0.1 5.9"/><path d="M18 27L35 17L46 44L19 43Z" fill="#b9ddf8" stroke="#236ead" stroke-width="2.89" stroke-linejoin="round" stroke-linecap="round"/><circle cx="18" cy="27" r="3.3" fill="#236ead"/><circle cx="35" cy="17" r="3.3" fill="#236ead"/><circle cx="46" cy="44" r="3.3" fill="#236ead"/><circle cx="19" cy="43" r="3.3" fill="#236ead"/></svg>`,
       extrude: `<svg viewBox="0 0 64 64" width="20" height="20"><path d="M9.36 38.84L32 52.04L32 59.58L9.36 46.38Z" fill="#b8c3cf"/><path d="M32 52.04L54.63 38.84L54.63 46.38L32 59.58Z" fill="#8e9faf"/><path d="M9.36 30.35L32 43.55L32 52.04L9.36 38.84Z" fill="#328bd3"/><path d="M32 43.55L54.63 30.35L54.63 38.84L32 52.04Z" fill="#236ead"/><path d="M9.36 30.35L32 17.15L54.63 30.35L32 43.55Z" fill="#b9ddf8"/><path d="M9.36 30.35L32 17.15L54.63 30.35L54.63 46.38L32 59.58L9.36 46.38Z" fill="none" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/><path d="M9.36 30.35L32 43.55L54.63 30.35" fill="none" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/><path d="M9.36 38.84L32 52.04L54.63 38.84" fill="none" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/><path d="M32 43.55L32 59.58" fill="none" stroke="#34465b" stroke-width="2.55" stroke-linejoin="round" stroke-linecap="round"/><path d="M32 3L39.54 10.55L34.82 10.55L34.82 13.38L29.17 13.38L29.17 10.55L24.45 10.55Z" fill="#236ead"/></svg>`,
@@ -2791,7 +3521,8 @@
 
     // 24 Sequential Steps Populating the Entire Timeline Length (Zero Empty Columns)
     // Components: 0: Root (Design), 1: Housing, 2: Shaft, 3: Bearing, 4: Fastener
-    let actions = [
+
+const DEFAULT_ACTIONS =      [
       { id: 1, name: "Base Sketch", type: "sketch", rows: [0], prereqs: [], downstream: [2,3,4,5,6,7,9,11,13,24] },
       { id: 2, name: "Extrude Base", type: "extrude", rows: [0], prereqs: [1], downstream: [3,4,5,6,7,9,11,13,24] },
       { id: 3, name: "Housing Revolve", type: "revolve", rows: [1], prereqs: [2], downstream: [5,6,9,14,17,21] },
@@ -2817,59 +3548,79 @@
       { id: 23, name: "Locknut Thread", type: "thread", rows: [4], prereqs: [14,21], downstream: [24] },
       { id: 24, name: "Final Inspection Shell", type: "shell", rows: [0], prereqs: [16,22,23], downstream: [] }
     ];
+;
 
-    const initialActions = JSON.parse(JSON.stringify(actions));
-    let selectedActionIds = [5];    // Multi-selection array (default: Fillet Edge)
-    let anchorActionId = 5;         // Anchor for Shift+Click range
-    let selectedGroupId = null;     // Selected virtual group
-    let groups = [];                // Timeline Groups / Folders
-    let nextGroupId = 1;
-    let markerStep = 8;             // Set to 8 to test when markerStep === maxCol (Step 08)
-    let isPlaying = false;
-    let playbackTimer = null;
-    let clipboardFeature = null;    // SolidCraft Session Clipboard simulation
-
-    // SolidCraft uses Smart Inset by default for coincident brackets and marker
-    const overlayMode = 'smart-inset';
-
-    // Component Definitions for Model Browser & Pinned Left Headers
-    const componentDefs = [
+const DEFAULT_COMPONENTS =      [
       { id: 0, name: "Root (Design)", visible: true },
       { id: 1, name: "Housing", visible: true },
       { id: 2, name: "Shaft", visible: true },
       { id: 3, name: "Bearing", visible: true },
       { id: 4, name: "Fastener", visible: true }
     ];
-    let activeComponentRow = 1; // Default: Housing (Track Row 1)
+;
 
-    const browserComponentsList = document.getElementById('browserComponentsList');
-    const pinnedHeadersContent = document.getElementById('pinnedHeadersContent');
-    const activeCompSummaryDot = document.getElementById('activeCompSummaryDot');
-    const activeCompSummaryName = document.getElementById('activeCompSummaryName');
-    const modelingTargetCompName = document.getElementById('modelingTargetCompName');
+const DEFAULT_JOINTS =      [
+      {
+        id: 101,
+        name: "Housing Ground",
+        type: "joint_origin",
+        typeLabel: "Rigid Ground",
+        rows: [0, 1], // Ground Housing to Root
+        prereqs: [],
+        downstream: [102, 103],
+        stepLabel: "J01",
+        info: "Grounds Housing occurrence to Root Design coordinate frame (0 DOF)."
+      },
+      {
+        id: 102,
+        name: "Shaft Revolute Joint",
+        type: "joint",
+        typeLabel: "Revolute",
+        rows: [1, 2], // Housing (1) & Shaft (2)
+        prereqs: [101],
+        downstream: [104],
+        stepLabel: "J02",
+        limits: "0° to 360°",
+        info: "Revolute joint along primary Z-axis between Housing bore and Shaft journal."
+      },
+      {
+        id: 103,
+        name: "Bearing Press-Fit Group",
+        type: "rigid_group",
+        typeLabel: "Rigid Group",
+        rows: [1, 3], // Housing (1) & Bearing (3)
+        prereqs: [101],
+        downstream: [],
+        stepLabel: "J03",
+        info: "Rigidly groups Bearing outer ring into Housing bearing seat."
+      },
+      {
+        id: 104,
+        name: "Cap Screw Cylindrical Joint",
+        type: "joint",
+        typeLabel: "Cylindrical",
+        rows: [1, 4], // Housing (1) & Fastener (4)
+        prereqs: [102],
+        downstream: [105],
+        stepLabel: "J04",
+        limits: "Pitch 1.5mm / rev",
+        info: "Cylindrical mate securing Fastener cap into tapped housing boss."
+      },
+      {
+        id: 105,
+        name: "Shaft-Screw Motion Link",
+        type: "motion_link",
+        typeLabel: "Motion Link",
+        rows: [2, 4], // Shaft (2) & Fastener (4)
+        prereqs: [104],
+        downstream: [],
+        stepLabel: "J05",
+        limits: "1:1 Ratio",
+        info: "Couples rotation of Shaft with axial drive of Fastener cap."
+      }
+    ];
+;
 
-    const trackContainer = document.getElementById('trackRowsContainer');
-    const headerTrack = document.getElementById('timelineHeaderTrack');
-    const svgOverlay = document.getElementById('svgOverlay');
-    const bracketGroup = document.getElementById('bracketGroup');
-    const bracketCorridorActive = document.getElementById('bracketCorridorActive');
-    const bracketCorridorInactive = document.getElementById('bracketCorridorInactive');
-    const pathBracketLeft = document.getElementById('pathBracketLeft');
-    const pathBracketLeftHalo = document.getElementById('pathBracketLeftHalo');
-    const pathBracketRight = document.getElementById('pathBracketRight');
-    const pathBracketRightHalo = document.getElementById('pathBracketRightHalo');
-    const connectorsGroup = document.getElementById('connectorsGroup');
-    const statusDetails = document.getElementById('statusDetails');
-    const dragFeedback = document.getElementById('dragFeedback');
-    const timelineMarker = document.getElementById('timelineMarker');
-    const activeMarkerBadge = document.getElementById('activeMarkerBadge');
-
-    // Overview Transport Buttons (in legend)
-    const btnFirst = document.getElementById('btnFirst');
-    const btnBack = document.getElementById('btnBack');
-    const btnPlay = document.getElementById('btnPlay');
-    const btnForward = document.getElementById('btnForward');
-    const btnLast = document.getElementById('btnLast');
 
     // Header Transport Buttons (leading side of timeline header row)
     const hdrBtnFirst = document.getElementById('hdrBtnFirst');
@@ -2880,7 +3631,357 @@
 
     const SLASHED_EYE_ICON = `<svg viewBox="0 0 64 64" width="22" height="22" fill="none" stroke="currentColor"><path d="M6 32C16 18 48 18 58 32C48 46 16 46 6 32Z" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" mask="url(#suppress-slash-mask)"/><path d="M24 32A8 8 0 1 0 40 32A8 8 0 1 0 24 32Z" fill="currentColor" mask="url(#suppress-slash-mask)"/><path d="M13 51L51 13" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
 
-    // Transitive downstream dependency traversal: returns all succeeding actions that depend directly or indirectly on actionId
+
+
+const ContextMenuManager = {
+  el: null,
+  activeWidget: null,
+  init() {
+    this.el = document.getElementById('timelineContextMenu');
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#timelineContextMenu')) {
+        this.close();
+      }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') this.close();
+    });
+  },
+  show(clientX, clientY, html, widget) {
+    if (!this.el) return;
+    this.activeWidget = widget;
+    this.el.innerHTML = html;
+    this.el.style.display = 'block';
+
+    const menuWidth = this.el.offsetWidth || 180;
+    const menuHeight = this.el.offsetHeight || 220;
+    const posX = (clientX + menuWidth > window.innerWidth) ? (clientX - menuWidth) : clientX;
+    const posY = (clientY + menuHeight > window.innerHeight) ? (clientY - menuHeight) : clientY;
+
+    this.el.style.left = `${posX}px`;
+    this.el.style.top = `${posY}px`;
+  },
+  close() {
+    if (this.el) this.el.style.display = 'none';
+    this.activeWidget = null;
+  }
+};
+
+
+
+function getTimelineTemplate(uid, options) {
+  const compCount = (options.componentDefs || DEFAULT_COMPONENTS).length;
+  const actionCount = (options.actions || DEFAULT_ACTIONS).length;
+  const jointCount = (options.joints || DEFAULT_JOINTS).length;
+  const activeCount = options.markerStep !== undefined ? options.markerStep : 24;
+  const activeJointCount = options.assemblyMarkerStep !== undefined ? options.assemblyMarkerStep : 4;
+  const initialHeight = options.dockHeight || 264;
+
+  return `
+    <div class="timeline-container">
+      <div class="timeline-resize-rail" title="Drag to adjust timeline dock height (double-click to reset)">
+        <div class="resize-rail-pill"></div>
+      </div>
+
+      <div class="viewport-container" style="height: ${initialHeight}px;">
+        <div class="pinned-headers">
+          <div class="pinned-header-banner">
+            <div class="section-header-title">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" style="width: 14px; height: 14px; flex-shrink: 0;">
+                <path d="M24.82 27.86L39.18 36.14L39.18 52.71L24.82 44.43Z" fill="#328bd3"/>
+                <path d="M53.53 27.86L39.18 36.14L39.18 52.71L53.53 44.43Z" fill="#236ead"/>
+                <path d="M39.18 19.57L53.53 27.86L39.18 36.14L24.82 27.86Z" fill="#b9ddf8"/>
+                <path d="M39.18 19.57L53.53 27.86L53.53 44.43L39.18 52.71L24.82 44.43L24.82 27.86Z" fill="none" stroke="#34465b" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
+                <path d="M24.82 11.29L39.18 19.57L39.18 36.14L24.82 27.86Z" fill="#b8c3cf"/>
+                <path d="M53.53 11.29L39.18 19.57L39.18 36.14L53.53 27.86Z" fill="#8e9faf"/>
+                <path d="M39.18 3L53.53 11.29L39.18 19.57L24.82 11.29Z" fill="#e2e8ef"/>
+                <path d="M39.18 3L53.53 11.29L53.53 27.86L39.18 36.14L24.82 27.86L24.82 11.29Z" fill="none" stroke="#34465b" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
+                <path d="M10.47 36.14L24.82 44.43L24.82 61L10.47 52.71Z" fill="#b8c3cf"/>
+                <path d="M39.18 36.14L24.82 44.43L24.82 61L39.18 52.71Z" fill="#8e9faf"/>
+                <path d="M24.82 27.86L39.18 36.14L24.82 44.43L10.47 36.14Z" fill="#e2e8ef"/>
+                <path d="M24.82 27.86L39.18 36.14L39.18 52.71L24.82 61L10.47 52.71L10.47 36.14Z" fill="none" stroke="#34465b" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
+                <path d="M10.47 36.14L24.82 44.43L39.18 36.14" fill="none" stroke="#34465b" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
+                <path d="M24.82 44.43L24.82 61" fill="none" stroke="#34465b" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
+              </svg>
+              <span>COMPONENTS</span>
+            </div>
+            <span class="section-header-badge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">${compCount}</span>
+          </div>
+
+          <div class="pinned-header-top">
+            <div class="transport-bar-header" title="Timeline Transport Controls (Scrub Active Steps)">
+              <button class="btn-transport hdr-btn-first" title="Roll to First (Step 0)">⏮</button>
+              <button class="btn-transport hdr-btn-back" title="Step Back">◀</button>
+              <button class="btn-transport hdr-btn-play" title="Play / Pause History Timeline">▶</button>
+              <button class="btn-transport hdr-btn-forward" title="Step Forward">▶</button>
+              <button class="btn-transport hdr-btn-last" title="Roll to Last (End)">⏭</button>
+            </div>
+          </div>
+
+          <div class="pinned-headers-viewport">
+            <div class="pinned-headers-content"></div>
+          </div>
+        </div>
+
+        <div class="split-viewport-wrapper">
+          <div class="collapsed-strip modeling-strip" title="Modeling Track contracted. Click to restore split view.">
+            <div class="collapsed-strip-content">
+              <span>🔷 Geometric Modeling</span>
+              <span class="collapsed-strip-badge strip-modeling-badge">${actionCount}</span>
+            </div>
+          </div>
+
+          <div class="track-section modeling-section">
+            <div class="section-header-banner">
+              <div class="section-header-title">
+                <span>🔷</span>
+                <span>MODELING FEATURES</span>
+                <span class="section-header-badge badge-modeling">${actionCount} Steps</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="modeling-active-summary" style="color: #38bdf8; font-size: 11px;">Active: ${activeCount} / ${actionCount}</span>
+                <div class="transport-bar" style="margin: 0;">
+                  <button class="btn-transport m-btn-back" title="Step Back Modeling">◀</button>
+                  <button class="btn-transport m-btn-play" title="Play Modeling Sequence">▶</button>
+                  <button class="btn-transport m-btn-forward" title="Step Forward Modeling">▶</button>
+                </div>
+              </div>
+            </div>
+            <div class="timeline-scroll-area">
+              <div class="tracks-content">
+                <div class="timeline-header-track"></div>
+                <svg class="svg-overlay">
+                  <defs>
+                    <mask id="${uid}_suppress_mask" maskUnits="userSpaceOnUse" x="-32" y="-32" width="128" height="128">
+                      <path d="M-32 -32L96 -32L96 96L-32 96Z" fill="white"/>
+                      <path d="M13 51L51 13" fill="none" stroke="black" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+                    </mask>
+                  </defs>
+                  <g class="bracket-group" style="display: none;">
+                    <rect class="bracket-corridor-active" x="0" y="0" width="0" height="190" fill="rgba(34, 197, 94, 0.08)"></rect>
+                    <rect class="bracket-corridor-inactive" x="0" y="0" width="0" height="190" fill="rgba(161, 161, 170, 0.08)"></rect>
+                    <path class="path-bracket-left-halo" d="" fill="none" stroke="#14161a" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path class="path-bracket-left" d="" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path class="path-bracket-right-halo" d="" fill="none" stroke="#14161a" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path class="path-bracket-right" d="" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </g>
+                  <g class="connectors-group"></g>
+                </svg>
+                <div class="timeline-marker" style="left: 0px;" title="History Rollback Marker: Drag head pin to scrub active modeling steps">
+                  <div class="marker-handle-top" title="Drag head pin to scrub timeline">
+                    <div class="marker-pin-inner"></div>
+                  </div>
+                  <div class="marker-line"></div>
+                  <div class="marker-handle-bottom"></div>
+                </div>
+                <div class="track-rows-container"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="track-splitter" title="Drag to resize Modeling vs Assembly sections">
+            <button class="splitter-btn collapse-left" title="Collapse Modeling section (Full-size Assembly)">◀</button>
+            <div class="splitter-grip"></div>
+            <button class="splitter-btn collapse-right" title="Collapse Assembly section (Full-size Modeling)">▶</button>
+          </div>
+
+          <div class="track-section assembly-section">
+            <div class="section-header-banner">
+              <div class="section-header-title">
+                <span>🟣</span>
+                <span>ASSEMBLY & JOINTS</span>
+                <span class="section-header-badge badge-assembly">${jointCount} Joints</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="assembly-active-summary" style="color: #c084fc; font-size: 11px;">Active: ${activeJointCount} / ${jointCount}</span>
+                <div class="transport-bar" style="margin: 0;">
+                  <button class="btn-transport j-btn-back" title="Step Back Assembly">◀</button>
+                  <button class="btn-transport j-btn-play" title="Play Assembly Sequence">▶</button>
+                  <button class="btn-transport j-btn-forward" title="Step Forward Assembly">▶</button>
+                </div>
+              </div>
+            </div>
+            <div class="timeline-scroll-area assembly-scroll-area">
+              <div class="tracks-content assembly-tracks-content">
+                <div class="timeline-header-track assembly-header-track"></div>
+                <svg class="svg-overlay assembly-svg-overlay">
+                  <g class="assembly-bracket-group" style="display: none;">
+                    <rect class="assembly-bracket-corridor-active" x="0" y="0" width="0" height="190" fill="rgba(34, 197, 94, 0.08)"></rect>
+                    <rect class="assembly-bracket-corridor-inactive" x="0" y="0" width="0" height="190" fill="rgba(161, 161, 170, 0.08)"></rect>
+                    <path class="path-assembly-bracket-left-halo" d="" fill="none" stroke="#14161a" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" style="display: none;"></path>
+                    <path class="path-assembly-bracket-left" d="" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path class="path-assembly-bracket-right-halo" d="" fill="none" stroke="#14161a" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" style="display: none;"></path>
+                    <path class="path-assembly-bracket-right" d="" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </g>
+                  <g class="assembly-connectors-group"></g>
+                </svg>
+                <div class="assembly-marker" style="left: 0px;" title="Assembly Rollback Marker: Drag head pin to scrub kinematic assembly steps">
+                  <div class="marker-handle-top" title="Drag to scrub assembly sequence">
+                    <div class="marker-pin-inner"></div>
+                  </div>
+                  <div class="marker-line"></div>
+                  <div class="marker-handle-bottom"></div>
+                </div>
+                <div class="assembly-track-rows-container"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="collapsed-strip assembly-strip" title="Assembly Track contracted. Click to restore split view.">
+            <div class="collapsed-strip-content">
+              <span>🟣 Assembly & Joints</span>
+              <span class="collapsed-strip-badge strip-assembly-badge">${jointCount}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bar">
+        <div class="drag-feedback-text">
+          ${options.initialFeedback || '💡 <strong>Interactive Prototype:</strong> Click to select chips, drag within green brackets to ripple-reorder, or scrub the rollback marker.'}
+        </div>
+        <div class="footer-right-area">
+          <span style="font-family: monospace; font-size: 11px; color: var(--text-dim);">
+            ↔ Pan / Scroll &nbsp;|&nbsp; ↕ Component Tracks
+          </span>
+          <button class="btn-reset" title="Reset Timeline to initial demo state">
+            <span style="font-size: 13px;">↺</span> Reset
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+
+
+function createTimelineWidget(containerEl, options = {}) {
+  const uid = options.id || ('t2d_' + Math.random().toString(36).substr(2, 8));
+  let actions = options.actions ? JSON.parse(JSON.stringify(options.actions)) : JSON.parse(JSON.stringify(DEFAULT_ACTIONS));
+  let initialActions = JSON.parse(JSON.stringify(actions));
+  let selectedActionIds = options.selectedActionIds ? [...options.selectedActionIds] : [5];
+  let anchorActionId = selectedActionIds[0] || 5;
+  let selectedGroupId = null;
+  let groups = options.groups ? JSON.parse(JSON.stringify(options.groups)) : [];
+  let nextGroupId = groups.length + 1;
+  let markerStep = options.markerStep !== undefined ? options.markerStep : 8;
+  let isPlaying = false;
+  let playbackTimer = null;
+  let clipboardFeature = null;
+  const overlayMode = 'smart-inset';
+
+  let componentDefs = options.componentDefs ? JSON.parse(JSON.stringify(options.componentDefs)) : JSON.parse(JSON.stringify(DEFAULT_COMPONENTS));
+  let activeComponentRow = options.activeComponentRow !== undefined ? options.activeComponentRow : 1;
+
+  let assemblyJoints = options.joints ? JSON.parse(JSON.stringify(options.joints)) : JSON.parse(JSON.stringify(DEFAULT_JOINTS));
+  let initialAssemblyJoints = JSON.parse(JSON.stringify(assemblyJoints));
+  let selectedJointId = options.selectedJointId !== undefined ? options.selectedJointId : 102;
+  let assemblyMarkerStep = options.assemblyMarkerStep !== undefined ? options.assemblyMarkerStep : 4;
+  let isAssemblyPlaying = false;
+  let assemblyPlaybackTimer = null;
+  let isAssemblySectionVisible = options.isAssemblySectionVisible !== false;
+  let isModelingCollapsed = options.isModelingCollapsed || false;
+  let isAssemblyCollapsed = options.isAssemblyCollapsed || false;
+  let savedModelingFlexWidth = options.savedModelingFlexWidth || 65;
+  let showCellDots = options.showCellDots !== false;
+  let dotOpacity = options.dotOpacity !== undefined ? options.dotOpacity : 35;
+  let prereqColor = options.prereqColor || '#f59e0b';
+  let depColor = options.depColor || '#38bdf8';
+  let timelineComponentActivationEnabled = options.timelineComponentActivationEnabled !== false;
+  let reopenIconStyle = options.reopenIconStyle || 'split';
+  let dockHeight = options.dockHeight || 264;
+
+  // Mount template inside container
+  containerEl.innerHTML = getTimelineTemplate(uid, options);
+
+  const browserComponentsList = containerEl.querySelector('.browser-components-list');
+  const pinnedHeadersContent = containerEl.querySelector('.pinned-headers-content');
+  const pinnedContent = pinnedHeadersContent;
+  const activeCompSummaryDot = containerEl.querySelector('.active-comp-summary-dot');
+  const activeCompSummaryName = containerEl.querySelector('.active-comp-summary-name');
+  const modelingTargetCompName = containerEl.querySelector('.modeling-target-comp-name');
+
+  const trackContainer = containerEl.querySelector('.track-rows-container');
+  const headerTrack = containerEl.querySelector('.modeling-section .timeline-header-track');
+  const svgOverlay = containerEl.querySelector('.modeling-section .svg-overlay');
+  const bracketGroup = containerEl.querySelector('.bracket-group');
+  const bracketCorridorActive = containerEl.querySelector('.bracket-corridor-active');
+  const bracketCorridorInactive = containerEl.querySelector('.bracket-corridor-inactive');
+  const pathBracketLeft = containerEl.querySelector('.path-bracket-left');
+  const pathBracketLeftHalo = containerEl.querySelector('.path-bracket-left-halo');
+  const pathBracketRight = containerEl.querySelector('.path-bracket-right');
+  const pathBracketRightHalo = containerEl.querySelector('.path-bracket-right-halo');
+  const connectorsGroup = containerEl.querySelector('.connectors-group');
+  const statusDetails = containerEl.querySelector('.status-details');
+  const dragFeedback = containerEl.querySelector('.drag-feedback-text') || { innerHTML: '' };
+  const timelineMarker = containerEl.querySelector('.timeline-marker');
+  const activeMarkerBadge = containerEl.querySelector('.active-marker-badge');
+
+  const btnFirst = containerEl.querySelector('.btn-first');
+  const btnBack = containerEl.querySelector('.btn-back');
+  const btnPlay = containerEl.querySelector('.btn-play');
+  const btnForward = containerEl.querySelector('.btn-forward');
+  const btnLast = containerEl.querySelector('.btn-last');
+
+  const hdrBtnFirst = containerEl.querySelector('.hdr-btn-first');
+  const hdrBtnBack = containerEl.querySelector('.hdr-btn-back');
+  const hdrBtnPlay = containerEl.querySelector('.hdr-btn-play');
+  const hdrBtnForward = containerEl.querySelector('.hdr-btn-forward');
+  const hdrBtnLast = containerEl.querySelector('.hdr-btn-last');
+
+  const mBtnBack = containerEl.querySelector('.m-btn-back');
+  const mBtnPlay = containerEl.querySelector('.m-btn-play');
+  const mBtnForward = containerEl.querySelector('.m-btn-forward');
+
+  const jBtnBack = containerEl.querySelector('.j-btn-back');
+  const jBtnPlay = containerEl.querySelector('.j-btn-play');
+  const jBtnForward = containerEl.querySelector('.j-btn-forward');
+
+  const sectionModeling = containerEl.querySelector('.modeling-section');
+  const sectionAssembly = containerEl.querySelector('.assembly-section');
+  const trackSplitter = containerEl.querySelector('.track-splitter');
+  const splitterGrip = containerEl.querySelector('.splitter-grip');
+  const stripModeling = containerEl.querySelector('.modeling-strip');
+  const stripAssembly = containerEl.querySelector('.assembly-strip');
+  const stripModelingBadge = containerEl.querySelector('.strip-modeling-badge');
+  const stripAssemblyBadge = containerEl.querySelector('.strip-assembly-badge');
+  const badgeModelingCount = containerEl.querySelector('.badge-modeling');
+  const badgeAssemblyCount = containerEl.querySelector('.badge-assembly');
+  const modelingActiveSummary = containerEl.querySelector('.modeling-active-summary');
+  const assemblyActiveSummary = containerEl.querySelector('.assembly-active-summary');
+
+  const timelineScrollArea = containerEl.querySelector('.modeling-section .timeline-scroll-area');
+  const scrollArea = timelineScrollArea;
+  const tracksContent = containerEl.querySelector('.modeling-section .tracks-content');
+  const assemblyScrollArea = containerEl.querySelector('.assembly-scroll-area');
+  const assemblyTracksContent = containerEl.querySelector('.assembly-tracks-content');
+  const assemblyHeaderTrack = containerEl.querySelector('.assembly-header-track');
+  const assemblySvgOverlay = containerEl.querySelector('.assembly-svg-overlay');
+  const assemblyBracketGroup = containerEl.querySelector('.assembly-bracket-group');
+  const assemblyBracketCorridorActive = containerEl.querySelector('.assembly-bracket-corridor-active');
+  const assemblyBracketCorridorInactive = containerEl.querySelector('.assembly-bracket-corridor-inactive');
+  const pathAssemblyBracketLeft = containerEl.querySelector('.path-assembly-bracket-left');
+  const pathAssemblyBracketRight = containerEl.querySelector('.path-assembly-bracket-right');
+  const pathAssemblyBracketLeftHalo = containerEl.querySelector('.path-assembly-bracket-left-halo');
+  const pathAssemblyBracketRightHalo = containerEl.querySelector('.path-assembly-bracket-right-halo');
+  const assemblyConnectorsGroup = containerEl.querySelector('.assembly-connectors-group');
+  const assemblyMarker = containerEl.querySelector('.assembly-marker');
+  const assemblyTrackContainer = containerEl.querySelector('.assembly-track-rows-container');
+  const viewportContainer = containerEl.querySelector('.viewport-container');
+  const resizeRail = containerEl.querySelector('.timeline-resize-rail');
+
+  const btnToggleAssemblySection = containerEl.querySelector('.btn-toggle-assembly');
+  const btnAddJoint = containerEl.querySelector('.btn-add-joint');
+  const btnSplit65 = containerEl.querySelector('.btn-split-65');
+  const btnSplit50 = containerEl.querySelector('.btn-split-50');
+  const btnCollapseLeft = containerEl.querySelector('.collapse-left');
+  const btnCollapseRight = containerEl.querySelector('.collapse-right');
+  const btnExpandModeling = containerEl.querySelector('.btn-expand-modeling');
+  const btnExpandAssembly = containerEl.querySelector('.btn-expand-assembly');
+
+  // REOPEN_ICONS and CONTRACT_ICONS
+
+
     function getAllDownstreamIds(actionId) {
       const result = new Set();
       const queue = [actionId];
@@ -4971,338 +6072,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       });
     }
 
-    // Wire Up Transport Button Listeners (Both Header & Legend sets)
-    function attachTransportHandlers() {
-      const handleFirst = () => { stopPlayback(); setMarkerStep(0); };
-      const handleBack = () => { stopPlayback(); setMarkerStep(markerStep - 1); };
-      const handlePlay = () => { togglePlayback(); };
-      const handleForward = () => { stopPlayback(); setMarkerStep(markerStep + 1); };
-      const handleLast = () => { stopPlayback(); setMarkerStep(getDisplayItems().length); };
 
-      // Legend transport buttons
-      if (btnFirst) btnFirst.addEventListener('click', handleFirst);
-      if (btnBack) btnBack.addEventListener('click', handleBack);
-      if (btnPlay) btnPlay.addEventListener('click', handlePlay);
-      if (btnForward) btnForward.addEventListener('click', handleForward);
-      if (btnLast) btnLast.addEventListener('click', handleLast);
-
-      // Header transport buttons (pinned leading side)
-      if (hdrBtnFirst) hdrBtnFirst.addEventListener('click', handleFirst);
-      if (hdrBtnBack) hdrBtnBack.addEventListener('click', handleBack);
-      if (hdrBtnPlay) hdrBtnPlay.addEventListener('click', handlePlay);
-      if (hdrBtnForward) hdrBtnForward.addEventListener('click', handleForward);
-      if (hdrBtnLast) hdrBtnLast.addEventListener('click', handleLast);
-    }
-
-    // -------------------------------------------------------------
-    // Rubber Band Physics for Vertical Overscroll & Scroll Syncing
-    // -------------------------------------------------------------
-    const scrollArea = document.getElementById('timelineScrollArea');
-    const pinnedContent = document.getElementById('pinnedHeadersContent');
-    const tracksContent = document.getElementById('tracksContent');
-
-    let overscrollY = 0;
-    let isRubberbanding = false;
-
-    scrollArea.addEventListener('scroll', () => {
-      closeContextMenu();
-      // Pinned component list moves vertically in lockstep with the timeline content
-      pinnedContent.style.transform = `translate3d(0, -${scrollArea.scrollTop}px, 0)`;
-    });
-
-    scrollArea.addEventListener('wheel', (e) => {
-      const atTop = scrollArea.scrollTop <= 0 && e.deltaY < 0;
-      const atBottom = (scrollArea.scrollTop + scrollArea.clientHeight >= scrollArea.scrollHeight - 1) && e.deltaY > 0;
-
-      if (atTop || atBottom) {
-        e.preventDefault();
-        overscrollY -= e.deltaY * 0.35; // Damping
-        overscrollY = Math.max(-40, Math.min(40, overscrollY)); // Clamp to 40px stretch
-
-        pinnedContent.classList.remove('spring-return');
-        tracksContent.classList.remove('spring-return');
-
-        pinnedContent.style.transform = `translate3d(0, -${scrollArea.scrollTop - overscrollY}px, 0)`;
-        tracksContent.style.transform = `translate3d(0, ${overscrollY}px, 0)`;
-
-        clearTimeout(isRubberbanding);
-        isRubberbanding = setTimeout(() => {
-          pinnedContent.classList.add('spring-return');
-          tracksContent.classList.add('spring-return');
-          overscrollY = 0;
-          pinnedContent.style.transform = `translate3d(0, -${scrollArea.scrollTop}px, 0)`;
-          tracksContent.style.transform = 'translate3d(0, 0, 0)';
-        }, 90);
-      }
-    }, { passive: false });
-
-    // Dismiss Context Menu on outside click
-    window.addEventListener('mousedown', (e) => {
-      const menu = document.getElementById('timelineContextMenu');
-      if (menu && menu.style.display === 'block' && !menu.contains(e.target)) {
-        closeContextMenu();
-      }
-    });
-
-    // Dismiss Context Menu on Escape
-    window.addEventListener('resize', () => {
-      renderTimeline();
-      renderAssemblyTimeline();
-      updateSplitterGripHeight();
-    });
-
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeContextMenu();
-      }
-    });
-
-    // Reset button
-    document.getElementById('btnReset').addEventListener('click', () => {
-      stopPlayback();
-      stopAssemblyPlayback();
-      closeContextMenu();
-      clipboardFeature = null;
-      groups = [];
-      nextGroupId = 1;
-      selectedGroupId = null;
-      actions = JSON.parse(JSON.stringify(initialActions));
-      selectedActionIds = [5];
-      anchorActionId = 5;
-      markerStep = 16;
-      activeComponentRow = 1;
-      assemblyJoints = JSON.parse(JSON.stringify(initialAssemblyJoints));
-      assemblyMarkerStep = 3;
-      selectedJointId = 102;
-      restoreBothSections();
-      if (!isAssemblySectionVisible) {
-        if (btnToggleAssemblySection) btnToggleAssemblySection.click();
-      }
-      if (activeCompSummaryName) activeCompSummaryName.textContent = 'Housing';
-      if (modelingTargetCompName) modelingTargetCompName.textContent = 'Housing';
-      renderTimeline();
-      renderAssemblyTimeline();
-      dragFeedback.innerHTML = `🔄 <strong>Timeline Reset:</strong> Restored default sequence (16 active modeling steps, 4 active assembly joints, Housing component active). Ready to test!`;
-    });
-
-    // Modeling action simulation buttons
-    document.getElementById('btnNewExtrude')?.addEventListener('click', () => addFeatureToActiveComponent('extrude'));
-    document.getElementById('btnNewRevolve')?.addEventListener('click', () => addFeatureToActiveComponent('revolve'));
-    document.getElementById('btnNewHole')?.addEventListener('click', () => addFeatureToActiveComponent('hole'));
-    document.getElementById('btnNewFillet')?.addEventListener('click', () => addFeatureToActiveComponent('fillet'));
-
-    // 2D Timeline Preferences event listeners
-    let timelineComponentActivationEnabled = true;
-
-    const chkCellDots = document.getElementById('chkCellDots');
-    const rngDotOpacity = document.getElementById('rngDotOpacity');
-    const lblDotOpacity = document.getElementById('lblDotOpacity');
-    const dotOpacityGroup = document.getElementById('dotOpacityGroup');
-
-    if (chkCellDots) {
-      chkCellDots.addEventListener('change', () => {
-        const enabled = chkCellDots.checked;
-        const viewport = document.getElementById('viewportContainer');
-        if (viewport) {
-          viewport.classList.toggle('hide-cell-dots', !enabled);
-        }
-        document.body.classList.toggle('hide-cell-dots', !enabled);
-
-        if (dotOpacityGroup) {
-          dotOpacityGroup.style.opacity = enabled ? '1.0' : '0.4';
-          if (rngDotOpacity) rngDotOpacity.disabled = !enabled;
-        }
-
-        dragFeedback.innerHTML = enabled
-          ? `✨ <strong>Alignment Dots Enabled:</strong> Displaying cell alignment hints (opacity: ${rngDotOpacity ? rngDotOpacity.value : 35}%).`
-          : `✨ <strong>Alignment Dots Disabled:</strong> Hidden all alignment dots in unused grid cells.`;
-      });
-    }
-
-    if (rngDotOpacity && lblDotOpacity) {
-      // Initialize on script load
-      document.documentElement.style.setProperty('--dot-opacity', (rngDotOpacity.value / 100).toString());
-
-      rngDotOpacity.addEventListener('input', () => {
-        const val = rngDotOpacity.value;
-        lblDotOpacity.textContent = `${val}%`;
-        const opacityVal = (val / 100).toFixed(2);
-        document.documentElement.style.setProperty('--dot-opacity', opacityVal);
-      });
-    }
-
-    const chkTimelineCompActivation = document.getElementById('chkTimelineCompActivation');
-    if (chkTimelineCompActivation) {
-      chkTimelineCompActivation.addEventListener('change', () => {
-        timelineComponentActivationEnabled = chkTimelineCompActivation.checked;
-        renderPinnedHeaders();
-      });
-    }
-
-    const pickerPrereqColor = document.getElementById('pickerPrereqColor');
-    const pickerDepColor = document.getElementById('pickerDepColor');
-    const btnResetColors = document.getElementById('btnResetColors');
-
-    function hexToRgba(hex, alpha) {
-      const r = parseInt(hex.slice(1, 3), 16);
-      const g = parseInt(hex.slice(3, 5), 16);
-      const b = parseInt(hex.slice(5, 7), 16);
-      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-    }
-
-    if (pickerPrereqColor) {
-      pickerPrereqColor.addEventListener('input', () => {
-        const hex = pickerPrereqColor.value;
-        document.documentElement.style.setProperty('--orange', hex);
-        document.documentElement.style.setProperty('--orange-bg', hexToRgba(hex, 0.18));
-      });
-    }
-
-    if (pickerDepColor) {
-      pickerDepColor.addEventListener('input', () => {
-        const hex = pickerDepColor.value;
-        document.documentElement.style.setProperty('--blue', hex);
-        document.documentElement.style.setProperty('--blue-bg', hexToRgba(hex, 0.18));
-      });
-    }
-
-    if (btnResetColors) {
-      btnResetColors.addEventListener('click', () => {
-        if (pickerPrereqColor) pickerPrereqColor.value = '#f59e0b';
-        if (pickerDepColor) pickerDepColor.value = '#38bdf8';
-        document.documentElement.style.setProperty('--orange', '#f59e0b');
-        document.documentElement.style.setProperty('--orange-bg', 'rgba(245, 158, 11, 0.18)');
-        document.documentElement.style.setProperty('--blue', '#38bdf8');
-        document.documentElement.style.setProperty('--blue-bg', 'rgba(56, 189, 248, 0.18)');
-      });
-    }
-
-    // Initialize transport handlers, marker scrubbing, and render
-    
-    // =========================================================================
-    // POST-MODELING / ASSEMBLY TRACK VIEW DATA & INTERACTIVITY
-    // =========================================================================
-
-    // Realistic Kinematic Assembly Joints and Mates
-    let assemblyJoints = [
-      {
-        id: 101,
-        name: "Housing Ground",
-        type: "joint_origin",
-        typeLabel: "Rigid Ground",
-        rows: [0, 1], // Ground Housing to Root
-        prereqs: [],
-        downstream: [102, 103],
-        stepLabel: "J01",
-        info: "Grounds Housing occurrence to Root Design coordinate frame (0 DOF)."
-      },
-      {
-        id: 102,
-        name: "Shaft Revolute Joint",
-        type: "joint",
-        typeLabel: "Revolute",
-        rows: [1, 2], // Housing (1) & Shaft (2)
-        prereqs: [101],
-        downstream: [104],
-        stepLabel: "J02",
-        limits: "0° to 360°",
-        info: "Revolute joint along primary Z-axis between Housing bore and Shaft journal."
-      },
-      {
-        id: 103,
-        name: "Bearing Press-Fit Group",
-        type: "rigid_group",
-        typeLabel: "Rigid Group",
-        rows: [1, 3], // Housing (1) & Bearing (3)
-        prereqs: [101],
-        downstream: [],
-        stepLabel: "J03",
-        info: "Rigidly groups Bearing outer ring into Housing bearing seat."
-      },
-      {
-        id: 104,
-        name: "Cap Screw Cylindrical Joint",
-        type: "joint",
-        typeLabel: "Cylindrical",
-        rows: [1, 4], // Housing (1) & Fastener (4)
-        prereqs: [102],
-        downstream: [105],
-        stepLabel: "J04",
-        limits: "Pitch 1.5mm / rev",
-        info: "Cylindrical mate securing Fastener cap into tapped housing boss."
-      },
-      {
-        id: 105,
-        name: "Shaft-Screw Motion Link",
-        type: "motion_link",
-        typeLabel: "Motion Link",
-        rows: [2, 4], // Shaft (2) & Fastener (4)
-        prereqs: [104],
-        downstream: [],
-        stepLabel: "J05",
-        limits: "1:1 Ratio",
-        info: "Couples rotation of Shaft with axial drive of Fastener cap."
-      }
-    ];
-
-    const initialAssemblyJoints = JSON.parse(JSON.stringify(assemblyJoints));
-    let selectedJointId = 102; // Default select J02 (Shaft Revolute Joint)
-    let assemblyMarkerStep = 3; // 3 active (J01-J03), 2 inactive (J04-J05)
-    let isAssemblyPlaying = false;
-    let assemblyPlaybackTimer = null;
-    let isAssemblySectionVisible = true;
-    let isModelingCollapsed = false;
-    let isAssemblyCollapsed = false;
-    let savedModelingFlexWidth = 65; // percentage or px
-
-    // DOM Elements for Assembly Track
-    const sectionModeling = document.getElementById('sectionModeling');
-    const sectionAssembly = document.getElementById('sectionAssembly');
-    const trackSplitter = document.getElementById('trackSplitter');
-    const splitterGrip = document.getElementById('splitterGrip');
-    const stripModeling = document.getElementById('stripModeling');
-    const stripAssembly = document.getElementById('stripAssembly');
-    const stripModelingBadge = document.getElementById('stripModelingBadge');
-    const stripAssemblyBadge = document.getElementById('stripAssemblyBadge');
-    const badgeModelingCount = document.getElementById('badgeModelingCount');
-    const badgeAssemblyCount = document.getElementById('badgeAssemblyCount');
-    const modelingActiveSummary = document.getElementById('modelingActiveSummary');
-    const assemblyActiveSummary = document.getElementById('assemblyActiveSummary');
-
-    const assemblyScrollArea = document.getElementById('assemblyScrollArea');
-    const assemblyTracksContent = document.getElementById('assemblyTracksContent');
-    const assemblyHeaderTrack = document.getElementById('assemblyHeaderTrack');
-    const assemblySvgOverlay = document.getElementById('assemblySvgOverlay');
-    const assemblyBracketGroup = document.getElementById('assemblyBracketGroup');
-    const assemblyBracketCorridorActive = document.getElementById('assemblyBracketCorridorActive');
-    const assemblyBracketCorridorInactive = document.getElementById('assemblyBracketCorridorInactive');
-    const pathAssemblyBracketLeft = document.getElementById('pathAssemblyBracketLeft');
-    const pathAssemblyBracketRight = document.getElementById('pathAssemblyBracketRight');
-    const pathAssemblyBracketLeftHalo = document.getElementById('pathAssemblyBracketLeftHalo');
-    const pathAssemblyBracketRightHalo = document.getElementById('pathAssemblyBracketRightHalo');
-    const assemblyConnectorsGroup = document.getElementById('assemblyConnectorsGroup');
-    const assemblyMarker = document.getElementById('assemblyMarker');
-
-    const btnToggleAssemblySection = document.getElementById('btnToggleAssemblySection');
-    const btnAddJoint = document.getElementById('btnAddJoint');
-    const btnSplit65 = document.getElementById('btnSplit65');
-    const btnSplit50 = document.getElementById('btnSplit50');
-    const btnCollapseLeft = document.getElementById('btnCollapseLeft');
-    const btnCollapseRight = document.getElementById('btnCollapseRight');
-    const btnExpandModeling = document.getElementById('btnExpandModeling');
-    const btnExpandAssembly = document.getElementById('btnExpandAssembly');
-
-    // Modeling Transport buttons in Section Header
-    const mBtnBack = document.getElementById('mBtnBack');
-    const mBtnPlay = document.getElementById('mBtnPlay');
-    const mBtnForward = document.getElementById('mBtnForward');
-
-    // Assembly Transport buttons in Section Header
-    const jBtnBack = document.getElementById('jBtnBack');
-    const jBtnPlay = document.getElementById('jBtnPlay');
-    const jBtnForward = document.getElementById('jBtnForward');
-
-    // Compute Movable Range for an Assembly Joint
     function computeJointMovableRange(joint) {
       const currentCol = assemblyJoints.findIndex(j => j.id === joint.id) + 1;
       if (currentCol <= 0) return { minCol: 1, maxCol: 1, currentCol: 1 };
@@ -6281,7 +7051,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       updateSplitterUI();
     }
 
-    let reopenIconStyle = 'split'; // Default: dual split panes (◫)
+    // reopenIconStyle // Default: dual split panes (◫)
 
     // Crisp Vector Icons for Reopening / Expanding Contracted Tracks
     const REOPEN_ICONS = {
@@ -6442,10 +7212,10 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
     // =========================================================================
 
     function initUnifiedVerticalScroll() {
-      const viewportContainer = document.getElementById('viewportContainer');
-      const pinnedContent = document.getElementById('pinnedHeadersContent');
-      const modelingTracks = document.getElementById('tracksContent');
-      const assemblyTracks = document.getElementById('assemblyTracksContent');
+      const viewportContainer = containerEl.querySelector('.viewport-container');
+      const pinnedContent = containerEl.querySelector('.pinned-headers-content');
+      const modelingTracks = containerEl.querySelector('.modeling-section .tracks-content');
+      const assemblyTracks = containerEl.querySelector('.assembly-tracks-content');
 
       let verticalScrollY = 0;
       const maxScroll = Math.max(0, NUM_ROWS * ROW_H - 142); // 5 rows * 38 = 190
@@ -6517,33 +7287,435 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       attachTrackBackgroundPan(assemblyScrollArea);
     }
 
-    // Assembly Transport Handlers
-    if (jBtnBack) jBtnBack.addEventListener('click', () => { stopAssemblyPlayback(); setAssemblyMarkerStep(assemblyMarkerStep - 1); });
-    if (jBtnPlay) jBtnPlay.addEventListener('click', () => { toggleAssemblyPlayback(); });
-    if (jBtnForward) jBtnForward.addEventListener('click', () => { stopAssemblyPlayback(); setAssemblyMarkerStep(assemblyMarkerStep + 1); });
 
-    // Modeling Transport Handlers in Section Header
-    if (mBtnBack) mBtnBack.addEventListener('click', () => { stopPlayback(); setMarkerStep(markerStep - 1); });
-    if (mBtnPlay) mBtnPlay.addEventListener('click', () => { togglePlayback(); });
-    if (mBtnForward) mBtnForward.addEventListener('click', () => { stopPlayback(); setMarkerStep(markerStep + 1); });
 
-    initSplitterAndCollapse();
-    initUnifiedVerticalScroll();
-    renderAssemblyTimeline();
-    attachAssemblyMarkerScrubbing();
-    attachTransportHandlers();
-    attachMarkerScrubbing();
-    renderTimeline();
-
-    // Support URL view parameters for screenshots & testing
-    const viewParam = urlParams.get('view');
-    if (viewParam === 'collapse-modeling') {
-      collapseModelingSection();
-    } else if (viewParam === 'collapse-assembly') {
-      collapseAssemblySection();
-    } else if (viewParam === 'hide-assembly') {
-      if (btnToggleAssemblySection) btnToggleAssemblySection.click();
+  function setDockHeight(h) {
+    dockHeight = Math.max(116, Math.min(320, h));
+    if (viewportContainer) {
+      viewportContainer.style.height = `${dockHeight}px`;
     }
+    updateSplitterGripHeight();
+    if (options.onHeightChange) options.onHeightChange(dockHeight);
+  }
+
+  function initResizeRail() {
+    if (!resizeRail || !viewportContainer) return;
+    let isResizing = false;
+    let startY = 0;
+    let startH = 0;
+
+    resizeRail.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      isResizing = true;
+      startY = e.clientY;
+      startH = viewportContainer.offsetHeight || dockHeight;
+      resizeRail.classList.add('resizing');
+      document.body.style.cursor = 'row-resize';
+
+      function onMouseMove(ev) {
+        if (!isResizing) return;
+        const dy = ev.clientY - startY;
+        setDockHeight(startH - dy);
+      }
+
+      function onMouseUp() {
+        if (!isResizing) return;
+        isResizing = false;
+        resizeRail.classList.remove('resizing');
+        document.body.style.cursor = 'default';
+        window.removeEventListener('mousemove', onMouseMove);
+        window.removeEventListener('mouseup', onMouseUp);
+      }
+
+      window.addEventListener('mousemove', onMouseMove);
+      window.addEventListener('mouseup', onMouseUp);
+    });
+
+    resizeRail.addEventListener('dblclick', () => {
+      setDockHeight(264);
+    });
+  }
+
+  function addAssemblyJoint() {
+    const newJid = assemblyJoints.length > 0 ? Math.max(...assemblyJoints.map(j => j.id)) + 1 : 101;
+    const stepNum = assemblyJoints.length + 1;
+    const newJoint = {
+      id: newJid,
+      name: `Joint Mate ${stepNum}`,
+      type: "joint",
+      typeLabel: "Slider",
+      rows: [1, 2],
+      prereqs: assemblyJoints.length > 0 ? [assemblyJoints[assemblyJoints.length - 1].id] : [],
+      downstream: [],
+      stepLabel: `J${stepNum < 10 ? '0' + stepNum : stepNum}`,
+      limits: "0..50mm",
+      info: "User added joint mate"
+    };
+    if (assemblyJoints.length > 0) {
+      assemblyJoints[assemblyJoints.length - 1].downstream.push(newJid);
+    }
+    assemblyJoints.push(newJoint);
+    assemblyMarkerStep = assemblyJoints.length;
+    renderAssemblyTimeline();
+    applyAssemblyHighlight();
+  }
+
+  // Auto-suppress if requested
+  if (options.suppressedActionIds) {
+    options.suppressedActionIds.forEach(id => {
+      const act = actions.find(a => a.id === id);
+      if (act) suppressActionWithDependents(act);
+    });
+  }
+
+  // Wire section transport buttons
+  if (jBtnBack) jBtnBack.addEventListener('click', () => { stopAssemblyPlayback(); setAssemblyMarkerStep(assemblyMarkerStep - 1); });
+  if (jBtnPlay) jBtnPlay.addEventListener('click', () => { toggleAssemblyPlayback(); });
+  if (jBtnForward) jBtnForward.addEventListener('click', () => { stopAssemblyPlayback(); setAssemblyMarkerStep(assemblyMarkerStep + 1); });
+
+  if (mBtnBack) mBtnBack.addEventListener('click', () => { stopPlayback(); setMarkerStep(markerStep - 1); });
+  if (mBtnPlay) mBtnPlay.addEventListener('click', () => { togglePlayback(); });
+  if (mBtnForward) mBtnForward.addEventListener('click', () => { stopPlayback(); setMarkerStep(markerStep + 1); });
+
+  // Transport handlers wiring
+  function attachTransportHandlers() {
+    const handleFirst = () => { stopPlayback(); setMarkerStep(0); };
+    const handleBack = () => { stopPlayback(); setMarkerStep(markerStep - 1); };
+    const handlePlay = () => { togglePlayback(); };
+    const handleForward = () => { stopPlayback(); setMarkerStep(markerStep + 1); };
+    const handleLast = () => { stopPlayback(); setMarkerStep(getDisplayItems().length); };
+
+    if (btnFirst) btnFirst.addEventListener('click', handleFirst);
+    if (btnBack) btnBack.addEventListener('click', handleBack);
+    if (btnPlay) btnPlay.addEventListener('click', handlePlay);
+    if (btnForward) btnForward.addEventListener('click', handleForward);
+    if (btnLast) btnLast.addEventListener('click', handleLast);
+
+    if (hdrBtnFirst) hdrBtnFirst.addEventListener('click', handleFirst);
+    if (hdrBtnBack) hdrBtnBack.addEventListener('click', handleBack);
+    if (hdrBtnPlay) hdrBtnPlay.addEventListener('click', handlePlay);
+    if (hdrBtnForward) hdrBtnForward.addEventListener('click', handleForward);
+    if (hdrBtnLast) hdrBtnLast.addEventListener('click', handleLast);
+  }
+
+  initSplitterAndCollapse();
+  initUnifiedVerticalScroll();
+  initResizeRail();
+  renderPinnedHeaders();
+  renderAssemblyTimeline();
+  attachAssemblyMarkerScrubbing();
+  attachTransportHandlers();
+  attachMarkerScrubbing();
+  renderTimeline();
+
+  if (options.dockHeight) setDockHeight(options.dockHeight);
+  if (options.isModelingCollapsed) collapseModelingSection();
+  if (options.isAssemblyCollapsed) collapseAssemblySection();
+
+  const widgetApi = {
+    id: uid,
+    container: containerEl,
+    setMarkerStep: (s) => setMarkerStep(s, true),
+    setAssemblyMarkerStep: (s) => setAssemblyMarkerStep(s, true),
+    selectAction: (id) => {
+      selectedActionIds = [id];
+      anchorActionId = id;
+      renderTimeline();
+      applyHighlight();
+      if (options.onActionSelect) options.onActionSelect(actions.find(a => a.id === id));
+    },
+    selectJoint: (id) => {
+      selectedJointId = id;
+      renderAssemblyTimeline();
+      applyAssemblyHighlight();
+      if (options.onJointSelect) options.onJointSelect(assemblyJoints.find(j => j.id === id));
+    },
+    setActiveComponent: (row) => {
+      setActiveComponent(row);
+      if (options.onComponentActive) options.onComponentActive(row);
+    },
+    addFeature: (type) => addFeatureToActiveComponent(type),
+    addJoint: () => addAssemblyJoint(),
+    setDockHeight: (h) => setDockHeight(h),
+    setSplitRatio: (ratio) => {
+      if (sectionModeling && sectionAssembly) {
+        savedModelingFlexWidth = ratio * 100;
+        sectionModeling.style.flex = `${ratio * 100} 1 0`;
+        sectionAssembly.style.flex = `${(1 - ratio) * 100} 1 0`;
+        updateSplitterUI();
+        renderTimeline();
+        renderAssemblyTimeline();
+      }
+    },
+    collapseModeling: collapseModelingSection,
+    collapseAssembly: collapseAssemblySection,
+    restoreBoth: restoreBothSections,
+    setReopenIconStyle: (style) => setReopenIconStyle(style),
+    setDotOpacity: (val) => {
+      dotOpacity = val;
+      const cells = containerEl.querySelectorAll('.grid-cell-dot');
+      cells.forEach(c => c.style.opacity = (val / 100).toString());
+    },
+    toggleDots: (show) => {
+      showCellDots = show;
+      const cells = containerEl.querySelectorAll('.grid-cell-dot');
+      cells.forEach(c => c.style.display = show ? 'block' : 'none');
+    },
+    setColors: (prereq, dep) => {
+      prereqColor = prereq;
+      depColor = dep;
+      applyHighlight();
+      applyAssemblyHighlight();
+    },
+    toggleSuppress: (actionId) => {
+      const act = actions.find(a => a.id === actionId);
+      if (!act) return;
+      if (act.suppressed) unsuppressActionWithDependents(act);
+      else suppressActionWithDependents(act);
+      renderTimeline();
+      applyHighlight();
+    },
+    toggleGroup: (groupId) => {
+      const grp = groups.find(g => g.id === groupId);
+      if (grp) {
+        grp.isOpen = !grp.isOpen;
+        renderTimeline();
+        applyHighlight();
+      }
+    },
+    reset: () => {
+      actions = JSON.parse(JSON.stringify(initialActions));
+      assemblyJoints = JSON.parse(JSON.stringify(initialAssemblyJoints));
+      selectedActionIds = options.selectedActionIds ? [...options.selectedActionIds] : [5];
+      markerStep = options.markerStep !== undefined ? options.markerStep : 8;
+      assemblyMarkerStep = options.assemblyMarkerStep !== undefined ? options.assemblyMarkerStep : 4;
+      groups = options.groups ? JSON.parse(JSON.stringify(options.groups)) : [];
+      if (options.suppressedActionIds) {
+        options.suppressedActionIds.forEach(id => {
+          const act = actions.find(a => a.id === id);
+          if (act) suppressActionWithDependents(act);
+        });
+      }
+      renderTimeline();
+      renderAssemblyTimeline();
+      applyHighlight();
+      applyAssemblyHighlight();
+      setDockHeight(options.dockHeight || 264);
+    },
+    getState: () => ({ actions, assemblyJoints, groups, markerStep, assemblyMarkerStep, activeComponentRow, selectedActionIds, selectedJointId })
+  };
+
+  const btnReset = containerEl.querySelector('.btn-reset');
+  if (btnReset) btnReset.addEventListener('click', () => widgetApi.reset());
+
+  return widgetApi;
+}
+
+class Timeline2DWidget {
+  constructor(mountPoint, options = {}) {
+    const container = typeof mountPoint === 'string' ? document.querySelector(mountPoint) : mountPoint;
+    if (!container) throw new Error("Mount element not found: " + mountPoint);
+    return createTimelineWidget(container, options);
+  }
+}
+
+
+
+// Initialize Context Menu Manager
+ContextMenuManager.init();
+
+// -------------------------------------------------------------
+// Category 1: Orthogonal Component x Step Matrix & Span Connectors
+// -------------------------------------------------------------
+const timeline1 = new Timeline2DWidget('#mount-cat1', {
+  id: 'cat1',
+  actions: DEFAULT_ACTIONS,
+  joints: DEFAULT_JOINTS,
+  groups: [],
+  activeComponentRow: 1, // Housing active
+  markerStep: 24,
+  selectedActionIds: [9], // Combine Housing+Shaft highlighted
+  initialFeedback: '💡 <strong>Category 01:</strong> Each component has its own horizontal row. Multi-component features (e.g. Combine at Step 09) bridge participating rows with vertical span connectors.'
+});
+
+// Category 1 Toolbar Wiring
+const cat1CompBtns = [
+  document.getElementById('cat1_btnComp0'),
+  document.getElementById('cat1_btnComp1'),
+  document.getElementById('cat1_btnComp2'),
+  document.getElementById('cat1_btnComp3'),
+  document.getElementById('cat1_btnComp4')
+];
+cat1CompBtns.forEach((btn, idx) => {
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    cat1CompBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    timeline1.setActiveComponent(idx);
+  });
+});
+
+document.getElementById('cat1_btnAddExtrude')?.addEventListener('click', () => timeline1.addFeature('extrude'));
+document.getElementById('cat1_btnAddRevolve')?.addEventListener('click', () => timeline1.addFeature('revolve'));
+document.getElementById('cat1_btnAddHole')?.addEventListener('click', () => timeline1.addFeature('hole'));
+document.getElementById('cat1_btnAddFillet')?.addEventListener('click', () => timeline1.addFeature('fillet'));
+
+const cat1ChkDots = document.getElementById('cat1_chkDots');
+const cat1RngOpacity = document.getElementById('cat1_rngOpacity');
+const cat1LblOpacity = document.getElementById('cat1_lblOpacity');
+
+if (cat1ChkDots) {
+  cat1ChkDots.addEventListener('change', () => {
+    timeline1.toggleDots(cat1ChkDots.checked);
+  });
+}
+if (cat1RngOpacity && cat1LblOpacity) {
+  cat1RngOpacity.addEventListener('input', () => {
+    const val = cat1RngOpacity.value;
+    cat1LblOpacity.textContent = `${val}%`;
+    timeline1.setDotOpacity(val);
+  });
+}
+
+// -------------------------------------------------------------
+// Category 2: Real-Time Topological DAG & The Movable Corridor
+// -------------------------------------------------------------
+const timeline2 = new Timeline2DWidget('#mount-cat2', {
+  id: 'cat2',
+  actions: DEFAULT_ACTIONS,
+  joints: DEFAULT_JOINTS,
+  groups: [],
+  activeComponentRow: 1,
+  markerStep: 8, // Coincident at Step 08 with right bracket of Step 05!
+  selectedActionIds: [5], // Step 05 Fillet Edge selected
+  initialFeedback: '⚡ <strong>Category 02 (Smart Inset):</strong> Step 05 is framed by green brackets [04..08]. At Step 08, the corridor bracket insets 3px inward so both the bracket and rollback marker line stay directly interactive with zero occlusion!'
+});
+
+document.getElementById('cat2_btnJump08')?.addEventListener('click', () => {
+  timeline2.setMarkerStep(8);
+  timeline2.selectAction(5);
+});
+document.getElementById('cat2_btnJump24')?.addEventListener('click', () => {
+  timeline2.setMarkerStep(24);
+  timeline2.selectAction(5);
+});
+
+// -------------------------------------------------------------
+// Category 3: Asymmetric Split-Track Architecture & Kinematic Joint Scrubbing
+// -------------------------------------------------------------
+const timeline3 = new Timeline2DWidget('#mount-cat3', {
+  id: 'cat3',
+  actions: DEFAULT_ACTIONS,
+  joints: DEFAULT_JOINTS,
+  groups: [],
+  activeComponentRow: 1,
+  splitRatio: 0.50, // 50/50 side-by-side
+  selectedJointId: 102, // Gantry X-Travel Slider joint selected
+  assemblyMarkerStep: 4,
+  initialFeedback: '🟣 <strong>Category 03:</strong> Solid modeling features (blue) and kinematic joints (purple) operate in dedicated side-by-side tracks. Try dragging the central splitter or clicking |< and >|!'
+});
+
+document.getElementById('cat3_btnSplit50')?.addEventListener('click', (e) => {
+  timeline3.setSplitRatio(0.50);
+  document.querySelectorAll('#cat3 .showcase-toolbar .toolbar-btn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+});
+document.getElementById('cat3_btnSplit65')?.addEventListener('click', (e) => {
+  timeline3.setSplitRatio(0.65);
+  document.querySelectorAll('#cat3 .showcase-toolbar .toolbar-btn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+});
+document.getElementById('cat3_btnCollapseMod')?.addEventListener('click', () => timeline3.collapseModeling());
+document.getElementById('cat3_btnCollapseAsm')?.addEventListener('click', () => timeline3.collapseAssembly());
+document.getElementById('cat3_btnRestoreSplit')?.addEventListener('click', () => timeline3.restoreBoth());
+
+const cat3IconBtns = [
+  { id: 'cat3_btnIconSplit', style: 'split' },
+  { id: 'cat3_btnIconChevrons', style: 'chevrons' },
+  { id: 'cat3_btnIconUnfold', style: 'unfold' },
+  { id: 'cat3_btnIconArrows', style: 'arrows' }
+];
+cat3IconBtns.forEach(item => {
+  const el = document.getElementById(item.id);
+  if (!el) return;
+  el.addEventListener('click', () => {
+    cat3IconBtns.forEach(b => document.getElementById(b.id)?.classList.remove('active'));
+    el.classList.add('active');
+    timeline3.setReopenIconStyle(item.style);
+  });
+});
+document.getElementById('cat3_btnAddJoint')?.addEventListener('click', () => timeline3.addJoint());
+
+// -------------------------------------------------------------
+// Category 4: Adaptive Vertical Dock Sizing
+// -------------------------------------------------------------
+const cat4HeightDisplay = document.getElementById('cat4_heightDisplay');
+
+const timeline4 = new Timeline2DWidget('#mount-cat4', {
+  id: 'cat4',
+  actions: DEFAULT_ACTIONS,
+  joints: DEFAULT_JOINTS,
+  groups: [],
+  activeComponentRow: 1,
+  markerStep: 24,
+  dockHeight: 264,
+  onHeightChange: (h) => {
+    if (cat4HeightDisplay) cat4HeightDisplay.textContent = `${h} px`;
+    if (h === 116) {
+      cat4Btn1Row?.classList.add('active');
+      cat4Btn3Row?.classList.remove('active');
+      cat4BtnAllFit?.classList.remove('active');
+    } else if (h === 220) {
+      cat4Btn1Row?.classList.remove('active');
+      cat4Btn3Row?.classList.add('active');
+      cat4BtnAllFit?.classList.remove('active');
+    } else if (h === 264) {
+      cat4Btn1Row?.classList.remove('active');
+      cat4Btn3Row?.classList.remove('active');
+      cat4BtnAllFit?.classList.add('active');
+    } else {
+      cat4Btn1Row?.classList.remove('active');
+      cat4Btn3Row?.classList.remove('active');
+      cat4BtnAllFit?.classList.remove('active');
+    }
+  },
+  initialFeedback: '↕️ <strong>Category 04:</strong> The 2D Timeline dynamically scales from a 1-Row Compact Strip (116px) with scrollbar clearance to a snug All-Component Fit (264px). Drag the top cyan rail or click presets!'
+});
+
+const cat4Btn1Row = document.getElementById('cat4_btn1Row');
+const cat4Btn3Row = document.getElementById('cat4_btn3Row');
+const cat4BtnAllFit = document.getElementById('cat4_btnAllFit');
+
+cat4Btn1Row?.addEventListener('click', () => timeline4.setDockHeight(116));
+cat4Btn3Row?.addEventListener('click', () => timeline4.setDockHeight(220));
+cat4BtnAllFit?.addEventListener('click', () => timeline4.setDockHeight(264));
+document.getElementById('cat4_btnResetHeight')?.addEventListener('click', () => timeline4.setDockHeight(264));
+
+// -------------------------------------------------------------
+// Category 5: Virtual Group Folding & Transitive Suppression
+// -------------------------------------------------------------
+const timeline5 = new Timeline2DWidget('#mount-cat5', {
+  id: 'cat5',
+  actions: DEFAULT_ACTIONS,
+  joints: DEFAULT_JOINTS,
+  groups: [
+    { id: 1, name: "Foundation Stage", actionIds: [1, 2, 3, 4], isOpen: true },
+    { id: 2, name: "Shaft Core", actionIds: [8, 9, 10, 11], isOpen: false } // Folded virtual group card!
+  ],
+  activeComponentRow: 3, // Bearing
+  markerStep: 18, // Steps 19-24 rendered in high-contrast greyscale rollback state!
+  selectedActionIds: [15], // Step 15 Bearing Shell
+  suppressedActionIds: [15], // Cascades to 16, 20, 22, 24!
+  initialFeedback: '📁 <strong>Category 05:</strong> "Shaft Core" is folded into a sleek Virtual Group Card spanning all 5 rows with badge [4]. Step 15 Bearing Shell is suppressed with dashed border and slashed eye, cascading to downstream dependents.'
+});
+
+document.getElementById('cat5_btnToggleGroup1')?.addEventListener('click', () => timeline5.toggleGroup(1));
+document.getElementById('cat5_btnToggleGroup2')?.addEventListener('click', () => timeline5.toggleGroup(2));
+document.getElementById('cat5_btnToggleSuppress')?.addEventListener('click', () => timeline5.toggleSuppress(15));
+document.getElementById('cat5_btnJump18')?.addEventListener('click', () => timeline5.setMarkerStep(18));
+document.getElementById('cat5_btnJump08')?.addEventListener('click', () => timeline5.setMarkerStep(8));
+document.getElementById('cat5_btnJump24')?.addEventListener('click', () => timeline5.setMarkerStep(24));
+
   </script>
 </body>
 </html>
