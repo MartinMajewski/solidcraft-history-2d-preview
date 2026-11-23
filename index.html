@@ -288,12 +288,6 @@
       gap: 12px;
     }
 
-    .header-title-area {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
     .badge {
       font-size: 11px;
       font-weight: 600;
@@ -304,18 +298,6 @@
       background: rgba(56, 189, 248, 0.15);
       color: #38bdf8;
       border: 1px solid rgba(56, 189, 248, 0.3);
-    }
-
-    .header-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: #fff;
-    }
-
-    .header-desc {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 4px;
     }
 
     /* Legend */
@@ -1039,6 +1021,18 @@
 
     .hide-cell-dots .empty-hint {
       display: none !important;
+    }
+
+    /* Running light of the corridor check (--light: 0..1), shown also when dots are off */
+    .track-row .empty-hint.lit {
+      color: color-mix(in srgb, #22c55e calc(var(--light) * 100%), #94a3b8);
+      opacity: max(var(--dot-opacity, 0.35), var(--light));
+      transform: scale(calc(1 + var(--light) * 0.6));
+      transition: none;
+    }
+
+    .hide-cell-dots .empty-hint.lit {
+      display: inline-block !important;
     }
 
     /* Action Chip - Always 100% Opacity */
@@ -2517,7 +2511,7 @@
         </div>
         <div class="hero-tag">
           <span class="hero-tag-dot" style="background: #22c55e;"></span>
-          <span>Topological Movable Corridor [ ... ]</span>
+          <span>Checked Movable Corridor [ ... ]</span>
         </div>
         <div class="hero-tag">
           <span class="hero-tag-dot" style="background: #c084fc;"></span>
@@ -2546,16 +2540,6 @@
   <div class="container" id="timeline-showcase">
     <!-- Header -->
     <div class="header-bar">
-      <div>
-        <div class="header-title-area">
-          <span class="badge" style="background: rgba(56, 189, 248, 0.18); border: 1px solid rgba(56, 189, 248, 0.45); color: #38bdf8; font-weight: 600;">SolidCraft UI Change Proposal</span>
-          <h1 class="header-title">SolidCraft 2D Timeline</h1>
-        </div>
-        <p class="header-desc">
-          Interactive proposal &amp; prototype demonstrating the 2D multi-track parametric CAD timeline for SolidCraft with split modeling/assembly tracks, dependency visualization &amp; ripple push reordering. (Pull Request link coming soon).
-        </p>
-      </div>
-
       <!-- Highlighting Legend -->
       <div class="legend">
         <div class="legend-item">
@@ -2704,13 +2688,11 @@
             <button id="btnSplit50" class="btn-mode" style="padding: 2px 6px; font-size: 10px;" title="50% Modeling, 50% Assembly">50/50</button>
           </div>
 
-          <!-- 4. Reopen Splitter Icon Style -->
+          <!-- 4. DAG Unsuppress Behavior -->
           <div style="display: inline-flex; align-items: center; gap: 4px; margin-left: 8px; padding-left: 8px; border-left: 1px solid #2a313d;">
-            <span style="color: #94a3b8;" title="Icon used on the splitter to reopen a contracted track view">Reopen Icon:</span>
-            <button id="btnIconChevrons" class="btn-mode" style="padding: 2px 6px; font-size: 10px;" title="Double Chevrons (» / «) — Classic CAD/IDE dock expand pattern">» Chevrons</button>
-            <button id="btnIconSplit" class="btn-mode active" style="padding: 2px 6px; font-size: 10px;" title="Dual Split Panes (◫) — Represents restoring two-pane split">◫ Dual Pane</button>
-            <button id="btnIconUnfold" class="btn-mode" style="padding: 2px 6px; font-size: 10px;" title="Dock Unfold (⇥ / ⇤) — Wall with outward arrow">⇥ Unfold</button>
-            <button id="btnIconArrows" class="btn-mode" style="padding: 2px 6px; font-size: 10px;" title="Bidirectional Split Arrows (↔)">↔ Split</button>
+            <span style="color: #94a3b8;" title="How unsuppressing an upstream feature affects downstream dependents">Unsuppress:</span>
+            <button id="btnUnsuppressRestore" class="btn-mode active" style="padding: 2px 6px; font-size: 10px;" title="Restore original state: features that were separately suppressed remain suppressed">Restore State</button>
+            <button id="btnUnsuppressAll" class="btn-mode" style="padding: 2px 6px; font-size: 10px;" title="Unsuppress all: cascade unsuppression to all downstream dependents">All Features</button>
           </div>
         </div>
 
@@ -2984,7 +2966,8 @@
             <span>4. Reordering &amp; Context Menu</span>
           </div>
           <ul class="manual-card-list">
-            <li><strong>Movable Corridor <code>[ ... ]</code></strong>: Indicates the safe topological drag window bounded by the nearest prerequisite and downstream features.</li>
+            <li><strong>Movable Corridor <code>[ ... ]</code></strong>: Indicates the safe topological drag window bounded by the last prerequisite and the first dependent, directly or through other steps.</li>
+            <li><strong>Checking the Corridor</strong>: A move can also break a feature through its shape alone. When you select one feature, each step of its corridor is tried on a copy of the design. While it checks, a green light runs along the cell dots from each end of the corridor towards the feature, and each bracket then moves in to the last step where the move works. The result is kept until the design changes. Try <em>Shaft Thread</em> (Step 11): its left bracket stops after the <em>Combine</em>.</li>
             <li><strong>Ripple Push Reordering</strong>: Drag a chip horizontally within its brackets. Intermediate jumped features automatically ripple in the opposite direction.</li>
             <li><strong>Feature Context Menu</strong>: Right-click any action chip for 1:1 SolidCraft options: <em>Edit Feature</em> (or <strong>Double-Click</strong>), <em>Redefine Sketch</em>, <em>Rename</em>, <em>Suppress</em>, <em>Roll Marker Here</em>, <em>Copy/Paste</em>, <em>Delete</em>.</li>
             <li><strong>Transport Bar</strong>: Pinned toolbar provides playback simulation (<code>⏮</code>, <code>◀</code>, <code>▶</code>/<code>⏸</code>, <code>▶</code>, <code>⏭</code>) without scrolling horizontally.</li>
@@ -3105,7 +3088,9 @@
       { id: 8, name: "Keyway Chamfer", type: "chamfer", rows: [2], prereqs: [4], downstream: [11,18,19] },
       { id: 9, name: "Combine (Housing+Shaft)", type: "combine", rows: [1, 2], prereqs: [5,6], downstream: [14,17,21] }, // Multi-component (1 & 2)
       { id: 10, name: "Bearing Outer Ring", type: "revolve", rows: [3], prereqs: [7], downstream: [13,15,20] },
-      { id: 11, name: "Shaft Thread", type: "thread", rows: [2], prereqs: [4,8], downstream: [14,18,19] },
+      // shapeAfter: the thread wraps the shaft face the Combine trims; before it, the thread lands on the
+      // untrimmed face. The graph does not see this; the corridor check does (select Step 11).
+      { id: 11, name: "Shaft Thread", type: "thread", rows: [2], prereqs: [4,8], downstream: [14,18,19], shapeAfter: [9] },
       { id: 12, name: "Cap Screw Extrude", type: "extrude", rows: [4], prereqs: [2], downstream: [14,23] },
       { id: 13, name: "Press-Fit Assembly (Root+Bearing)", type: "combine", rows: [0, 3], prereqs: [7,10], downstream: [15,16,20] }, // Multi-component (0 & 3)
       { id: 14, name: "Fastener Combine (Housing+Fastener)", type: "combine", rows: [1, 4], prereqs: [9,11,12], downstream: [16,17,21,23] }, // Multi-component (1 & 4)
@@ -3228,36 +3213,54 @@
       return Array.from(result);
     }
 
-    // Suppress action and cascade suppression to all dependent succeeding actions
+    let unsuppressMode = 'restore_state'; // 'restore_state' | 'unsuppress_all'
+    const separatelySuppressedIds = new Set();
+
+    // Suppress, as in the app: the feature is remembered as suppressed on its own (only the one
+    // the user picked), and its dependents follow because they need its geometry.
     function suppressActionWithDependents(act) {
-      act.suppressed = true;
+      separatelySuppressedIds.add(act.id);
       const downstreamIds = getAllDownstreamIds(act.id);
-      downstreamIds.forEach(did => {
-        const d = actions.find(a => a.id === did);
-        if (d) d.suppressed = true;
+      [act.id, ...downstreamIds].forEach(id => {
+        const a = actions.find(x => x.id === id);
+        if (a) a.suppressed = true;
       });
       const count = downstreamIds.length;
       dragFeedback.innerHTML = `⏸️ <strong>Suppressed:</strong> <em>${act.name}</em>${count > 0 ? ` and ${count} dependent succeeding feature(s)` : ''} suppressed from 3D solid geometry evaluation (marked with 50% opacity slashed eye).`;
     }
 
-    // Unsuppress action, restoring required prerequisites and dependent features
+    // Unsuppress, as in the app (deps.rs collect_unsuppression_with_mode): the feature and its
+    // suppressed prerequisites come back. Restore State then brings back the suppressed dependents
+    // of all of those, in step order, unless suppressed on their own or still missing a prerequisite;
+    // All Features brings back every dependent of the feature.
     function unsuppressActionWithDependents(act) {
-      act.suppressed = false;
-      const prereqIds = getAllPrereqIds(act.id);
-      let unsuppressedPrereqCount = 0;
-      prereqIds.forEach(pid => {
-        const p = actions.find(a => a.id === pid);
-        if (p && p.suppressed) {
-          p.suppressed = false;
-          unsuppressedPrereqCount++;
-        }
+      const isSuppressed = id => !!actions.find(a => a.id === id)?.suppressed;
+      // Only suppressions that still stand are remembered.
+      [...separatelySuppressedIds].forEach(id => { if (!isSuppressed(id)) separatelySuppressedIds.delete(id); });
+      const back = new Set([act.id, ...getAllPrereqIds(act.id).filter(isSuppressed)]);
+      const prereqCount = back.size - 1;
+      let preservedCount = 0;
+      if (unsuppressMode === 'unsuppress_all') {
+        getAllDownstreamIds(act.id).forEach(id => back.add(id));
+      } else {
+        const candidates = new Set();
+        back.forEach(u => getAllDownstreamIds(u).forEach(d => { if (isSuppressed(d) && !back.has(d)) candidates.add(d); }));
+        const stepOf = id => actions.findIndex(a => a.id === id);
+        [...candidates].sort((a, b) => stepOf(a) - stepOf(b)).forEach(d => {
+          if (!separatelySuppressedIds.has(d) && getAllPrereqIds(d).every(p => !isSuppressed(p) || back.has(p))) {
+            back.add(d);
+          } else {
+            preservedCount++;
+          }
+        });
+      }
+      back.forEach(id => {
+        const a = actions.find(x => x.id === id);
+        if (a) a.suppressed = false;
+        separatelySuppressedIds.delete(id);
       });
-      const downstreamIds = getAllDownstreamIds(act.id);
-      downstreamIds.forEach(did => {
-        const d = actions.find(a => a.id === did);
-        if (d) d.suppressed = false;
-      });
-      dragFeedback.innerHTML = `▶️ <strong>Unsuppressed:</strong> <em>${act.name}</em>${unsuppressedPrereqCount > 0 ? ' (and required prerequisites)' : ''}${downstreamIds.length > 0 ? ' and dependent features' : ''} restored in solid-body rebuild.`;
+      const restoredCount = back.size - 1 - prereqCount;
+      dragFeedback.innerHTML = `▶️ <strong>Unsuppressed:</strong> <em>${act.name}</em>${prereqCount > 0 ? ` (and ${prereqCount} required prerequisite(s))` : ''}${restoredCount > 0 ? ` and ${restoredCount} dependent(s)` : ''}${preservedCount > 0 ? ` (${preservedCount} suppressed on their own or still missing a prerequisite, kept suppressed)` : ''}.`;
     }
 
     function getDisplayItems() {
@@ -3410,28 +3413,178 @@
       dragFeedback.innerHTML = `📁 <strong>Group Created:</strong> Created <em>${newGroup.name}</em> with ${sortedIds.length} features. Folded into a virtual group chip spanning all component tracks. Right-click for Group menu or double-click to Open!`;
     }
 
+    // The dependency graph's corridor, as in the app (deps.rs corridor_for): after the last
+    // prerequisite and before the first dependent, directly or through other steps.
     function computeMovableRange(action) {
       const displayItems = getDisplayItems();
       const currentCol = getActionDisplayCol(action.id);
       if (currentCol === -1) return { minCol: 1, maxCol: 1, currentCol: 1 };
-      
+
       let maxPrereqCol = 0;
-      action.prereqs.forEach(pid => {
+      getAllPrereqIds(action.id).forEach(pid => {
         const c = getActionDisplayCol(pid);
         if (c > maxPrereqCol) maxPrereqCol = c;
       });
 
       let minDownstreamCol = displayItems.length + 1;
-      action.downstream.forEach(did => {
+      getAllDownstreamIds(action.id).forEach(did => {
         const c = getActionDisplayCol(did);
-        if (c < minDownstreamCol) minDownstreamCol = c;
+        if (c !== -1 && c < minDownstreamCol) minDownstreamCol = c;
       });
 
       return {
-        minCol: maxPrereqCol + 1,
-        maxCol: minDownstreamCol - 1,
+        minCol: Math.min(maxPrereqCol + 1, currentCol),
+        maxCol: Math.max(minDownstreamCol - 1, currentCol),
         currentCol: currentCol
       };
+    }
+
+    // ── Corridor check, as in the app (timeline_2d/corridor_check.rs) ──
+    // A move can also break a feature through its shape alone (a feature's `shapeAfter` lists the
+    // features it must stay after, though it does not name them). So each step of the graph's
+    // corridor is tried on a copy of the design, outward from the feature, until a move fails;
+    // meanwhile a light runs along the cell dots from each end towards the feature, and each
+    // bracket then moves in to the last step where the move works. Kept until the design changes.
+    const CHECK_SETTLE_S = 0.18;    // how long a bracket takes to move to its checked place
+    const CHECK_LIGHT_SPEED = 14;   // steps per second
+    const CHECK_LIGHT_TAIL = 3;     // steps
+    const CHECK_STEP_MS = 350;      // simulated engine time for one tried move
+    const corridorChecks = { key: null, done: new Map(), running: null, frame: null };
+
+    // What a move's outcome depends on: the features, their order and the marker.
+    function designKey() {
+      return JSON.stringify([actions.map(a => [a.id, !!a.suppressed]), markerStep, groups.map(g => [g.id, !!g.isOpen, g.actionIds])]);
+    }
+
+    // The feature order a drop of `act` at display column `targetCol` gives.
+    function reorderedIds(act, targetCol) {
+      const items = getDisplayItems();
+      const currentCol = getActionDisplayCol(act.id);
+      const ids = actions.map(a => a.id);
+      const from = ids.indexOf(act.id);
+      const target = items[targetCol - 1];
+      ids.splice(from, 1);
+      let to = ids.length;
+      if (target) {
+        const anchorId = target.isGroup ? target.actions[0].id : target.action.id;
+        to = actions.findIndex(a => a.id === anchorId);
+        if (targetCol > currentCol && target.isGroup) to += target.actions.length - 1;
+      }
+      ids.splice(to, 0, act.id);
+      return ids;
+    }
+
+    // Whether the design still builds after that drop: every feature after what it needs.
+    function moveWorks(act, targetCol) {
+      const order = reorderedIds(act, targetCol);
+      const at = id => order.indexOf(id);
+      return actions.every(a => [...(a.prereqs || []), ...(a.shapeAfter || [])].every(p => at(p) < at(a.id)));
+    }
+
+    function stopCorridorCheck() {
+      const r = corridorChecks.running;
+      if (r) r.timers.forEach(clearTimeout);
+      corridorChecks.running = null;
+    }
+
+    // The checked corridor of a feature, once both sides are known for the design as it is.
+    function checkedCorridor(id) {
+      return corridorChecks.key === designKey() ? corridorChecks.done.get(id) || null : null;
+    }
+
+    // Follow the design and the selected feature: start checking it unless it is checked already.
+    function followCorridorCheck(act) {
+      const key = designKey();
+      if (key !== corridorChecks.key) {
+        stopCorridorCheck();
+        corridorChecks.key = key;
+        corridorChecks.done.clear();
+      }
+      if (!act) { stopCorridorCheck(); return; }
+      if (corridorChecks.running && corridorChecks.running.id === act.id) return;
+      stopCorridorCheck();
+      if (corridorChecks.done.has(act.id)) return;
+      const { minCol, maxCol, currentCol } = computeMovableRange(act);
+      if (minCol === currentCol && maxCol === currentCol) {
+        corridorChecks.done.set(act.id, { low: minCol, high: maxCol });
+        return;
+      }
+      const run = { id: act.id, known: [minCol, maxCol], current: currentCol, started: performance.now() / 1000, low: null, high: null, timers: [] };
+      corridorChecks.running = run;
+      const walk = (side, steps) => {
+        // Tried on the design as it is now; the timers only stand in for the engine's time.
+        const works = steps.map(step => moveWorks(act, step));
+        let farthest = currentCol;
+        const settle = () => {
+          run[side] = { bound: farthest, at: performance.now() / 1000 };
+          if (run.low && run.high) {
+            corridorChecks.done.set(run.id, { low: run.low.bound, high: run.high.bound });
+            if (!document.querySelector('.chip.dragging')) applyHighlight();
+          }
+          animateCorridorCheck();
+        };
+        const tryNext = i => {
+          if (i >= steps.length) return settle();
+          run.timers.push(setTimeout(() => {
+            if (!works[i]) return settle();
+            farthest = steps[i];
+            tryNext(i + 1);
+          }, CHECK_STEP_MS));
+        };
+        tryNext(0);
+      };
+      const lowSteps = [];
+      for (let c = currentCol - 1; c >= minCol; c--) lowSteps.push(c);
+      const highSteps = [];
+      for (let c = currentCol + 1; c <= maxCol; c++) highSteps.push(c);
+      walk('low', lowSteps);
+      walk('high', highSteps);
+      animateCorridorCheck();
+    }
+
+    // Where the brackets of `id` are now (fractional while they move) and how far each light ran.
+    function corridorShown(id, now) {
+      const r = corridorChecks.running;
+      if (r && r.id === id) {
+        const head = Math.max(0, (now - r.started) * CHECK_LIGHT_SPEED);
+        const side = (end, found, span) => {
+          if (!found) return [end, head % (span + CHECK_LIGHT_TAIL)];
+          const k = Math.min(1, Math.max(0, (now - found.at) / CHECK_SETTLE_S));
+          const eased = 1 - (1 - k) * (1 - k);
+          return [end + (found.bound - end) * eased, null];
+        };
+        const [low, lightLow] = side(r.known[0], r.low, r.current - r.known[0]);
+        const [high, lightHigh] = side(r.known[1], r.high, r.known[1] - r.current);
+        return { low, high, lightLow, lightHigh, known: r.known, current: r.current };
+      }
+      const d = checkedCorridor(id);
+      return d ? { low: d.low, high: d.high, lightLow: null, lightHigh: null, known: [d.low, d.high], current: d.low } : null;
+    }
+
+    // How lit the dots of column `col` are, 0 to 1. The feature's own column ends both runs.
+    function corridorLightAt(s, col) {
+      const lit = (head, fromEnd) => {
+        const behind = head - fromEnd;
+        return behind < 0 ? 0 : Math.max(0, 1 - behind / CHECK_LIGHT_TAIL);
+      };
+      const low = s.lightLow != null && col >= s.known[0] && col <= s.current ? lit(s.lightLow, col - s.known[0]) : 0;
+      const high = s.lightHigh != null && col >= s.current && col <= s.known[1] ? lit(s.lightHigh, s.known[1] - col) : 0;
+      return Math.max(low, high);
+    }
+
+    function corridorAnimating(now) {
+      const r = corridorChecks.running;
+      return !!r && (!r.low || now - r.low.at < CHECK_SETTLE_S || !r.high || now - r.high.at < CHECK_SETTLE_S);
+    }
+
+    function animateCorridorCheck() {
+      if (corridorChecks.frame) return;
+      const tick = () => {
+        corridorChecks.frame = null;
+        paintCorridor();
+        if (corridorAnimating(performance.now() / 1000)) corridorChecks.frame = requestAnimationFrame(tick);
+      };
+      corridorChecks.frame = requestAnimationFrame(tick);
     }
 
     // Set Timeline Rollback Marker Step
@@ -4344,6 +4497,10 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       });
 
       // 2. Highlight All Modeling Action Chips with 100% Opacity
+      // Prerequisites and dependents directly or through other steps, as in the app.
+      const focusId = selectedActionIds.length === 1 && selectedGroupId === null ? selectedActionIds[0] : null;
+      const focusPrereqs = new Set(focusId !== null ? getAllPrereqIds(focusId) : []);
+      const focusDependents = new Set(focusId !== null ? getAllDownstreamIds(focusId) : []);
       document.querySelectorAll('#trackRowsContainer .chip').forEach(chip => {
         const id = parseInt(chip.dataset.id);
         const col = parseInt(chip.dataset.col);
@@ -4365,7 +4522,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
           }
         } else if (selectedActionIds.length === 1 && selectedGroupId === null) {
           const act = actions.find(a => a.id === selectedActionIds[0]);
-          if (act && act.prereqs.includes(id)) {
+          if (act && focusPrereqs.has(id)) {
             if (isChipInactive) {
               chip.className = 'chip prereq-inactive';
               chip.title = `${actName} (Step ${actStepStr}) - Prerequisite [Inactive: Light Grey]`;
@@ -4373,7 +4530,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
               chip.className = 'chip prereq';
               chip.title = `${actName} (Step ${actStepStr}) - Prerequisite [Active: Orange]`;
             }
-          } else if (act && act.downstream.includes(id)) {
+          } else if (act && focusDependents.has(id)) {
             if (isChipInactive) {
               chip.className = 'chip downstream-inactive';
               chip.title = `${actName} (Step ${actStepStr}) - Downstream Dependent [Inactive: Mid Grey]`;
@@ -4433,10 +4590,89 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       });
 
       // 4. Movable Corridor Brackets [ ... ] (Shown for Single Selected Action)
-      if (selectedActionIds.length === 1 && selectedGroupId === null) {
+      followCorridorCheck(selectedActionIds.length === 1 && selectedGroupId === null ? actions.find(a => a.id === selectedActionIds[0]) : null);
+      paintCorridor();
+
+      // 5. Status Bar Details
+      if (selectedGroupId !== null) {
+        const grp = groups.find(g => g.id === selectedGroupId);
+        if (grp) {
+          const grpActions = actions.filter(a => grp.actionIds.includes(a.id));
+          const col = getActionDisplayCol(grp.actionIds[0]);
+          const isInactive = col > markerStep;
+          const minStep = Math.min(...grpActions.map(a => actions.findIndex(act => act.id === a.id) + 1));
+          const maxStep = Math.max(...grpActions.map(a => actions.findIndex(act => act.id === a.id) + 1));
+          const minStepStr = minStep < 10 ? '0' + minStep : minStep;
+          const maxStepStr = maxStep < 10 ? '0' + maxStep : maxStep;
+          const stepRangeStr = minStep === maxStep ? `Step ${minStepStr}` : `Steps ${minStepStr}–${maxStepStr}`;
+          statusDetails.innerHTML = `
+            <strong style="color: #fff;">📁 ${grp.name}</strong> (${grp.isOpen ? 'Open Group' : 'Folded Virtual Group'} · ${stepRangeStr} · ${grpActions.length} Features · ${isInactive ? '<span style="color: #cbd5e1;">Inactive Step</span>' : '<span style="color: #38bdf8;">Active Step</span>'}):
+            <span style="color: #94a3b8; margin-left: 8px;">Contains: [${grpActions.map(a => a.name).join(', ')}]</span> ·
+            <span style="color: #38bdf8; font-weight: 600; margin-left: 8px;">${grp.isOpen ? 'Click "Close" on header pill or right-click to manage' : 'Double-click to open or right-click for Group options'}</span>
+          `;
+        }
+      } else if (selectedActionIds.length > 1) {
+        const isAdjacent = isSelectionAdjacent();
+        const selActions = actions.filter(a => selectedActionIds.includes(a.id));
+        statusDetails.innerHTML = `
+          <strong style="color: #fff;">${selectedActionIds.length} Features Selected</strong> (${isAdjacent ? '<span style="color: #22c55e; font-weight: bold;">Adjacent Range</span>' : '<span style="color: #f59e0b; font-weight: bold;">Non-Adjacent</span>'}):
+          <span style="color: #cbd5e1; margin-left: 8px;">[${selActions.map(a => a.name).join(', ')}]</span>
+          ${isAdjacent ? '<span style="color: #38bdf8; font-weight: bold; margin-left: 8px;">👉 Right-click any selected chip to "Group Selection"!</span>' : '<span style="color: #94a3b8; margin-left: 8px;">(Only adjacent features can be grouped into a single folder column)</span>'}
+        `;
+      } else if (selectedActionIds.length === 1) {
         const act = actions.find(a => a.id === selectedActionIds[0]);
         if (act) {
           const { minCol, maxCol, currentCol } = computeMovableRange(act);
+          const isSelectedInactive = currentCol > markerStep;
+          const prereqsText = act.prereqs.length > 0 ? act.prereqs.map(p => '#' + p).join(', ') : 'None';
+          const downstreamText = act.downstream.length > 0 ? act.downstream.map(d => '#' + d).join(', ') : 'None';
+
+          const actStep = actions.findIndex(a => a.id === act.id) + 1;
+          const actStepStr = actStep < 10 ? '0' + actStep : actStep;
+          statusDetails.innerHTML = `
+            <strong style="color: #fff;">${act.name}</strong> (Step ${actStepStr} · ${act.suppressed ? '<span style="color: #f87171; font-weight: bold;">Suppressed</span> · ' : ''}${isSelectedInactive ? '<span style="color: #cbd5e1;">Inactive Step</span>' : '<span style="color: #38bdf8;">Active Step</span>'}):
+            <span style="color: ${isSelectedInactive ? 'var(--grey-prereq)' : 'var(--orange)'}; font-weight: 600; margin-left: 8px;">
+              Prerequisites: [${prereqsText}]
+            </span> ·
+            <span style="color: ${isSelectedInactive ? 'var(--grey-downstream)' : 'var(--blue)'}; font-weight: 600; margin-left: 8px;">
+              Downstream: [${downstreamText}]
+            </span> ·
+            <span style="color: ${isSelectedInactive ? 'var(--grey-corridor)' : 'var(--green)'}; font-weight: bold; margin-left: 8px;">
+              [ Movable Corridor: ${(() => {
+                const checked = checkedCorridor(act.id);
+                if (checked) return `Steps ${checked.low} to ${checked.high}, checked`;
+                if (corridorChecks.running && corridorChecks.running.id === act.id) return `Steps ${minCol} to ${maxCol}, checking…`;
+                return `Steps ${minCol} to ${maxCol}`;
+              })()} ]
+            </span>
+            ${act.warning ? `<span style="color: #f59e0b; font-size: 11px; margin-left: 6px;">⚠️ ${act.warning}</span>` : ''}
+            ${isSelectedInactive ? `<span style="color: #94a3b8; font-size: 11px; margin-left: 6px;">(Solid-body evaluated up to Step ${markerStep})</span>` : ''}
+          `;
+        }
+      }
+    }
+
+    // Movable corridor brackets [ ... ] for one selected feature, redrawn each frame while checked.
+    function paintCorridor() {
+      const act = selectedActionIds.length === 1 && selectedGroupId === null ? actions.find(a => a.id === selectedActionIds[0]) : null;
+      const shown = act ? corridorShown(act.id, performance.now() / 1000) : null;
+
+      // Cell dots light up while the corridor is checked (also when dots are switched off).
+      document.querySelectorAll('#trackRowsContainer .empty-hint').forEach(dot => {
+        const light = shown && (shown.lightLow != null || shown.lightHigh != null) ? corridorLightAt(shown, parseInt(dot.parentElement.dataset.col)) : 0;
+        if (light > 0) {
+          dot.classList.add('lit');
+          dot.style.setProperty('--light', light.toFixed(3));
+        } else if (dot.classList.contains('lit')) {
+          dot.classList.remove('lit');
+          dot.style.removeProperty('--light');
+        }
+      });
+
+      {
+        if (act) {
+          // Checked (or being checked): where the brackets are now; otherwise the graph's corridor.
+          const { minCol, maxCol } = shown ? { minCol: shown.low, maxCol: shown.high } : computeMovableRange(act);
           if (minCol <= maxCol) {
             bracketGroup.style.display = 'block';
             const xLeft = (minCol - 1) * COL_W;
@@ -4516,61 +4752,6 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
         } else {
           bracketGroup.style.display = 'none';
         }
-      } else {
-        bracketGroup.style.display = 'none';
-      }
-
-      // 5. Status Bar Details
-      if (selectedGroupId !== null) {
-        const grp = groups.find(g => g.id === selectedGroupId);
-        if (grp) {
-          const grpActions = actions.filter(a => grp.actionIds.includes(a.id));
-          const col = getActionDisplayCol(grp.actionIds[0]);
-          const isInactive = col > markerStep;
-          const minStep = Math.min(...grpActions.map(a => actions.findIndex(act => act.id === a.id) + 1));
-          const maxStep = Math.max(...grpActions.map(a => actions.findIndex(act => act.id === a.id) + 1));
-          const minStepStr = minStep < 10 ? '0' + minStep : minStep;
-          const maxStepStr = maxStep < 10 ? '0' + maxStep : maxStep;
-          const stepRangeStr = minStep === maxStep ? `Step ${minStepStr}` : `Steps ${minStepStr}–${maxStepStr}`;
-          statusDetails.innerHTML = `
-            <strong style="color: #fff;">📁 ${grp.name}</strong> (${grp.isOpen ? 'Open Group' : 'Folded Virtual Group'} · ${stepRangeStr} · ${grpActions.length} Features · ${isInactive ? '<span style="color: #cbd5e1;">Inactive Step</span>' : '<span style="color: #38bdf8;">Active Step</span>'}):
-            <span style="color: #94a3b8; margin-left: 8px;">Contains: [${grpActions.map(a => a.name).join(', ')}]</span> ·
-            <span style="color: #38bdf8; font-weight: 600; margin-left: 8px;">${grp.isOpen ? 'Click "Close" on header pill or right-click to manage' : 'Double-click to open or right-click for Group options'}</span>
-          `;
-        }
-      } else if (selectedActionIds.length > 1) {
-        const isAdjacent = isSelectionAdjacent();
-        const selActions = actions.filter(a => selectedActionIds.includes(a.id));
-        statusDetails.innerHTML = `
-          <strong style="color: #fff;">${selectedActionIds.length} Features Selected</strong> (${isAdjacent ? '<span style="color: #22c55e; font-weight: bold;">Adjacent Range</span>' : '<span style="color: #f59e0b; font-weight: bold;">Non-Adjacent</span>'}):
-          <span style="color: #cbd5e1; margin-left: 8px;">[${selActions.map(a => a.name).join(', ')}]</span>
-          ${isAdjacent ? '<span style="color: #38bdf8; font-weight: bold; margin-left: 8px;">👉 Right-click any selected chip to "Group Selection"!</span>' : '<span style="color: #94a3b8; margin-left: 8px;">(Only adjacent features can be grouped into a single folder column)</span>'}
-        `;
-      } else if (selectedActionIds.length === 1) {
-        const act = actions.find(a => a.id === selectedActionIds[0]);
-        if (act) {
-          const { minCol, maxCol, currentCol } = computeMovableRange(act);
-          const isSelectedInactive = currentCol > markerStep;
-          const prereqsText = act.prereqs.length > 0 ? act.prereqs.map(p => '#' + p).join(', ') : 'None';
-          const downstreamText = act.downstream.length > 0 ? act.downstream.map(d => '#' + d).join(', ') : 'None';
-
-          const actStep = actions.findIndex(a => a.id === act.id) + 1;
-          const actStepStr = actStep < 10 ? '0' + actStep : actStep;
-          statusDetails.innerHTML = `
-            <strong style="color: #fff;">${act.name}</strong> (Step ${actStepStr} · ${act.suppressed ? '<span style="color: #f87171; font-weight: bold;">Suppressed</span> · ' : ''}${isSelectedInactive ? '<span style="color: #cbd5e1;">Inactive Step</span>' : '<span style="color: #38bdf8;">Active Step</span>'}):
-            <span style="color: ${isSelectedInactive ? 'var(--grey-prereq)' : 'var(--orange)'}; font-weight: 600; margin-left: 8px;">
-              Prerequisites: [${prereqsText}]
-            </span> ·
-            <span style="color: ${isSelectedInactive ? 'var(--grey-downstream)' : 'var(--blue)'}; font-weight: 600; margin-left: 8px;">
-              Downstream: [${downstreamText}]
-            </span> ·
-            <span style="color: ${isSelectedInactive ? 'var(--grey-corridor)' : 'var(--green)'}; font-weight: bold; margin-left: 8px;">
-              [ Movable Corridor: Steps ${minCol} to ${maxCol} ]
-            </span>
-            ${act.warning ? `<span style="color: #f59e0b; font-size: 11px; margin-left: 6px;">⚠️ ${act.warning}</span>` : ''}
-            ${isSelectedInactive ? `<span style="color: #94a3b8; font-size: 11px; margin-left: 6px;">(Solid-body evaluated up to Step ${markerStep})</span>` : ''}
-          `;
-        }
       }
     }
 
@@ -4615,8 +4796,12 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
         chip.classList.add('dragging');
         document.body.style.cursor = 'grabbing';
 
-        const { minCol, maxCol, currentCol } = computeMovableRange(act);
-        const fromIndex = actions.findIndex(a => a.id === act.id);
+        // The checked corridor once it is known, otherwise the graph's; a drop is checked either way.
+        const graphRange = computeMovableRange(act);
+        const checked = checkedCorridor(act.id);
+        const currentCol = graphRange.currentCol;
+        const minCol = checked ? checked.low : graphRange.minCol;
+        const maxCol = checked ? checked.high : graphRange.maxCol;
 
         function onMouseMove(e) {
           if (!isDragging) return;
@@ -4652,22 +4837,11 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
           const colShift = Math.round(currentDeltaX / COL_W);
           const targetCol = currentCol + colShift;
 
-          if (targetCol >= minCol && targetCol <= maxCol && targetCol !== currentCol) {
-            const displayItems = getDisplayItems();
-            const targetItem = displayItems[targetCol - 1];
-            let toIndex = actions.length - 1;
-            if (targetItem) {
-              toIndex = targetItem.isGroup 
-                ? actions.findIndex(a => a.id === targetItem.actions[0].id)
-                : actions.findIndex(a => a.id === targetItem.action.id);
-              if (colShift > 0 && targetItem.isGroup) {
-                toIndex += targetItem.actions.length - 1;
-              }
-            }
-
-            // Ripple array splice
-            const [movedAction] = actions.splice(fromIndex, 1);
-            actions.splice(toIndex, 0, movedAction);
+          const inCorridor = targetCol >= minCol && targetCol <= maxCol && targetCol !== currentCol;
+          if (inCorridor && moveWorks(act, targetCol)) {
+            // Ripple reorder: the features in between move one step the other way.
+            const order = reorderedIds(act, targetCol);
+            actions.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
 
             renderTimeline();
             const shiftCount = Math.abs(colShift);
@@ -4675,6 +4849,9 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
             const isTargetInactive = targetCol > markerStep;
             dragFeedback.innerHTML = `🎉 <strong>Reordered:</strong> <em>${act.name}</em> moved to Step ${targetCol}! Jumped actions rippled ${shiftCount} step(s) to the ${pushDir}. ${isTargetInactive ? '(Underlying sequence updated; solid-body remains evaluated up to Step ' + markerStep + ')' : '(Solid-body geometry re-evaluated in active view)'}`;
           } else {
+            if (inCorridor) {
+              dragFeedback.innerHTML = `🚫 <strong>Move refused:</strong> <em>${act.name}</em> at Step ${targetCol} would break the design through its shape, so the drop is refused.`;
+            }
             chip.style.transition = 'transform 0.2s ease-out';
             chip.style.transform = 'translate3d(0, 0, 0)';
             setTimeout(() => {
@@ -5370,6 +5547,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       nextGroupId = 1;
       selectedGroupId = null;
       actions = JSON.parse(JSON.stringify(initialActions));
+      separatelySuppressedIds.clear();
       selectedActionIds = [5];
       anchorActionId = 5;
       markerStep = 16;
@@ -5686,8 +5864,19 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       }
     }
 
+    // As in the app (assembly.rs): a joint's prerequisites and dependents are the earlier and later
+    // joints that share a component row with it. This does not follow how the joints move each other.
+    function deriveJointRelations() {
+      assemblyJoints.forEach((j, i) => {
+        const shares = o => o.rows.some(r => j.rows.includes(r));
+        j.prereqs = assemblyJoints.slice(0, i).filter(shares).map(o => o.id);
+        j.downstream = assemblyJoints.slice(i + 1).filter(shares).map(o => o.id);
+      });
+    }
+
     // Render Assembly Timeline (Headers, Track Rows, Chips, Link Lines)
     function renderAssemblyTimeline() {
+      deriveJointRelations();
       const assemblyTrackContainer = document.getElementById('assemblyTrackRowsContainer');
       if (!assemblyHeaderTrack || !assemblyTrackContainer) return;
 
@@ -6520,6 +6709,22 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
         });
       }
 
+      // DAG Unsuppress Mode (Restore State vs All Features)
+      const btnUnsuppressRestore = document.getElementById('btnUnsuppressRestore');
+      const btnUnsuppressAll = document.getElementById('btnUnsuppressAll');
+      if (btnUnsuppressRestore && btnUnsuppressAll) {
+        btnUnsuppressRestore.addEventListener('click', () => {
+          unsuppressMode = 'restore_state';
+          btnUnsuppressRestore.classList.add('active');
+          btnUnsuppressAll.classList.remove('active');
+        });
+        btnUnsuppressAll.addEventListener('click', () => {
+          unsuppressMode = 'unsuppress_all';
+          btnUnsuppressAll.classList.add('active');
+          btnUnsuppressRestore.classList.remove('active');
+        });
+      }
+
       // Toggle Assembly Section Visibility ("Only appears when at least 1 item is present")
       if (btnToggleAssemblySection) {
         btnToggleAssemblySection.addEventListener('click', () => {
@@ -6575,37 +6780,11 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
         });
       }
 
-      // Reopen Icon switcher listeners
-      document.getElementById('btnIconChevrons')?.addEventListener('click', () => setReopenIconStyle('chevrons'));
-      document.getElementById('btnIconSplit')?.addEventListener('click', () => setReopenIconStyle('split'));
-      document.getElementById('btnIconUnfold')?.addEventListener('click', () => setReopenIconStyle('unfold'));
-      document.getElementById('btnIconArrows')?.addEventListener('click', () => setReopenIconStyle('arrows'));
-
       updateSplitterUI();
     }
 
-    let reopenIconStyle = 'split'; // Default: dual split panes (◫)
-
-    // Crisp Vector Icons for Reopening / Expanding Contracted Tracks
-    // Crisp Vector Icons for Reopening / Expanding Contracted Tracks
-    const REOPEN_ICONS = {
-      chevrons: {
-        left: '<svg width="9" height="11" viewBox="0 0 10 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 2.5L5 6L1.5 9.5"/><path d="M5 2.5L8.5 6L5 9.5"/></svg>',
-        right: '<svg width="9" height="11" viewBox="0 0 10 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 2.5L5 6L8.5 9.5"/><path d="M5 2.5L1.5 6L5 9.5"/></svg>'
-      },
-      split: {
-        left: '<svg width="9" height="11" viewBox="0 0 10 12" fill="none" stroke="currentColor"><rect x="1" y="1" width="8" height="10" rx="1.5" stroke-width="1.3"/><line x1="5" y1="1" x2="5" y2="11" stroke-width="1.1"/></svg>',
-        right: '<svg width="9" height="11" viewBox="0 0 10 12" fill="none" stroke="currentColor"><rect x="1" y="1" width="8" height="10" rx="1.5" stroke-width="1.3"/><line x1="5" y1="1" x2="5" y2="11" stroke-width="1.1"/></svg>'
-      },
-      unfold: {
-        left: '<svg width="9" height="11" viewBox="0 0 10 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><line x1="1.5" y1="1.5" x2="1.5" y2="10.5"/><path d="M4.5 3L8 6L4.5 9"/></svg>',
-        right: '<svg width="9" height="11" viewBox="0 0 10 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><line x1="8.5" y1="1.5" x2="8.5" y2="10.5"/><path d="M5.5 3L2 6L5.5 9"/></svg>'
-      },
-      arrows: {
-        left: '<svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 2.5L1 6L3.5 9.5"/><path d="M8.5 2.5L11 6L8.5 9.5"/><line x1="1.5" y1="6" x2="10.5" y2="6"/></svg>',
-        right: '<svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 2.5L1 6L3.5 9.5"/><path d="M8.5 2.5L11 6L8.5 9.5"/><line x1="1.5" y1="6" x2="10.5" y2="6"/></svg>'
-      }
-    };
+    // Crisp Vector Icon for Reopening a Contracted Track: dual split pane (◫)
+    const REOPEN_ICON = '<svg width="9" height="11" viewBox="0 0 10 12" fill="none" stroke="currentColor"><rect x="1" y="1" width="8" height="10" rx="1.5" stroke-width="1.3"/><line x1="5" y1="1" x2="5" y2="11" stroke-width="1.1"/></svg>';
 
     // Crisp Vector Icons for Contraction: |< (collapse left) and >| (collapse right)
     const CONTRACT_ICONS = {
@@ -6624,29 +6803,12 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
       splitterGrip.style.height = `${gripH}px`;
     }
 
-    function setReopenIconStyle(style) {
-      reopenIconStyle = style;
-      const btns = {
-        chevrons: document.getElementById('btnIconChevrons'),
-        split: document.getElementById('btnIconSplit'),
-        unfold: document.getElementById('btnIconUnfold'),
-        arrows: document.getElementById('btnIconArrows')
-      };
-      Object.keys(btns).forEach(k => {
-        if (btns[k]) {
-          if (k === style) btns[k].classList.add('active');
-          else btns[k].classList.remove('active');
-        }
-      });
-      updateSplitterUI();
-    }
-
     function updateSplitterUI() {
       if (!btnCollapseLeft || !btnCollapseRight) return;
 
       if (isModelingCollapsed && !isAssemblyCollapsed) {
         // Modeling contracted (left dock shown), Assembly visible
-        btnCollapseLeft.innerHTML = REOPEN_ICONS[reopenIconStyle].left;
+        btnCollapseLeft.innerHTML = REOPEN_ICON;
         btnCollapseLeft.className = 'splitter-btn collapse-left reopen-btn';
         btnCollapseLeft.title = 'Reopen Geometric Modeling Track (Expand to Split View)';
 
@@ -6659,7 +6821,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
         btnCollapseLeft.className = 'splitter-btn collapse-left';
         btnCollapseLeft.title = 'Contract Geometric Modeling Section into Left Dock Tab';
 
-        btnCollapseRight.innerHTML = REOPEN_ICONS[reopenIconStyle].right;
+        btnCollapseRight.innerHTML = REOPEN_ICON;
         btnCollapseRight.className = 'splitter-btn collapse-right reopen-btn';
         btnCollapseRight.title = 'Reopen Assembly Track (Expand to Split View)';
       } else {
@@ -6840,6 +7002,7 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
     renderTimeline();
 
     // Support URL view parameters for screenshots & testing
+    const urlParams = new URLSearchParams(window.location.search);
     const viewParam = urlParams.get('view');
     if (viewParam === 'collapse-modeling') {
       collapseModelingSection();
