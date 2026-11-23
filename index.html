@@ -1561,6 +1561,15 @@
     }
 
     /* Feature Manual & Interaction Reference */
+    /* Discreet visitor count at the very bottom (filled by counter.php) */
+    .visitor-count {
+      margin: 22px 0 4px;
+      text-align: center;
+      font-size: 10px;
+      color: var(--text-dim);
+      opacity: 0.6;
+    }
+
     .manual-section {
       margin-top: 18px;
       padding-top: 18px;
@@ -3012,6 +3021,8 @@
       </div>
     </div>
   </div>
+
+  <div id="visitorCount" class="visitor-count" hidden></div>
 
   <!-- SolidCraft Timeline Context Menu (egui theme) -->
   <div id="timelineContextMenu" class="context-menu"></div>
@@ -7011,6 +7022,23 @@ Click to Select · Double-click to Open Group · Right-click for Group Menu`;
     } else if (viewParam === 'hide-assembly') {
       if (btnToggleAssemblySection) btnToggleAssemblySection.click();
     }
+
+    // Visitor count from counter.php beside this page: one visit per browser. Shows nothing
+    // where there is no counter (a local copy, or a server without PHP).
+    (async () => {
+      try {
+        const first = !localStorage.getItem('timeline2dVisited');
+        const res = await fetch('counter.php', { method: first ? 'POST' : 'GET', cache: 'no-store' });
+        const { visitors } = await res.json();
+        if (!res.ok || !Number.isFinite(visitors)) return;
+        if (first) localStorage.setItem('timeline2dVisited', '1');
+        const el = document.getElementById('visitorCount');
+        el.textContent = `${visitors.toLocaleString('en-GB')} ${visitors === 1 ? 'visitor' : 'visitors'}`;
+        el.hidden = false;
+      } catch {
+        // No counter here.
+      }
+    })();
   </script>
 </body>
 </html>
