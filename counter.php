@@ -11,7 +11,8 @@ header('Cache-Control: no-store');
 
 // The database login lives outside the web root, in /files/counter-config.php on the webspace
 // (this file is /html/martinmajewski.net/projects/solidcraft/2d-timeline/counter.php), never in git.
-$config = dirname(__DIR__, 5) . '/files/counter-config.php';
+$private = dirname(__DIR__, 5) . '/files';
+$config = $private . '/counter-config.php';
 if (!is_file($config)) {
     http_response_code(503);
     echo '{"error":"not configured"}';
@@ -35,7 +36,9 @@ try {
     $read->execute([PAGE]);
     echo json_encode(['visitors' => (int) $read->fetchColumn()]);
 } catch (Throwable $e) {
-    // No details: they could name the database server or user.
+    // Details go to /files/counter-error.log only: they can name the database server or user.
+    // PDO's messages never contain the password.
+    error_log(date('c') . ' ' . get_class($e) . ': ' . $e->getMessage() . "\n", 3, $private . '/counter-error.log');
     http_response_code(500);
     echo '{"error":"database unavailable"}';
 }
